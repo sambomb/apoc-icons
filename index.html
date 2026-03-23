@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{margin:0;font-family:Arial;background:#0b0b0b}
+#currentEventBar{background:#111;color:white;padding:10px;text-align:center}
+#apocTable{border-collapse:collapse;width:100%;color:white;text-align:center}
+#apocTable th,#apocTable td{padding:6px;border:1px solid #2a2a2a}
+.cellIcon{width:18px;height:18px;display:block;margin:0 auto 4px auto}
+.event{font-size:12px;margin-top:3px;display:block}
+.currentHeader{background:#c21414}
+.currentColumn{background:#7a0f0f}
+.activeEvent{outline:2px solid #00ffcc}
+.nextEvent{outline:2px solid #ff8800}
+</style>
+</head>
+<body>
+
+<div id="currentEventBar">Loading...</div>
+
+<table id="apocTable">
+<thead>
+<tr>
+<th>Time</th>
+<th data-day="0">Sun</th>
+<th data-day="1">Mon</th>
+<th data-day="2">Tue</th>
+<th data-day="3">Wed</th>
+<th data-day="4">Thu</th>
+<th data-day="5">Fri</th>
+<th data-day="6">Sat</th>
+</tr>
+</thead>
+<tbody id="tableBody">
+<tr><td>00:00</td></tr>
+<tr><td>04:00</td></tr>
+<tr><td>08:00</td></tr>
+<tr><td>12:00</td></tr>
+<tr><td>16:00</td></tr>
+<tr><td>20:00</td></tr>
+</tbody>
+</table>
+
+<script>
+
+const apocalypseOffsetMinutes=-120
+function getUserOffsetMinutes(){return -new Date().getTimezoneOffset()}
+const apocTimes=[0,4,8,12,16,20]
+
+const ICONS={
+black:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/black.png",
+red:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/red.png",
+gold:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/gold.png"
+}
+
+const events=[
+["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
+["Shelter Upgrade","Age of Science","Mod Vehicle Boost","Hero Initiative","Army Expansion","Mod Vehicle Boost"],
+["Age of Science","Hero Initiative","Shelter Upgrade","Army Expansion","Mod Vehicle Boost","Shelter Upgrade"],
+["Hero Initiative","Army Expansion","Age of Science","Mod Vehicle Boost","Shelter Upgrade","Age of Science"],
+["Army Expansion","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Age of Science","Hero Initiative"],
+["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
+["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]
+]
+
+function buildTable(){
+let body=document.getElementById("tableBody")
+for(let r=0;r<body.rows.length;r++){
+for(let c=0;c<7;c++){
+let td=document.createElement("td")
+td.className="timeCell"
+body.rows[r].appendChild(td)
+}}}
+
+function updateCalendar(){
+
+let diffMinutes=getUserOffsetMinutes()-apocalypseOffsetMinutes
+let now=new Date()
+
+let headers=document.querySelectorAll("#apocTable th[data-day]")
+let cells=document.querySelectorAll(".timeCell")
+
+headers.forEach(h=>h.classList.remove("currentHeader"))
+cells.forEach(c=>c.classList.remove("currentColumn","activeEvent","nextEvent"))
+
+let currentDay=now.getDay()
+
+headers.forEach((h,i)=>{
+if(parseInt(h.dataset.day)===currentDay){
+h.classList.add("currentHeader")
+}
+})
+
+let index=0
+let nextEventTime=null
+let nextCell=null
+let currentEventName=""
+
+for(let r=0;r<apocTimes.length;r++){
+for(let c=0;c<7;c++){
+
+let hour=apocTimes[r]
+
+let base=new Date()
+base.setHours(0,0,0,0)
+base.setDate(base.getDate()+(c-base.getDay()))
+base.setHours(hour,0,0,0)
+base.setMinutes(base.getMinutes()+diffMinutes)
+
+let eventName=events[c][r]
+
+let iconType="black"
+if(c===0) iconType="red"
+else if(c===1) iconType="gold"
+else if(c===3 && hour>=16) iconType="red"
+else if(c===4) iconType="red"
+else if(c===5) iconType="gold"
+else if(c===6 && hour>=16) iconType="red"
+
+let d=base.toLocaleDateString("en-GB",{day:'2-digit',month:'short'})
+let t=base.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+
+cells[index].innerHTML=
+'<img src="'+ICONS[iconType]+'" class="cellIcon">'+
+d+"<br>"+t+
+"<span class='event'>"+eventName+"</span>"
+
+if(c===currentDay) cells[index].classList.add("currentColumn")
+
+let start=new Date(base)
+let end=new Date(base)
+end.setHours(end.getHours()+4)
+
+if(now>=start&&now<end){
+cells[index].classList.add("activeEvent")
+currentEventName=eventName
+}
+
+if(base>now&&(!nextEventTime||base<nextEventTime)){
+nextEventTime=base
+nextCell=cells[index]
+}
+
+index++
+}}
+
+if(nextCell) nextCell.classList.add("nextEvent")
+
+document.getElementById("currentEventBar").innerHTML=
+"Current: "+currentEventName
+
+}
+
+buildTable()
+updateCalendar()
+
+</script>
+
+</body>
+</html>
