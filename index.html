@@ -6,13 +6,10 @@
 
 <style>
 body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
-
-/* TOP */
-#topBar{display:flex;justify-content:space-between;padding:10px;background:#111;flex-wrap:wrap}
+#topBar{display:flex;justify-content:space-between;padding:10px;background:#111}
 #progressContainer{height:4px;background:#222}
 #progressBar{height:100%;background:#00ffcc;width:0%}
 
-/* LANG */
 #langWrapper{position:relative}
 #langBtn{background:#222;color:white;border:none;padding:6px;border-radius:6px;cursor:pointer}
 #langMenu{display:none;position:absolute;background:#111;border:1px solid #333;border-radius:8px}
@@ -20,33 +17,25 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 #langMenu div:hover{background:#c21414}
 .selectedLang{background:#333}
 
-/* FILTER */
 #eventFilters{text-align:center;padding:10px}
 #eventFilters button{margin:4px;padding:6px;background:#222;border:none;color:white;border-radius:4px;cursor:pointer}
 #eventFilters button:hover{background:#c21414}
 
-/* TABLE */
 #apocTable{width:100%;border-collapse:collapse;text-align:center}
 #apocTable th,#apocTable td{border:1px solid #2a2a2a;padding:6px}
-#apocTable td:hover{background:#1a1a1a}
-
 .cellIcon{width:18px;display:block;margin:0 auto 4px}
 .event{font-size:12px}
-
 .activeEvent{box-shadow:0 0 10px #00ffcc}
-.nextEvent{box-shadow:0 0 10px #ff8800}
-
-.currentHeader{background:#c21414}
 </style>
 </head>
 
 <body>
 
 <div id="topBar">
-<div id="currentEventBar">Loading...</div>
+<div id="currentEventBar"></div>
 
 <div>
-<button onclick="toggleTimeFormat()" id="timeFormatBtn">24H</button>
+<button onclick="toggleTimeFormat()" id="timeFormatBtn"></button>
 
 <div id="langWrapper">
 <button id="langBtn" onclick="toggleLangMenu()">🌐</button>
@@ -69,7 +58,7 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 <table id="apocTable">
 <thead>
 <tr>
-<th>Time</th>
+<th id="timeHeader"></th>
 <th data-day="0"></th>
 <th data-day="1"></th>
 <th data-day="2"></th>
@@ -91,7 +80,7 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 
 <script>
 
-// CONFIG
+// ---------- CONFIG ----------
 const apocalypseOffsetMinutes=-120
 const apocTimes=[0,4,8,12,16,20]
 
@@ -101,7 +90,7 @@ red:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/red.png",
 gold:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/gold.png"
 }
 
-// EVENTS
+// ---------- EVENTS ----------
 const events=[
 ["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
 ["Shelter Upgrade","Age of Science","Mod Vehicle Boost","Hero Initiative","Army Expansion","Mod Vehicle Boost"],
@@ -112,30 +101,53 @@ const events=[
 ["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]
 ]
 
-// LANGUAGE
-const LANG_LIST={en:"🇺🇸 English",pt:"🇧🇷 Português",es:"🇪🇸 Español",it:"🇮🇹 Italiano",ru:"🇷🇺 Русский",ko:"🇰🇷 한국어",ja:"🇯🇵 日本語"}
+// ---------- LANGUAGE ----------
+const TEXTS={
+en:{time:"Time",current:"Current Event",all:"All",army:"Army",hero:"Hero",shelter:"Shelter",vehicle:"Vehicle",science:"Science"},
+pt:{time:"Tempo",current:"Evento Atual",all:"Todos",army:"Exército",hero:"Herói",shelter:"Abrigo",vehicle:"Veículos",science:"Ciência"},
+es:{time:"Hora",current:"Evento Actual",all:"Todos",army:"Ejército",hero:"Héroe",shelter:"Refugio",vehicle:"Vehículos",science:"Ciencia"}
+}
 
 function detectLang(){
 let l=navigator.language.toLowerCase()
-for(let k in LANG_LIST){if(l.startsWith(k))return k}
-return "en"
+if(l.startsWith("pt"))return"pt"
+if(l.startsWith("es"))return"es"
+return"en"
 }
 
 let LANG=localStorage.getItem("lang")||detectLang()
 
+function T(){return TEXTS[LANG]||TEXTS.en}
+
 function setLanguage(l){
 LANG=l
 localStorage.setItem("lang",l)
+applyUI()
 updateCalendar()
 buildLangMenu()
 }
 
+// ---------- UI APPLY ----------
+function applyUI(){
+let t=T()
+
+document.getElementById("timeHeader").innerText=t.time
+document.getElementById("btnAll").innerText=t.all
+document.getElementById("btnArmy").innerText=t.army
+document.getElementById("btnHero").innerText=t.hero
+document.getElementById("btnShelter").innerText=t.shelter
+document.getElementById("btnVehicle").innerText=t.vehicle
+document.getElementById("btnScience").innerText=t.science
+document.getElementById("timeFormatBtn").innerText=use24h?"24H":"AM/PM"
+}
+
+// ---------- LANGUAGE MENU ----------
 function buildLangMenu(){
 let menu=document.getElementById("langMenu")
 menu.innerHTML=""
-for(let k in LANG_LIST){
+for(let k of ["en","pt","es"]){
 let d=document.createElement("div")
-d.innerText=LANG_LIST[k]
+d.innerText=k.toUpperCase()
 if(k===LANG)d.classList.add("selectedLang")
 d.onclick=()=>setLanguage(k)
 menu.appendChild(d)
@@ -147,24 +159,17 @@ let m=document.getElementById("langMenu")
 m.style.display=m.style.display==="block"?"none":"block"
 }
 
-// TEXT
-const TEXTS={
-en:{current:"Current Event",all:"All",army:"Army",hero:"Hero",shelter:"Shelter",vehicle:"Vehicle",science:"Science"},
-pt:{current:"Evento Atual",all:"Todos",army:"Exército",hero:"Herói",shelter:"Abrigo",vehicle:"Veículos",science:"Ciência"}
-}
-
-function T(){return TEXTS[LANG]||TEXTS.en}
-
-// TIME FORMAT
+// ---------- TIME ----------
 let use24h=JSON.parse(localStorage.getItem("use24h")||true)
 
 function toggleTimeFormat(){
 use24h=!use24h
 localStorage.setItem("use24h",use24h)
+applyUI()
 updateCalendar()
 }
 
-// TABLE
+// ---------- TABLE ----------
 function buildTable(){
 let b=document.getElementById("tableBody")
 for(let r=0;r<b.rows.length;r++){
@@ -174,7 +179,7 @@ td.className="timeCell"
 b.rows[r].appendChild(td)
 }}}
 
-// UPDATE
+// ---------- UPDATE ----------
 function updateCalendar(){
 
 let now=new Date()
@@ -216,33 +221,26 @@ let end=new Date(base)
 end.setHours(end.getHours()+4)
 
 if(now>=base&&now<end){
-cells[index].classList.add("activeEvent")
 document.getElementById("currentEventBar").innerText=T().current+": "+event
-
 let pct=((now-base)/(end-base))*100
 document.getElementById("progressBar").style.width=pct+"%"
 }
 
 index++
 }}
-
-document.getElementById("btnAll").innerText=T().all
-document.getElementById("btnArmy").innerText=T().army
-document.getElementById("btnHero").innerText=T().hero
-document.getElementById("btnShelter").innerText=T().shelter
-document.getElementById("btnVehicle").innerText=T().vehicle
-document.getElementById("btnScience").innerText=T().science
 }
 
+// ---------- FILTER ----------
 function filterEvents(type){
 document.querySelectorAll(".timeCell").forEach(cell=>{
 cell.style.opacity=(type==="all"||cell.innerText.includes(type))?"1":"0.2"
 })
 }
 
-// INIT
+// ---------- INIT ----------
 buildTable()
 buildLangMenu()
+applyUI()
 updateCalendar()
 
 </script>
