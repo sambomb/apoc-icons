@@ -5,151 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 
-body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#0b0b0b;
-color:white;
-}
+/* TOP */
+#topBar{display:flex;justify-content:space-between;padding:10px;background:#111;flex-wrap:wrap}
+#progressContainer{height:4px;background:#222}
+#progressBar{height:100%;background:#00ffcc;width:0%}
 
-/* TOP BAR */
-#topBar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:10px;
-background:#111;
-flex-wrap:wrap;
-}
-
-#currentEventBar{
-font-weight:bold;
-}
-
-/* PROGRESS BAR */
-#progressContainer{
-width:100%;
-height:4px;
-background:#222;
-margin-top:6px;
-}
-
-#progressBar{
-height:100%;
-width:0%;
-background:#00ffcc;
-transition:width 1s linear;
-}
-
-/* LANGUAGE */
+/* LANG */
 #langWrapper{position:relative}
+#langBtn{background:#222;color:white;border:none;padding:6px;border-radius:6px;cursor:pointer}
+#langMenu{display:none;position:absolute;background:#111;border:1px solid #333;border-radius:8px}
+#langMenu div{padding:8px;cursor:pointer}
+#langMenu div:hover{background:#c21414}
+.selectedLang{background:#333}
 
-#langBtn{
-background:#222;
-color:white;
-border:none;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
-}
-
-#langMenu{
-display:none;
-position:absolute;
-top:110%;
-left:0;
-background:#111;
-border:1px solid #333;
-border-radius:8px;
-overflow:hidden;
-z-index:999;
-}
-
-#langMenu div{
-padding:8px 12px;
-cursor:pointer;
-}
-
-#langMenu div:hover{
-background:#c21414;
-}
-
-.selectedLang{
-background:#333;
-}
-
-/* BUTTONS */
-#eventFilters{
-text-align:center;
-padding:10px;
-}
-
-#eventFilters button{
-margin:4px;
-padding:6px 10px;
-background:#222;
-border:none;
-color:white;
-border-radius:4px;
-cursor:pointer;
-transition:0.2s;
-}
-
-#eventFilters button:hover{
-background:#c21414;
-transform:scale(1.05);
-}
+/* FILTER */
+#eventFilters{text-align:center;padding:10px}
+#eventFilters button{margin:4px;padding:6px;background:#222;border:none;color:white;border-radius:4px;cursor:pointer}
+#eventFilters button:hover{background:#c21414}
 
 /* TABLE */
-#apocTable{
-width:100%;
-border-collapse:collapse;
-text-align:center;
-}
+#apocTable{width:100%;border-collapse:collapse;text-align:center}
+#apocTable th,#apocTable td{border:1px solid #2a2a2a;padding:6px}
+#apocTable td:hover{background:#1a1a1a}
 
-#apocTable th,#apocTable td{
-border:1px solid #2a2a2a;
-padding:6px;
-}
+.cellIcon{width:18px;display:block;margin:0 auto 4px}
+.event{font-size:12px}
 
-#apocTable td{
-transition:0.2s;
-}
+.activeEvent{box-shadow:0 0 10px #00ffcc}
+.nextEvent{box-shadow:0 0 10px #ff8800}
 
-#apocTable td:hover{
-background:#1a1a1a;
-transform:scale(1.05);
-}
-
-.cellIcon{
-width:18px;
-display:block;
-margin:0 auto 4px;
-}
-
-.event{
-font-size:12px;
-display:block;
-}
-
-/* STATES */
 .currentHeader{background:#c21414}
-.currentColumn{background:#7a0f0f}
-
-.activeEvent{
-box-shadow:0 0 10px #00ffcc;
-}
-
-.nextEvent{
-box-shadow:0 0 10px #ff8800;
-}
-
-/* MOBILE */
-@media(max-width:900px){
-#apocTable{font-size:12px}
-}
-
 </style>
 </head>
 
@@ -214,16 +101,19 @@ red:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/red.png",
 gold:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/gold.png"
 }
 
-// LANGUAGE SYSTEM
-const LANG_LIST={
-en:"🇺🇸 English",
-pt:"🇧🇷 Português",
-es:"🇪🇸 Español",
-it:"🇮🇹 Italiano",
-ru:"🇷🇺 Русский",
-ko:"🇰🇷 한국어",
-ja:"🇯🇵 日本語"
-}
+// EVENTS (FIXED)
+const events=[
+["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
+["Shelter Upgrade","Age of Science","Mod Vehicle Boost","Hero Initiative","Army Expansion","Mod Vehicle Boost"],
+["Age of Science","Hero Initiative","Shelter Upgrade","Army Expansion","Mod Vehicle Boost","Shelter Upgrade"],
+["Hero Initiative","Army Expansion","Age of Science","Mod Vehicle Boost","Shelter Upgrade","Age of Science"],
+["Army Expansion","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Age of Science","Hero Initiative"],
+["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
+["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]
+]
+
+// LANGUAGE
+const LANG_LIST={en:"🇺🇸 English",pt:"🇧🇷 Português",es:"🇪🇸 Español",it:"🇮🇹 Italiano",ru:"🇷🇺 Русский",ko:"🇰🇷 한국어",ja:"🇯🇵 日本語"}
 
 function detectLang(){
 let l=navigator.language.toLowerCase()
@@ -241,46 +131,6 @@ updateCalendar()
 buildLangMenu()
 }
 
-// TEXTS (UI + EVENTS)
-const TEXTS={
-en:{current:"Current Event",next:"Next in",all:"All",army:"Army",hero:"Hero",shelter:"Shelter",vehicle:"Vehicle",science:"Science",
-events:{
-"Mod Vehicle Boost":"Mod Vehicle Boost",
-"Shelter Upgrade":"Shelter Upgrade",
-"Army Expansion":"Army Expansion",
-"Age of Science":"Age of Science",
-"Hero Initiative":"Hero Initiative"
-}},
-pt:{current:"Evento Atual",next:"Próximo em",all:"Todos",army:"Exército",hero:"Herói",shelter:"Abrigo",vehicle:"Veículos",science:"Ciência",
-events:{
-"Mod Vehicle Boost":"Veículos",
-"Shelter Upgrade":"Abrigo",
-"Army Expansion":"Exército",
-"Age of Science":"Ciência",
-"Hero Initiative":"Heróis"
-}},
-es:{current:"Evento Actual",next:"Próximo en",all:"Todos",army:"Ejército",hero:"Héroe",shelter:"Refugio",vehicle:"Vehículos",science:"Ciencia",
-events:{
-"Mod Vehicle Boost":"Vehículos",
-"Shelter Upgrade":"Refugio",
-"Army Expansion":"Ejército",
-"Age of Science":"Ciencia",
-"Hero Initiative":"Héroes"
-}}
-}
-
-function T(){return TEXTS[LANG]||TEXTS.en}
-
-// TIME FORMAT
-let use24h=JSON.parse(localStorage.getItem("use24h")||true)
-
-function toggleTimeFormat(){
-use24h=!use24h
-localStorage.setItem("use24h",use24h)
-updateCalendar()
-}
-
-// BUILD LANG MENU
 function buildLangMenu(){
 let menu=document.getElementById("langMenu")
 menu.innerHTML=""
@@ -298,14 +148,31 @@ let m=document.getElementById("langMenu")
 m.style.display=m.style.display==="block"?"none":"block"
 }
 
-// TABLE BUILD
+// TEXTS
+const TEXTS={
+en:{current:"Current Event",all:"All",army:"Army",hero:"Hero",shelter:"Shelter",vehicle:"Vehicle",science:"Science"},
+pt:{current:"Evento Atual",all:"Todos",army:"Exército",hero:"Herói",shelter:"Abrigo",vehicle:"Veículos",science:"Ciência"}
+}
+
+function T(){return TEXTS[LANG]||TEXTS.en}
+
+// TIME FORMAT
+let use24h=JSON.parse(localStorage.getItem("use24h")||true)
+
+function toggleTimeFormat(){
+use24h=!use24h
+localStorage.setItem("use24h",use24h)
+updateCalendar()
+}
+
+// TABLE
 function buildTable(){
-let body=document.getElementById("tableBody")
-for(let r=0;r<body.rows.length;r++){
+let b=document.getElementById("tableBody")
+for(let r=0;r<b.rows.length;r++){
 for(let c=0;c<7;c++){
 let td=document.createElement("td")
 td.className="timeCell"
-body.rows[r].appendChild(td)
+b.rows[r].appendChild(td)
 }}}
 
 // UPDATE
@@ -314,7 +181,7 @@ function updateCalendar(){
 let now=new Date()
 let diff=-new Date().getTimezoneOffset()-apocalypseOffsetMinutes
 
-// weekdays localized
+// weekdays
 document.querySelectorAll("[data-day]").forEach((th,i)=>{
 let d=new Date()
 d.setDate(d.getDate()-d.getDay()+i)
@@ -323,7 +190,6 @@ th.innerText=d.toLocaleDateString(LANG,{weekday:"short"})
 
 let cells=document.querySelectorAll(".timeCell")
 let index=0
-let nextTime=null
 
 for(let r=0;r<apocTimes.length;r++){
 for(let c=0;c<7;c++){
@@ -334,8 +200,7 @@ base.setDate(base.getDate()+(c-base.getDay()))
 base.setHours(apocTimes[r])
 base.setMinutes(base.getMinutes()+diff)
 
-let raw=events[c][r]
-let event=T().events[raw]||raw
+let event=events[c][r]
 
 let icon="black"
 if(c===0)icon="red"
@@ -347,10 +212,8 @@ else if(c===6&&apocTimes[r]>=16)icon="red"
 
 let time=base.toLocaleTimeString(LANG,{hour:'2-digit',minute:'2-digit',hour12:!use24h})
 
-cells[index].innerHTML=
-`<img src="${ICONS[icon]}" class="cellIcon">${time}<span class="event">${event}</span>`
+cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon">${time}<span class="event">${event}</span>`
 
-// active detection
 let end=new Date(base)
 end.setHours(end.getHours()+4)
 
@@ -358,20 +221,13 @@ if(now>=base&&now<end){
 cells[index].classList.add("activeEvent")
 document.getElementById("currentEventBar").innerText=T().current+": "+event
 
-// progress
 let pct=((now-base)/(end-base))*100
 document.getElementById("progressBar").style.width=pct+"%"
-}
-
-if(base>now&&(nextTime===null||base<nextTime)){
-nextTime=base
-cells[index].classList.add("nextEvent")
 }
 
 index++
 }}
 
-// filters text
 document.getElementById("btnAll").innerText=T().all
 document.getElementById("btnArmy").innerText=T().army
 document.getElementById("btnHero").innerText=T().hero
@@ -380,7 +236,6 @@ document.getElementById("btnVehicle").innerText=T().vehicle
 document.getElementById("btnScience").innerText=T().science
 }
 
-// FILTER
 function filterEvents(type){
 document.querySelectorAll(".timeCell").forEach(cell=>{
 cell.style.opacity=(type==="all"||cell.innerText.includes(type))?"1":"0.2"
