@@ -96,12 +96,12 @@ const apocalypseOffsetMinutes=-120
 const apocTimes=[0,4,8,12,16,20]
 
 const ICONS={
-black:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/white.png",
+white:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/white.png",
 red:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/red.png",
 gold:"https://cdn.jsdelivr.net/gh/sambomb/apoc-icons/gold.png"
 }
 
-// EVENTS (FIXED)
+// EVENTS
 const events=[
 ["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
 ["Shelter Upgrade","Age of Science","Mod Vehicle Boost","Hero Initiative","Army Expansion","Mod Vehicle Boost"],
@@ -126,7 +126,6 @@ let LANG=localStorage.getItem("lang")||detectLang()
 function setLanguage(l){
 LANG=l
 localStorage.setItem("lang",l)
-applyLanguage()
 updateCalendar()
 buildLangMenu()
 }
@@ -148,7 +147,7 @@ let m=document.getElementById("langMenu")
 m.style.display=m.style.display==="block"?"none":"block"
 }
 
-// TEXTS
+// TEXT
 const TEXTS={
 en:{current:"Current Event",all:"All",army:"Army",hero:"Hero",shelter:"Shelter",vehicle:"Vehicle",science:"Science"},
 pt:{current:"Evento Atual",all:"Todos",army:"Exército",hero:"Herói",shelter:"Abrigo",vehicle:"Veículos",science:"Ciência"}
@@ -181,7 +180,6 @@ function updateCalendar(){
 let now=new Date()
 let diff=-new Date().getTimezoneOffset()-apocalypseOffsetMinutes
 
-// weekdays
 document.querySelectorAll("[data-day]").forEach((th,i)=>{
 let d=new Date()
 d.setDate(d.getDate()-d.getDay()+i)
@@ -202,7 +200,7 @@ base.setMinutes(base.getMinutes()+diff)
 
 let event=events[c][r]
 
-let icon="black"
+let icon="white"
 if(c===0)icon="red"
 else if(c===1)icon="gold"
 else if(c===3&&apocTimes[r]>=16)icon="red"
@@ -212,7 +210,7 @@ else if(c===6&&apocTimes[r]>=16)icon="red"
 
 let time=base.toLocaleTimeString(LANG,{hour:'2-digit',minute:'2-digit',hour12:!use24h})
 
-cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon">${time}<span class="event">${event}</span>`
+cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon">${time} <span class="event">${event}</span>`
 
 let end=new Date(base)
 end.setHours(end.getHours()+4)
