@@ -7,37 +7,67 @@
 <style>
 body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 
+/* TOP */
 #topBar{display:flex;justify-content:space-between;padding:10px;background:#111;flex-wrap:wrap}
-#alertBar{color:#ff4444;font-weight:bold;margin-top:5px}
 
-#progressBar{height:4px;background:#00ffcc;width:0%}
+#alertBar{
+color:#ff3b3b;
+font-weight:bold;
+animation:pulseAlert 1.5s infinite;
+}
+
+@keyframes pulseAlert{
+0%{opacity:0.6}
+50%{opacity:1}
+100%{opacity:0.6}
+}
+
+/* FILTERS FIXED */
+#eventFilters{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:6px;
+padding:10px;
+}
+
+#eventFilters button{
+padding:6px 10px;
+background:#222;
+border:none;
+color:white;
+border-radius:4px;
+cursor:pointer;
+}
+
+#eventFilters button.active{
+background:#c21414;
+}
+
+/* TABLE */
+#apocTable{width:100%;border-collapse:collapse;text-align:center}
+#apocTable th,#apocTable td{border:1px solid #2a2a2a;padding:6px;transition:0.2s}
 
 .currentColumn{background:#7a0f0f}
 
-/* RED RADAR HIGHLIGHT */
+/* ICON */
+.cellIcon{width:18px;margin-bottom:4px}
+
+/* EVENTS */
+.event{font-size:12px}
+
+/* RED RADAR */
 .redEvent{
 color:#ff3b3b;
 font-weight:bold;
-text-shadow:0 0 6px #ff0000;
+text-shadow:0 0 8px #ff0000;
 }
 
-/* LANG */
-#langWrapper{position:relative}
-#langBtn{background:#222;color:white;border:none;padding:6px;border-radius:6px;cursor:pointer}
-#langMenu{display:none;position:absolute;background:#111;border:1px solid #333;border-radius:8px}
-#langMenu div{padding:8px;cursor:pointer}
-#langMenu div:hover{background:#c21414}
-.selectedLang{background:#333}
+/* ACTIVE */
+.activeEvent{
+box-shadow:0 0 12px #00ffcc;
+}
 
-#eventFilters{text-align:center;padding:10px}
-#eventFilters button{margin:4px;padding:6px;background:#222;border:none;color:white;border-radius:4px}
-
-#apocTable{width:100%;border-collapse:collapse;text-align:center}
-#apocTable th,#apocTable td{border:1px solid #2a2a2a;padding:6px}
-.cellIcon{width:18px;display:block;margin:0 auto 4px}
-.event{font-size:12px}
-
-.activeEvent{box-shadow:0 0 10px #00ffcc}
 </style>
 </head>
 
@@ -50,37 +80,30 @@ text-shadow:0 0 6px #ff0000;
 </div>
 
 <div>
-<button onclick="toggleTimeFormat()" id="timeFormatBtn"></button>
-
-<div id="langWrapper">
-<button id="langBtn" onclick="toggleLangMenu()">🌐</button>
-<div id="langMenu"></div>
+<button onclick="toggleTimeFormat()">24H</button>
 </div>
 </div>
-</div>
-
-<div id="progressBar"></div>
 
 <div id="eventFilters">
-<button onclick="filterEvents('all')" id="btnAll"></button>
-<button onclick="filterEvents('Army')" id="btnArmy"></button>
-<button onclick="filterEvents('Hero')" id="btnHero"></button>
-<button onclick="filterEvents('Shelter')" id="btnShelter"></button>
-<button onclick="filterEvents('Vehicle')" id="btnVehicle"></button>
-<button onclick="filterEvents('Science')" id="btnScience"></button>
+<button onclick="filterEvents('all')" id="btnAll">All</button>
+<button onclick="filterEvents('Army')" id="btnArmy">Army</button>
+<button onclick="filterEvents('Hero')" id="btnHero">Hero</button>
+<button onclick="filterEvents('Shelter')" id="btnShelter">Shelter</button>
+<button onclick="filterEvents('Vehicle')" id="btnVehicle">Vehicle</button>
+<button onclick="filterEvents('Science')" id="btnScience">Science</button>
 </div>
 
 <table id="apocTable">
 <thead>
 <tr>
-<th id="timeHeader"></th>
-<th data-day="0"></th>
-<th data-day="1"></th>
-<th data-day="2"></th>
-<th data-day="3"></th>
-<th data-day="4"></th>
-<th data-day="5"></th>
-<th data-day="6"></th>
+<th>Time</th>
+<th data-day="0">Sun</th>
+<th data-day="1">Mon</th>
+<th data-day="2">Tue</th>
+<th data-day="3">Wed</th>
+<th data-day="4">Thu</th>
+<th data-day="5">Fri</th>
+<th data-day="6">Sat</th>
 </tr>
 </thead>
 <tbody id="tableBody">
@@ -95,10 +118,7 @@ text-shadow:0 0 6px #ff0000;
 
 <script>
 
-// CONFIG
-const apocalypseOffsetMinutes=-120
-const apocTimes=[0,4,8,12,16,20]
-
+// ICONS (safe)
 const ICONS={
 white:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/white.png",
 red:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/red.png",
@@ -114,38 +134,8 @@ const events=[["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Sc
 ["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
 ["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]]
 
-// LANG + ALERT
-const ALERTS={
-en:"Do not claim radar missions",
-pt:"Não resgatar missões de radar",
-es:"No reclamar misiones de radar",
-it:"Non riscattare missioni radar",
-ru:"Не забирать радарные миссии",
-ko:"레이더 임무를 수집하지 마세요",
-ja:"レーダーミッションを受け取らないでください",
-hi:"रडार मिशन प्राप्त न करें"
-}
+let currentFilter="all"
 
-const TEXTS={
-en:{time:"Time",current:"Current Event"},
-pt:{time:"Tempo",current:"Evento Atual"}
-}
-
-function detectLang(){
-let l=navigator.language.toLowerCase()
-if(l.startsWith("pt"))return"pt"
-return"en"
-}
-
-let LANG=localStorage.getItem("lang")||detectLang()
-
-function T(){return TEXTS[LANG]||TEXTS.en}
-
-// TIME
-let use24h=true
-function toggleTimeFormat(){use24h=!use24h;updateCalendar()}
-
-// TABLE
 function buildTable(){
 let b=document.getElementById("tableBody")
 for(let r=0;r<b.rows.length;r++){
@@ -155,48 +145,67 @@ td.className="timeCell"
 b.rows[r].appendChild(td)
 }}}
 
-// UPDATE
+function filterEvents(type){
+currentFilter=type
+
+document.querySelectorAll("#eventFilters button").forEach(btn=>{
+btn.classList.remove("active")
+})
+
+document.getElementById("btn"+type.charAt(0).toUpperCase()+type.slice(1)).classList.add("active")
+
+document.querySelectorAll(".timeCell").forEach(cell=>{
+if(type==="all"){cell.style.opacity=1;return}
+cell.style.opacity=cell.innerText.includes(type)?1:0.2
+})
+}
+
 function updateCalendar(){
 
 let now=new Date()
 let currentDay=now.getDay()
+let currentHour=now.getHours()
 
 let cells=document.querySelectorAll(".timeCell")
 let index=0
 let alert=false
 
-for(let r=0;r<apocTimes.length;r++){
+for(let r=0;r<6;r++){
 for(let c=0;c<7;c++){
+
+let hour=[0,4,8,12,16,20][r]
 
 let icon="white"
 if(c===0)icon="red"
 else if(c===1)icon="gold"
-else if(c===3&&apocTimes[r]>=16)icon="red"
+else if(c===3&&hour>=16)icon="red"
 else if(c===4)icon="red"
 else if(c===5)icon="gold"
-else if(c===6&&apocTimes[r]>=16)icon="red"
+else if(c===6&&hour>=16)icon="red"
 
-let time=apocTimes[r]+":00"
+let event=events[c][r]
 
-cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon">${time} <span class="event">${events[c][r]}</span>`
+cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon"><div>${hour}:00</div><div class="event">${event}</div>`
 
-// COLUMN HIGHLIGHT
+// current column
 if(c===currentDay)cells[index].classList.add("currentColumn")
 
-// RED ALERT
+// red highlight
 if(icon==="red"){
 cells[index].classList.add("redEvent")
-if(c===currentDay)alert=true
+
+if(c===currentDay && Math.abs(hour-currentHour)<4){
+alert=true
+cells[index].classList.add("activeEvent")
+}
 }
 
 index++
 }}
 
-document.getElementById("alertBar").innerText = alert ? ALERTS[LANG] : ""
-
+document.getElementById("alertBar").innerText = alert ? "⚠ Do not claim radar missions" : ""
 }
 
-// INIT
 buildTable()
 updateCalendar()
 
