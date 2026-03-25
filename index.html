@@ -2,58 +2,46 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Time Engine Pro</title>
-<style>
-body{background:#0b0b0b;color:white;font-family:Arial;padding:20px}
-.box{margin-bottom:10px}
-</style>
-</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="stylesheet" href="styles.css">
+
+</head>
 <body>
 
-<h2>Time Engine Pro</h2>
+<div id="topBar">
+  <div>
+    <div id="currentEventBar"></div>
+    <div id="timeInfo"></div>
+    <div id="alertBar"></div>
+  </div>
 
-<div class="box" id="local"></div>
-<div class="box" id="apoc"></div>
-<div class="box" id="current"></div>
-<div class="box" id="next"></div>
-<div class="box" id="countdown"></div>
+  <div class="controls">
+    <button onclick="toggleTimeFormat()" id="timeBtn">24H</button>
 
-<script src="timecalc.js"></script>
+    <div id="langWrapper">
+      <button id="langBtn">🌐</button>
+      <div id="langMenu"></div>
+    </div>
+  </div>
+</div>
 
-<script>
+<div id="progressContainer"><div id="progressBar"></div></div>
 
-const events=["Vehicle","Shelter","Army","Science","Hero","Army"]
+<div id="eventFilters"></div>
 
-function update(){
+<table id="apocTable">
+<thead>
+<tr id="tableHeader"></tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
 
-  const now = new Date()
-  const apoc = getApocNow()
-  const slot = getCurrentSlot()
-  const next = getNextSlot()
-  const cd = getCountdown()
-
-  document.getElementById("local").innerText =
-    "Local: " + formatTime(now)
-
-  document.getElementById("apoc").innerText =
-    "Apocalypse: " + formatTime(apoc)
-
-  document.getElementById("current").innerText =
-    "Current Slot: Day " + slot.day + " | " + slot.start + ":00"
-
-  document.getElementById("next").innerText =
-    "Next Slot: Day " + next.day + " | " + APOC_TIMES[next.index] + ":00"
-
-  document.getElementById("countdown").innerText =
-    "Next in: " + cd.h + "h " + cd.m + "m " + cd.s + "s"
-
-}
-
-setInterval(update,1000)
-update()
-
-</script>
+<!-- ORDER MATTERS -->
+<script src="calctime.js"></script>
+<script src="events.js"></script>
+<script src="translate.js"></script>
+<script src="ui.js"></script>
 
 </body>
 </html>
