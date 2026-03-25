@@ -1,58 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ZCalendar</title>
-</head>
+import './styles.css'
 
-<body>
+import { loadLang, buildLangSelect, LANG } from './translate.js'
+import { buildTable, updateCalendar, toggleTimeFormat } from './ui.js'
+import { renderMobile } from './mobile.js'
 
-  <div id="app">
+// =============================
+// INIT
+// =============================
+async function init() {
+  // Load language
+  await loadLang(LANG)
 
-    <div id="topBar">
-      <div id="currentEventBar">Loading...</div>
+  // Build UI
+  buildLangSelect()
+  buildTable()
 
-      <div class="controls">
-        <button id="timeBtn">24H</button>
+  // Initial render
+  await updateCalendar()
+  renderMobile()
 
-        <select id="langSelect"></select>
-      </div>
-    </div>
+  // =============================
+  // TIME FORMAT TOGGLE
+  // =============================
+  document.getElementById("timeBtn").onclick = () => {
+    toggleTimeFormat()
+    updateCalendar()
+    renderMobile()
+  }
 
-    <div id="alertBar"></div>
-    <div id="timeInfo"></div>
+  // =============================
+  // AUTO UPDATE LOOP (REAL-TIME)
+  // =============================
+  setInterval(() => {
+    updateCalendar()
+    renderMobile()
+  }, 1000)
+}
 
-    <div id="eventFilters">
-      <button data-filter="all">All</button>
-      <button data-filter="army">Army</button>
-      <button data-filter="hero">Hero</button>
-      <button data-filter="shelter">Shelter</button>
-      <button data-filter="vehicle">Vehicle</button>
-      <button data-filter="science">Science</button>
-    </div>
-
-    <table id="apocTable">
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Sun</th>
-          <th>Mon</th>
-          <th>Tue</th>
-          <th>Wed</th>
-          <th>Thu</th>
-          <th>Fri</th>
-          <th>Sat</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-
-    <div id="mobileDay"></div>
-
-  </div>
-
-  <script type="module" src="/src/main.js"></script>
-
-</body>
-</html>
+// =============================
+// START APP
+// =============================
+init()
