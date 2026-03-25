@@ -1,0 +1,20 @@
+
+body{background:#0b0b0b;color:#fff;font-family:Arial,Helvetica,sans-serif;margin:0}
+#topBar{display:flex;justify-content:space-between;gap:12px;padding:10px;border-bottom:1px solid #222}
+.controls{display:flex;gap:8px;align-items:center}
+button,select{background:#111;color:#fff;border:1px solid #333;border-radius:6px;padding:6px 8px}
+#eventFilters{display:flex;gap:6px;padding:8px}
+#eventFilters button.active{outline:2px solid #00ffcc}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #222;padding:6px;text-align:center}
+.timeCell{min-width:110px}
+.currentColumn{background:#0e1a1a}
+.activeEvent{box-shadow:0 0 10px #00ffcc inset}
+.redEvent{color:#ff3b3b;font-weight:bold}
+
+@media (max-width:768px){
+  #apocTable{display:none}
+  #mobileDay{display:block;padding:10px}
+  .mobileCell{background:#111;border:1px solid #333;padding:12px;margin-bottom:10px;border-radius:10px;text-align:center}
+  .mobileCell.active{box-shadow:0 0 12px #00ffcc;transform:scale(1.02)}
+}

@@ -1,0 +1,1 @@
+export default {"time": "时间", "current": "当前事件", "alert": "不要领取雷达任务", "all": "全部", "army": "军队", "hero": "英雄", "shelter": "避难所", "vehicle": "车辆", "science": "科学", "days": ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"], "events": {"Mod Vehicle Boost": "车辆强化", "Shelter Upgrade": "避难所升级", "Army Expansion": "军队扩张", "Age of Science": "科学时代", "Hero Initiative": "英雄计划"}}
