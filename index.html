@@ -7,8 +7,7 @@
 <style>
 body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 #topBar{display:flex;justify-content:space-between;padding:10px;background:#111}
-#progressContainer{height:4px;background:#222}
-#progressBar{height:100%;background:#00ffcc;width:0%}
+#progressBar{height:4px;background:#00ffcc;width:0%}
 
 #langWrapper{position:relative}
 #langBtn{background:#222;color:white;border:none;padding:6px;border-radius:6px;cursor:pointer}
@@ -18,8 +17,7 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 .selectedLang{background:#333}
 
 #eventFilters{text-align:center;padding:10px}
-#eventFilters button{margin:4px;padding:6px;background:#222;border:none;color:white;border-radius:4px;cursor:pointer}
-#eventFilters button:hover{background:#c21414}
+#eventFilters button{margin:4px;padding:6px;background:#222;border:none;color:white;border-radius:4px}
 
 #apocTable{width:100%;border-collapse:collapse;text-align:center}
 #apocTable th,#apocTable td{border:1px solid #2a2a2a;padding:6px}
@@ -44,7 +42,7 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 </div>
 </div>
 
-<div id="progressContainer"><div id="progressBar"></div></div>
+<div id="progressBar"></div>
 
 <div id="eventFilters">
 <button onclick="filterEvents('all')" id="btnAll"></button>
@@ -80,7 +78,7 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 
 <script>
 
-// ---------- CONFIG ----------
+// CONFIG
 const apocalypseOffsetMinutes=-120
 const apocTimes=[0,4,8,12,16,20]
 
@@ -90,7 +88,7 @@ red:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/red.png",
 gold:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/gold.png"
 }
 
-// ---------- EVENTS ----------
+// EVENTS
 const events=[
 ["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
 ["Shelter Upgrade","Age of Science","Mod Vehicle Boost","Hero Initiative","Army Expansion","Mod Vehicle Boost"],
@@ -101,36 +99,82 @@ const events=[
 ["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]
 ]
 
-// ---------- LANGUAGE ----------
+// LANGUAGES + FLAGS
+const LANG_LIST={
+en:"🇺🇸 EN",
+pt:"🇧🇷 PT",
+es:"🇪🇸 ES",
+it:"🇮🇹 IT",
+ru:"🇷🇺 RU",
+ko:"🇰🇷 KO",
+ja:"🇯🇵 JA"
+}
+
 const TEXTS={
 en:{time:"Time",current:"Current Event",all:"All",army:"Army",hero:"Hero",shelter:"Shelter",vehicle:"Vehicle",science:"Science"},
 pt:{time:"Tempo",current:"Evento Atual",all:"Todos",army:"Exército",hero:"Herói",shelter:"Abrigo",vehicle:"Veículos",science:"Ciência"},
-es:{time:"Hora",current:"Evento Actual",all:"Todos",army:"Ejército",hero:"Héroe",shelter:"Refugio",vehicle:"Vehículos",science:"Ciencia"}
+es:{time:"Hora",current:"Evento Actual",all:"Todos",army:"Ejército",hero:"Héroe",shelter:"Refugio",vehicle:"Vehículos",science:"Ciencia"},
+it:{time:"Tempo",current:"Evento Attuale",all:"Tutti",army:"Esercito",hero:"Eroe",shelter:"Rifugio",vehicle:"Veicoli",science:"Scienza"},
+ru:{time:"Время",current:"Текущее событие",all:"Все",army:"Армия",hero:"Герой",shelter:"Убежище",vehicle:"Техника",science:"Наука"},
+ko:{time:"시간",current:"현재 이벤트",all:"전체",army:"군대",hero:"영웅",shelter:"쉘터",vehicle:"차량",science:"과학"},
+ja:{time:"時間",current:"現在のイベント",all:"すべて",army:"軍隊",hero:"ヒーロー",shelter:"シェルター",vehicle:"車両",science:"科学"}
 }
 
+// EVENT TRANSLATION
+const EVENT_TRANSLATIONS={
+pt:{"Mod Vehicle Boost":"Veículos","Shelter Upgrade":"Abrigo","Army Expansion":"Exército","Age of Science":"Ciência","Hero Initiative":"Heróis"},
+es:{"Mod Vehicle Boost":"Vehículos","Shelter Upgrade":"Refugio","Army Expansion":"Ejército","Age of Science":"Ciencia","Hero Initiative":"Héroes"},
+it:{"Mod Vehicle Boost":"Veicoli","Shelter Upgrade":"Rifugio","Army Expansion":"Esercito","Age of Science":"Scienza","Hero Initiative":"Eroi"},
+ru:{"Mod Vehicle Boost":"Техника","Shelter Upgrade":"Убежище","Army Expansion":"Армия","Age of Science":"Наука","Hero Initiative":"Герои"},
+ko:{"Mod Vehicle Boost":"차량","Shelter Upgrade":"쉘터","Army Expansion":"군대","Age of Science":"과학","Hero Initiative":"영웅"},
+ja:{"Mod Vehicle Boost":"車両","Shelter Upgrade":"シェルター","Army Expansion":"軍隊","Age of Science":"科学","Hero Initiative":"ヒーロー"}
+}
+
+// DETECT
 function detectLang(){
 let l=navigator.language.toLowerCase()
-if(l.startsWith("pt"))return"pt"
-if(l.startsWith("es"))return"es"
-return"en"
+for(let k in LANG_LIST){if(l.startsWith(k))return k}
+return "en"
 }
 
 let LANG=localStorage.getItem("lang")||detectLang()
 
 function T(){return TEXTS[LANG]||TEXTS.en}
 
-function setLanguage(l){
-LANG=l
-localStorage.setItem("lang",l)
-applyUI()
-updateCalendar()
-buildLangMenu()
+function translateEvent(e){
+return (EVENT_TRANSLATIONS[LANG]||{})[e]||e
 }
 
-// ---------- UI APPLY ----------
+// LANG MENU
+function buildLangMenu(){
+let menu=document.getElementById("langMenu")
+menu.innerHTML=""
+for(let k in LANG_LIST){
+let d=document.createElement("div")
+d.innerText=LANG_LIST[k]
+if(k===LANG)d.classList.add("selectedLang")
+d.onclick=()=>{LANG=k;localStorage.setItem("lang",k);applyUI();updateCalendar();buildLangMenu()}
+menu.appendChild(d)
+}
+}
+
+function toggleLangMenu(){
+let m=document.getElementById("langMenu")
+m.style.display=m.style.display==="block"?"none":"block"
+}
+
+// TIME
+let use24h=JSON.parse(localStorage.getItem("use24h")||true)
+function toggleTimeFormat(){
+use24h=!use24h
+localStorage.setItem("use24h",use24h)
+applyUI()
+updateCalendar()
+}
+
+// UI
 function applyUI(){
 let t=T()
-
 document.getElementById("timeHeader").innerText=t.time
 document.getElementById("btnAll").innerText=t.all
 document.getElementById("btnArmy").innerText=t.army
@@ -141,35 +185,7 @@ document.getElementById("btnScience").innerText=t.science
 document.getElementById("timeFormatBtn").innerText=use24h?"24H":"AM/PM"
 }
 
-// ---------- LANGUAGE MENU ----------
-function buildLangMenu(){
-let menu=document.getElementById("langMenu")
-menu.innerHTML=""
-for(let k of ["en","pt","es"]){
-let d=document.createElement("div")
-d.innerText=k.toUpperCase()
-if(k===LANG)d.classList.add("selectedLang")
-d.onclick=()=>setLanguage(k)
-menu.appendChild(d)
-}
-}
-
-function toggleLangMenu(){
-let m=document.getElementById("langMenu")
-m.style.display=m.style.display==="block"?"none":"block"
-}
-
-// ---------- TIME ----------
-let use24h=JSON.parse(localStorage.getItem("use24h")||true)
-
-function toggleTimeFormat(){
-use24h=!use24h
-localStorage.setItem("use24h",use24h)
-applyUI()
-updateCalendar()
-}
-
-// ---------- TABLE ----------
+// TABLE
 function buildTable(){
 let b=document.getElementById("tableBody")
 for(let r=0;r<b.rows.length;r++){
@@ -179,7 +195,7 @@ td.className="timeCell"
 b.rows[r].appendChild(td)
 }}}
 
-// ---------- UPDATE ----------
+// UPDATE
 function updateCalendar(){
 
 let now=new Date()
@@ -203,7 +219,7 @@ base.setDate(base.getDate()+(c-base.getDay()))
 base.setHours(apocTimes[r])
 base.setMinutes(base.getMinutes()+diff)
 
-let event=events[c][r]
+let event=translateEvent(events[c][r])
 
 let icon="white"
 if(c===0)icon="red"
@@ -230,14 +246,7 @@ index++
 }}
 }
 
-// ---------- FILTER ----------
-function filterEvents(type){
-document.querySelectorAll(".timeCell").forEach(cell=>{
-cell.style.opacity=(type==="all"||cell.innerText.includes(type))?"1":"0.2"
-})
-}
-
-// ---------- INIT ----------
+// INIT
 buildTable()
 buildLangMenu()
 applyUI()
