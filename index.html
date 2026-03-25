@@ -2,291 +2,56 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>Time Engine Pro</title>
 <style>
-body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
-
-/* TOP */
-#topBar{display:flex;justify-content:space-between;padding:10px;background:#111;flex-wrap:wrap}
-
-/* ALERT */
-#alertBar{
-color:#ff3b3b;
-font-weight:bold;
-animation:pulse 1.5s infinite;
-}
-@keyframes pulse{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
-
-/* LANG */
-#langWrapper{position:relative}
-#langBtn{
-background:#222;color:white;border:none;padding:6px 10px;border-radius:6px;cursor:pointer
-}
-#langMenu{
-display:none;position:absolute;background:#111;border:1px solid #333;border-radius:8px;min-width:160px
-}
-#langMenu div{
-padding:8px;cursor:pointer;display:flex;gap:6px;align-items:center
-}
-#langMenu div:hover{background:#c21414}
-.selectedLang{background:#333}
-
-/* FILTER */
-#eventFilters{display:flex;justify-content:center;flex-wrap:wrap;padding:10px;gap:6px}
-#eventFilters button{padding:6px 10px;background:#222;border:none;color:white;border-radius:4px;cursor:pointer}
-#eventFilters button.active{background:#c21414}
-
-/* TABLE */
-#apocTable{width:100%;border-collapse:collapse;text-align:center}
-#apocTable th,#apocTable td{border:1px solid #2a2a2a;padding:6px}
-
-.currentColumn{background:#7a0f0f}
-
-.cellIcon{width:18px;margin-bottom:4px}
-
-.redEvent{
-color:#ff3b3b;
-font-weight:bold;
-text-shadow:0 0 8px #ff0000;
-}
-
-.activeEvent{
-box-shadow:0 0 12px #00ffcc;
-}
+body{background:#0b0b0b;color:white;font-family:Arial;padding:20px}
+.box{margin-bottom:10px}
 </style>
 </head>
 
 <body>
 
-<div id="topBar">
-<div>
-<div id="currentEventBar"></div>
-<div id="alertBar"></div>
-</div>
+<h2>Time Engine Pro</h2>
 
-<div style="display:flex;gap:6px;align-items:center">
+<div class="box" id="local"></div>
+<div class="box" id="apoc"></div>
+<div class="box" id="current"></div>
+<div class="box" id="next"></div>
+<div class="box" id="countdown"></div>
 
-<button onclick="toggleTimeFormat()" id="timeBtn">24H</button>
-
-<div id="langWrapper">
-<button id="langBtn">🌐</button>
-<div id="langMenu"></div>
-</div>
-
-</div>
-</div>
-
-<div id="eventFilters">
-<button onclick="filterEvents('all')" id="btnAll"></button>
-<button onclick="filterEvents('Army')" id="btnArmy"></button>
-<button onclick="filterEvents('Hero')" id="btnHero"></button>
-<button onclick="filterEvents('Shelter')" id="btnShelter"></button>
-<button onclick="filterEvents('Vehicle')" id="btnVehicle"></button>
-<button onclick="filterEvents('Science')" id="btnScience"></button>
-</div>
-
-<table id="apocTable">
-<thead>
-<tr>
-<th id="timeHeader"></th>
-<th data-day="0"></th>
-<th data-day="1"></th>
-<th data-day="2"></th>
-<th data-day="3"></th>
-<th data-day="4"></th>
-<th data-day="5"></th>
-<th data-day="6"></th>
-</tr>
-</thead>
-<tbody id="tableBody">
-<tr><td>00:00</td></tr>
-<tr><td>04:00</td></tr>
-<tr><td>08:00</td></tr>
-<tr><td>12:00</td></tr>
-<tr><td>16:00</td></tr>
-<tr><td>20:00</td></tr>
-</tbody>
-</table>
+<script src="timecalc.js"></script>
 
 <script>
 
-// ---------- CONFIG ----------
-const apocTimes=[0,4,8,12,16,20]
+const events=["Vehicle","Shelter","Army","Science","Hero","Army"]
 
-const ICONS={
-white:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/white.png",
-red:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/red.png",
-gold:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/gold.png"
-}
+function update(){
 
-// ---------- EVENTS ----------
-const events=[["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
-["Shelter Upgrade","Age of Science","Mod Vehicle Boost","Hero Initiative","Army Expansion","Mod Vehicle Boost"],
-["Age of Science","Hero Initiative","Shelter Upgrade","Army Expansion","Mod Vehicle Boost","Shelter Upgrade"],
-["Hero Initiative","Army Expansion","Age of Science","Mod Vehicle Boost","Shelter Upgrade","Age of Science"],
-["Army Expansion","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Age of Science","Hero Initiative"],
-["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
-["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]]
+  const now = new Date()
+  const apoc = getApocNow()
+  const slot = getCurrentSlot()
+  const next = getNextSlot()
+  const cd = getCountdown()
 
-// ---------- LANGUAGE ----------
-const LANG_META={
-en:{flag:"🇺🇸",name:"English"},
-pt:{flag:"🇧🇷",name:"Português"},
-es:{flag:"🇪🇸",name:"Español"},
-it:{flag:"🇮🇹",name:"Italiano"},
-ru:{flag:"🇷🇺",name:"Русский"},
-ko:{flag:"🇰🇷",name:"한국어"},
-ja:{flag:"🇯🇵",name:"日本語"},
-hi:{flag:"🇮🇳",name:"हिन्दी"}
-}
+  document.getElementById("local").innerText =
+    "Local: " + formatTime(now)
 
-let LANG = localStorage.getItem("lang") || detectLang()
-let T = null
+  document.getElementById("apoc").innerText =
+    "Apocalypse: " + formatTime(apoc)
 
-function detectLang(){
-let l=navigator.language.toLowerCase()
-if(l.includes("-")) l=l.split("-")[0]
-return LANG_META[l]?l:"en"
-}
+  document.getElementById("current").innerText =
+    "Current Slot: Day " + slot.day + " | " + slot.start + ":00"
 
-// ---------- LOAD TRANSLATION ----------
-async function loadLanguage(lang){
-return new Promise((resolve)=>{
-const script=document.createElement("script")
-script.src=`translations/${lang}.js`
-script.onload=()=>{
-T = window[`TRANSLATIONS_${lang.toUpperCase()}`]
-resolve()
-}
-document.body.appendChild(script)
-})
-}
+  document.getElementById("next").innerText =
+    "Next Slot: Day " + next.day + " | " + APOC_TIMES[next.index] + ":00"
 
-// ---------- LANG MENU ----------
-function buildLangMenu(){
-let menu=document.getElementById("langMenu")
-menu.innerHTML=""
-
-for(let k in LANG_META){
-let d=document.createElement("div")
-d.innerHTML=`${LANG_META[k].flag} ${LANG_META[k].name}`
-if(k===LANG)d.classList.add("selectedLang")
-
-d.onclick=async()=>{
-LANG=k
-localStorage.setItem("lang",k)
-await loadLanguage(k)
-applyUI()
-updateCalendar()
-buildLangMenu()
-}
-
-menu.appendChild(d)
-}
-}
-
-document.getElementById("langBtn").onclick=()=>{
-let m=document.getElementById("langMenu")
-m.style.display=m.style.display==="block"?"none":"block"
-}
-
-// ---------- TIME ----------
-let use24h=true
-function toggleTimeFormat(){
-use24h=!use24h
-document.getElementById("timeBtn").innerText=use24h?"24H":"AM/PM"
-updateCalendar()
-}
-
-// ---------- UI ----------
-function applyUI(){
-document.getElementById("timeHeader").innerText=T.time
-document.getElementById("btnAll").innerText=T.all
-document.getElementById("btnArmy").innerText=T.army
-document.getElementById("btnHero").innerText=T.hero
-document.getElementById("btnShelter").innerText=T.shelter
-document.getElementById("btnVehicle").innerText=T.vehicle
-document.getElementById("btnScience").innerText=T.science
-}
-
-// ---------- TABLE ----------
-function buildTable(){
-let b=document.getElementById("tableBody")
-for(let r=0;r<b.rows.length;r++){
-for(let c=0;c<7;c++){
-let td=document.createElement("td")
-td.className="timeCell"
-b.rows[r].appendChild(td)
-}}}
-
-// ---------- UPDATE ----------
-function updateCalendar(){
-
-let now=new Date()
-let currentDay=now.getDay()
-let currentHour=now.getHours()
-
-let cells=document.querySelectorAll(".timeCell")
-let index=0
-let alert=false
-
-for(let r=0;r<6;r++){
-for(let c=0;c<7;c++){
-
-let hour=apocTimes[r]
-
-let icon="white"
-if(c===0)icon="red"
-else if(c===1)icon="gold"
-else if(c===3&&hour>=16)icon="red"
-else if(c===4)icon="red"
-else if(c===5)icon="gold"
-else if(c===6&&hour>=16)icon="red"
-
-let base=new Date()
-base.setHours(hour,0,0,0)
-
-let time=base.toLocaleTimeString([],{
-hour:'2-digit',
-minute:'2-digit',
-hour12:!use24h
-})
-
-let rawEvent=events[c][r]
-let event=(T.events && T.events[rawEvent])||rawEvent
-
-cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon">${time} <div class="event">${event}</div>`
-
-if(c===currentDay)cells[index].classList.add("currentColumn")
-
-if(icon==="red"){
-cells[index].classList.add("redEvent")
-if(c===currentDay && Math.abs(hour-currentHour)<4){
-alert=true
-cells[index].classList.add("activeEvent")
-}
-}
-
-index++
-}}
-
-document.getElementById("alertBar").innerText = alert ? T.alert : ""
-document.getElementById("currentEventBar").innerText = T.current
+  document.getElementById("countdown").innerText =
+    "Next in: " + cd.h + "h " + cd.m + "m " + cd.s + "s"
 
 }
 
-// ---------- INIT ----------
-async function init(){
-buildTable()
-await loadLanguage(LANG)
-buildLangMenu()
-applyUI()
-toggleTimeFormat()
-updateCalendar()
-}
-
-init()
+setInterval(update,1000)
+update()
 
 </script>
 
