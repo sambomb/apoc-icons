@@ -6,9 +6,22 @@
 
 <style>
 body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
-#topBar{display:flex;justify-content:space-between;padding:10px;background:#111}
+
+#topBar{display:flex;justify-content:space-between;padding:10px;background:#111;flex-wrap:wrap}
+#alertBar{color:#ff4444;font-weight:bold;margin-top:5px}
+
 #progressBar{height:4px;background:#00ffcc;width:0%}
 
+.currentColumn{background:#7a0f0f}
+
+/* RED RADAR HIGHLIGHT */
+.redEvent{
+color:#ff3b3b;
+font-weight:bold;
+text-shadow:0 0 6px #ff0000;
+}
+
+/* LANG */
 #langWrapper{position:relative}
 #langBtn{background:#222;color:white;border:none;padding:6px;border-radius:6px;cursor:pointer}
 #langMenu{display:none;position:absolute;background:#111;border:1px solid #333;border-radius:8px}
@@ -23,6 +36,7 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 #apocTable th,#apocTable td{border:1px solid #2a2a2a;padding:6px}
 .cellIcon{width:18px;display:block;margin:0 auto 4px}
 .event{font-size:12px}
+
 .activeEvent{box-shadow:0 0 10px #00ffcc}
 </style>
 </head>
@@ -30,7 +44,10 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 <body>
 
 <div id="topBar">
+<div>
 <div id="currentEventBar"></div>
+<div id="alertBar"></div>
+</div>
 
 <div>
 <button onclick="toggleTimeFormat()" id="timeFormatBtn"></button>
@@ -78,7 +95,7 @@ body{margin:0;font-family:Arial;background:#0b0b0b;color:white}
 
 <script>
 
-// ---------- CONFIG ----------
+// CONFIG
 const apocalypseOffsetMinutes=-120
 const apocTimes=[0,4,8,12,16,20]
 
@@ -88,106 +105,47 @@ red:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/red.png",
 gold:"https://cdn.jsdelivr.net/gh/sambomb/zcalendar@main/gold.png"
 }
 
-// ---------- EVENTS ----------
-const events=[
-["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
+// EVENTS
+const events=[["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
 ["Shelter Upgrade","Age of Science","Mod Vehicle Boost","Hero Initiative","Army Expansion","Mod Vehicle Boost"],
 ["Age of Science","Hero Initiative","Shelter Upgrade","Army Expansion","Mod Vehicle Boost","Shelter Upgrade"],
 ["Hero Initiative","Army Expansion","Age of Science","Mod Vehicle Boost","Shelter Upgrade","Age of Science"],
 ["Army Expansion","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Age of Science","Hero Initiative"],
 ["Mod Vehicle Boost","Shelter Upgrade","Army Expansion","Age of Science","Hero Initiative","Army Expansion"],
-["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]
-]
+["Age of Science","Mod Vehicle Boost","Hero Initiative","Shelter Upgrade","Army Expansion","Hero Initiative"]]
 
-// ---------- LANGUAGE SYSTEM ----------
-const LANG_LIST={
-en:"🇺🇸 English",
-pt:"🇧🇷 Português",
-es:"🇪🇸 Español",
-it:"🇮🇹 Italiano",
-ru:"🇷🇺 Русский",
-ko:"🇰🇷 한국어",
-ja:"🇯🇵 日本語",
-hi:"🇮🇳 हिन्दी"
+// LANG + ALERT
+const ALERTS={
+en:"Do not claim radar missions",
+pt:"Não resgatar missões de radar",
+es:"No reclamar misiones de radar",
+it:"Non riscattare missioni radar",
+ru:"Не забирать радарные миссии",
+ko:"레이더 임무를 수집하지 마세요",
+ja:"レーダーミッションを受け取らないでください",
+hi:"रडार मिशन प्राप्त न करें"
 }
 
 const TEXTS={
-en:{time:"Time",current:"Current Event",all:"All",army:"Army",hero:"Hero",shelter:"Shelter",vehicle:"Vehicle",science:"Science"},
-pt:{time:"Tempo",current:"Evento Atual",all:"Todos",army:"Exército",hero:"Herói",shelter:"Abrigo",vehicle:"Veículos",science:"Ciência"},
-es:{time:"Hora",current:"Evento Actual",all:"Todos",army:"Ejército",hero:"Héroe",shelter:"Refugio",vehicle:"Vehículos",science:"Ciencia"},
-it:{time:"Tempo",current:"Evento Attuale",all:"Tutti",army:"Esercito",hero:"Eroe",shelter:"Rifugio",vehicle:"Veicoli",science:"Scienza"},
-ru:{time:"Время",current:"Текущее событие",all:"Все",army:"Армия",hero:"Герой",shelter:"Убежище",vehicle:"Техника",science:"Наука"},
-ko:{time:"시간",current:"현재 이벤트",all:"전체",army:"군대",hero:"영웅",shelter:"쉘터",vehicle:"차량",science:"과학"},
-ja:{time:"時間",current:"現在のイベント",all:"すべて",army:"軍隊",hero:"ヒーロー",shelter:"シェルター",vehicle:"車両",science:"科学"},
-hi:{time:"समय",current:"वर्तमान इवेंट",all:"सभी",army:"सेना",hero:"हीरो",shelter:"शेल्टर",vehicle:"वाहन",science:"विज्ञान"}
+en:{time:"Time",current:"Current Event"},
+pt:{time:"Tempo",current:"Evento Atual"}
 }
 
-const EVENT_TRANSLATIONS={
-pt:{"Mod Vehicle Boost":"Melhoria de Veículos","Shelter Upgrade":"Melhoria do Abrigo","Army Expansion":"Expansão do Exército","Age of Science":"Era da Ciência","Hero Initiative":"Iniciativa dos Heróis"},
-es:{"Mod Vehicle Boost":"Mejora de Vehículos","Shelter Upgrade":"Mejora del Refugio","Army Expansion":"Expansión del Ejército","Age of Science":"Era de la Ciencia","Hero Initiative":"Iniciativa de Héroes"},
-it:{"Mod Vehicle Boost":"Potenziamento Veicoli","Shelter Upgrade":"Miglioramento del Rifugio","Army Expansion":"Espansione dell’Esercito","Age of Science":"Era della Scienza","Hero Initiative":"Iniziativa degli Eroi"},
-ru:{"Mod Vehicle Boost":"Улучшение техники","Shelter Upgrade":"Улучшение убежища","Army Expansion":"Расширение армии","Age of Science":"Эра науки","Hero Initiative":"Инициатива героев"},
-ko:{"Mod Vehicle Boost":"차량 강화","Shelter Upgrade":"쉘터 업그레이드","Army Expansion":"군대 확장","Age of Science":"과학의 시대","Hero Initiative":"영웅 계획"},
-ja:{"Mod Vehicle Boost":"車両強化","Shelter Upgrade":"シェルター強化","Army Expansion":"軍拡","Age of Science":"科学の時代","Hero Initiative":"ヒーロー計画"},
-hi:{"Mod Vehicle Boost":"वाहन सुधार","Shelter Upgrade":"शेल्टर उन्नयन","Army Expansion":"सेना विस्तार","Age of Science":"विज्ञान का युग","Hero Initiative":"हीरो पहल"}
-}
-
-// Detect full locale
 function detectLang(){
-let lang = navigator.language.toLowerCase()
-if(lang.includes("-")) lang = lang.split("-")[0]
-return LANG_LIST[lang] ? lang : "en"
+let l=navigator.language.toLowerCase()
+if(l.startsWith("pt"))return"pt"
+return"en"
 }
 
-let LANG = localStorage.getItem("lang") || detectLang()
+let LANG=localStorage.getItem("lang")||detectLang()
 
 function T(){return TEXTS[LANG]||TEXTS.en}
 
-function translateEvent(e){
-return (EVENT_TRANSLATIONS[LANG]||{})[e]||e
-}
+// TIME
+let use24h=true
+function toggleTimeFormat(){use24h=!use24h;updateCalendar()}
 
-// ---------- UI ----------
-function applyUI(){
-let t=T()
-document.getElementById("timeHeader").innerText=t.time
-document.getElementById("btnAll").innerText=t.all
-document.getElementById("btnArmy").innerText=t.army
-document.getElementById("btnHero").innerText=t.hero
-document.getElementById("btnShelter").innerText=t.shelter
-document.getElementById("btnVehicle").innerText=t.vehicle
-document.getElementById("btnScience").innerText=t.science
-document.getElementById("timeFormatBtn").innerText=use24h?"24H":"AM/PM"
-}
-
-function buildLangMenu(){
-let menu=document.getElementById("langMenu")
-menu.innerHTML=""
-for(let k in LANG_LIST){
-let d=document.createElement("div")
-d.innerText=LANG_LIST[k]
-if(k===LANG)d.classList.add("selectedLang")
-d.onclick=()=>{LANG=k;localStorage.setItem("lang",k);applyUI();updateCalendar();buildLangMenu()}
-menu.appendChild(d)
-}
-}
-
-function toggleLangMenu(){
-let m=document.getElementById("langMenu")
-m.style.display=m.style.display==="block"?"none":"block"
-}
-
-// ---------- TIME ----------
-let use24h = JSON.parse(localStorage.getItem("use24h") || true)
-
-function toggleTimeFormat(){
-use24h=!use24h
-localStorage.setItem("use24h",use24h)
-applyUI()
-updateCalendar()
-}
-
-// ---------- TABLE ----------
+// TABLE
 function buildTable(){
 let b=document.getElementById("tableBody")
 for(let r=0;r<b.rows.length;r++){
@@ -197,31 +155,18 @@ td.className="timeCell"
 b.rows[r].appendChild(td)
 }}}
 
-// ---------- UPDATE ----------
+// UPDATE
 function updateCalendar(){
 
 let now=new Date()
-let diff=-new Date().getTimezoneOffset()-apocalypseOffsetMinutes
-
-document.querySelectorAll("[data-day]").forEach((th,i)=>{
-let d=new Date()
-d.setDate(d.getDate()-d.getDay()+i)
-th.innerText=d.toLocaleDateString(LANG,{weekday:"short"})
-})
+let currentDay=now.getDay()
 
 let cells=document.querySelectorAll(".timeCell")
 let index=0
+let alert=false
 
 for(let r=0;r<apocTimes.length;r++){
 for(let c=0;c<7;c++){
-
-let base=new Date()
-base.setHours(0,0,0,0)
-base.setDate(base.getDate()+(c-base.getDay()))
-base.setHours(apocTimes[r])
-base.setMinutes(base.getMinutes()+diff)
-
-let event=translateEvent(events[c][r])
 
 let icon="white"
 if(c===0)icon="red"
@@ -231,27 +176,28 @@ else if(c===4)icon="red"
 else if(c===5)icon="gold"
 else if(c===6&&apocTimes[r]>=16)icon="red"
 
-let time=base.toLocaleTimeString(LANG,{hour:'2-digit',minute:'2-digit',hour12:!use24h})
+let time=apocTimes[r]+":00"
 
-cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon">${time} <span class="event">${event}</span>`
+cells[index].innerHTML=`<img src="${ICONS[icon]}" class="cellIcon">${time} <span class="event">${events[c][r]}</span>`
 
-let end=new Date(base)
-end.setHours(end.getHours()+4)
+// COLUMN HIGHLIGHT
+if(c===currentDay)cells[index].classList.add("currentColumn")
 
-if(now>=base&&now<end){
-document.getElementById("currentEventBar").innerText=T().current+": "+event
-let pct=((now-base)/(end-base))*100
-document.getElementById("progressBar").style.width=pct+"%"
+// RED ALERT
+if(icon==="red"){
+cells[index].classList.add("redEvent")
+if(c===currentDay)alert=true
 }
 
 index++
 }}
+
+document.getElementById("alertBar").innerText = alert ? ALERTS[LANG] : ""
+
 }
 
-// ---------- INIT ----------
+// INIT
 buildTable()
-buildLangMenu()
-applyUI()
 updateCalendar()
 
 </script>
