@@ -1,7 +1,7 @@
 body {
-  background: #0b0b0b;
-  color: #ffffff;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Orbitron', 'Rajdhani', 'Inter', sans-serif;
   margin: 0;
 }
 
@@ -12,33 +12,31 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 12px;
-  border-bottom: 1px solid #222;
-  background: #0f0f0f;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
 }
 
 .controls {
   display: flex;
   gap: 10px;
-  align-items: center;
 }
 
+/* =========================
+   BUTTONS
+========================= */
 button, select {
-  background: #111;
-  color: #fff;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 8px 10px;
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 button:hover {
-  background: #1a1a1a;
-  transform: scale(1.05);
-}
-
-button:active {
-  transform: scale(0.95);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 /* =========================
@@ -46,16 +44,10 @@ button:active {
 ========================= */
 #alertBar {
   text-align: center;
+  padding: 6px;
+  color: var(--danger);
   font-weight: bold;
-  padding: 8px;
-  color: #ff3b3b;
-  animation: pulseAlert 1.5s infinite;
-}
-
-@keyframes pulseAlert {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  text-shadow: 0 0 6px var(--danger);
 }
 
 /* =========================
@@ -64,25 +56,7 @@ button:active {
 #timeInfo {
   text-align: center;
   padding: 6px;
-  color: #aaa;
-  font-size: 13px;
-}
-
-/* =========================
-   FILTERS
-========================= */
-#eventFilters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 10px;
-  justify-content: center;
-}
-
-#eventFilters button.active {
-  background: #00ffcc;
-  color: #000;
-  font-weight: bold;
+  color: var(--text-dim);
 }
 
 /* =========================
@@ -94,44 +68,46 @@ table {
 }
 
 th {
-  background: #111;
-  font-weight: bold;
+  background: var(--bg-panel);
+  color: var(--primary);
 }
 
 th, td {
-  border: 1px solid #222;
+  border: 1px solid var(--border);
   padding: 8px;
   text-align: center;
-  transition: all 0.2s ease;
 }
 
 .timeCell {
-  min-width: 110px;
+  transition: all 0.2s ease;
 }
 
 /* =========================
-   STATES
+   CURRENT COLUMN
 ========================= */
-
-/* current day column */
 .currentColumn {
-  background: #0e1a1a;
+  background: rgba(0,255,204,0.05);
 }
 
-/* active event */
+/* =========================
+   ACTIVE EVENT
+========================= */
 .activeEvent {
-  box-shadow: 0 0 12px #00ffcc inset;
-  animation: glowActive 2s infinite alternate;
+  box-shadow: 0 0 12px var(--primary) inset;
+  animation: glow 1.5s infinite alternate;
 }
 
-@keyframes glowActive {
-  from { box-shadow: 0 0 6px #00ffcc inset; }
-  to   { box-shadow: 0 0 16px #00ffcc inset; }
+@keyframes glow {
+  from { box-shadow: 0 0 6px var(--primary) inset; }
+  to { box-shadow: 0 0 18px var(--primary) inset; }
 }
 
-/* red danger */
+/* =========================
+   RED ALERT EVENTS
+========================= */
 .redEvent {
-  color: #ff3b3b;
+  color: var(--danger);
+  text-shadow: 0 0 6px var(--danger);
   font-weight: bold;
 }
 
@@ -144,26 +120,16 @@ th, td {
     display: none;
   }
 
-  #mobileDay {
-    padding: 12px;
-  }
-
   .mobileCell {
-    background: #111;
-    border: 1px solid #333;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
     padding: 14px;
-    margin-bottom: 12px;
-    border-radius: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
     text-align: center;
-    transition: all 0.25s ease;
   }
 
   .mobileCell.active {
-    box-shadow: 0 0 15px #00ffcc;
-    transform: scale(1.03);
-  }
-
-  .mobileCell:active {
-    transform: scale(0.98);
+    box-shadow: 0 0 15px var(--primary);
   }
 }
