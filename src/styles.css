@@ -1,135 +1,40 @@
-body {
-  background: var(--bg-main);
-  color: var(--text-main);
-  font-family: 'Orbitron', 'Rajdhani', 'Inter', sans-serif;
-  margin: 0;
+body{
+  background:#0b0f0f;
+  color:#fff;
+  font-family:Arial;
+  margin:0;
 }
 
-/* =========================
-   TOP BAR
-========================= */
-#topBar {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  background: var(--bg-panel);
-  border-bottom: 1px solid var(--border);
+#topBar{
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
 }
 
-.controls {
-  display: flex;
-  gap: 10px;
+#eventFilters{
+  display:flex;
+  gap:6px;
+  padding:10px;
 }
 
-/* =========================
-   BUTTONS
-========================= */
-button, select {
-  background: transparent;
-  color: var(--text-main);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 6px 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+#eventFilters button{
+  background:#111;
+  color:#fff;
+  border:1px solid #333;
+  padding:6px;
 }
 
-button:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+table{
+  width:100%;
+  border-collapse:collapse;
 }
 
-/* =========================
-   ALERT
-========================= */
-#alertBar {
-  text-align: center;
-  padding: 6px;
-  color: var(--danger);
-  font-weight: bold;
-  text-shadow: 0 0 6px var(--danger);
+td,th{
+  border:1px solid #222;
+  padding:8px;
+  text-align:center;
 }
 
-/* =========================
-   TIME INFO
-========================= */
-#timeInfo {
-  text-align: center;
-  padding: 6px;
-  color: var(--text-dim);
-}
-
-/* =========================
-   TABLE
-========================= */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th {
-  background: var(--bg-panel);
-  color: var(--primary);
-}
-
-th, td {
-  border: 1px solid var(--border);
-  padding: 8px;
-  text-align: center;
-}
-
-.timeCell {
-  transition: all 0.2s ease;
-}
-
-/* =========================
-   CURRENT COLUMN
-========================= */
-.currentColumn {
-  background: rgba(0,255,204,0.05);
-}
-
-/* =========================
-   ACTIVE EVENT
-========================= */
-.activeEvent {
-  box-shadow: 0 0 12px var(--primary) inset;
-  animation: glow 1.5s infinite alternate;
-}
-
-@keyframes glow {
-  from { box-shadow: 0 0 6px var(--primary) inset; }
-  to { box-shadow: 0 0 18px var(--primary) inset; }
-}
-
-/* =========================
-   RED ALERT EVENTS
-========================= */
-.redEvent {
-  color: var(--danger);
-  text-shadow: 0 0 6px var(--danger);
-  font-weight: bold;
-}
-
-/* =========================
-   MOBILE
-========================= */
-@media (max-width: 768px) {
-
-  #apocTable {
-    display: none;
-  }
-
-  .mobileCell {
-    background: var(--bg-panel);
-    border: 1px solid var(--border);
-    padding: 14px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    text-align: center;
-  }
-
-  .mobileCell.active {
-    box-shadow: 0 0 15px var(--primary);
-  }
-}
+.cell-time{font-size:12px;color:#aaa}
+.radar-icon{width:16px}
+.day-title{font-size:11px;color:#00ffcc}

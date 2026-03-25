@@ -1,17 +1,21 @@
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZCalendar FINAL</title>
+<title>ZCalendar</title>
+<link rel="stylesheet" href="/src/styles.css">
 </head>
+
 <body>
 
 <div id="topBar">
   <div id="currentEventBar"></div>
-  <button id="timeBtn">24H</button>
-  <select id="langSelect"></select>
+
+  <div class="controls">
+    <button id="timeBtn">24H</button>
+    <select id="langSelect"></select>
+  </div>
 </div>
 
 <div id="alertBar"></div>
@@ -26,11 +30,14 @@
   <button data-filter="science"></button>
 </div>
 
-<table>
-<thead><tr id="tableHead"></tr></thead>
-<tbody id="tableBody"></tbody>
+<table id="apocTable">
+  <thead>
+    <tr id="tableHead"></tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
 </table>
 
 <script type="module" src="/src/index.js"></script>
+
 </body>
 </html>

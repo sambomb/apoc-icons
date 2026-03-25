@@ -1,38 +1,34 @@
 export default {
-  "time": "Hora",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time:"Hora",
+  current:"Evento Atual",
+  alert:"Não resgatar missões de radar",
+
+  filters:{
+    all:"Todos",
+    army:"Exército",
+    hero:"Heróis",
+    shelter:"Abrigo",
+    vehicle:"Veículos",
+    science:"Ciência"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days:["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"],
+
+  dayTitles:{
+    peace:"Tempo de Paz",
+    vehicle:"Melhoria de Veículos",
+    shelter:"Melhoria do Abrigo",
+    science:"Era da Ciência",
+    hero:"Iniciativa de Heróis",
+    growth:"Crescimento Holístico",
+    enemy:"Extermínio de Inimigos"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events:{
+    "Mod Vehicle Boost":"Melhoria de Veículos",
+    "Shelter Upgrade":"Melhoria do Abrigo",
+    "Age of Science":"Era da Ciência",
+    "Hero Initiative":"Iniciativa de Heróis",
+    "Army Expansion":"Expansão do Exército"
   }
 }
