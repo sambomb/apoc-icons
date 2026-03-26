@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "Время",
+  current: "Текущее событие",
+  alert: "Не забирать радарные миссии",
+
+  filters: {
+    all: "Все",
+    army: "Армия",
+    hero: "Герои",
+    shelter: "Убежище",
+    vehicle: "Техника",
+    science: "Наука"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"],
+
+  dayTitles: {
+    peace: "Мирное время",
+    vehicle: "Улучшение техники",
+    shelter: "Развитие убежища",
+    science: "Эра науки",
+    hero: "Инициатива героев",
+    growth: "Комплексный рост",
+    enemy: "Истребление врагов"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "Улучшение техники",
+    "Shelter Upgrade": "Развитие убежища",
+    "Age of Science": "Эра науки",
+    "Hero Initiative": "Инициатива героев",
+    "Army Expansion": "Расширение армии"
   }
 }

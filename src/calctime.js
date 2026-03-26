@@ -16,3 +16,12 @@ export function getApoc(){
 
   return { h, m }
 }
+
+export function formatLocalTime(date, lang){
+
+  return new Intl.DateTimeFormat(lang, {
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit"
+  }).format(date)
+}

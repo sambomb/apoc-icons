@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "الوقت",
+  current: "الحدث الحالي",
+  alert: "لا تقم بجمع مهام الرادار",
+
+  filters: {
+    all: "الكل",
+    army: "الجيش",
+    hero: "الأبطال",
+    shelter: "المأوى",
+    vehicle: "المركبات",
+    science: "العلم"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"],
+
+  dayTitles: {
+    peace: "وقت السلام",
+    vehicle: "تحسين المركبات",
+    shelter: "تطوير المأوى",
+    science: "عصر العلم",
+    hero: "مبادرة الأبطال",
+    growth: "النمو الشامل",
+    enemy: "إبادة الأعداء"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "تحسين المركبات",
+    "Shelter Upgrade": "تطوير المأوى",
+    "Age of Science": "عصر العلم",
+    "Hero Initiative": "مبادرة الأبطال",
+    "Army Expansion": "توسيع الجيش"
   }
 }

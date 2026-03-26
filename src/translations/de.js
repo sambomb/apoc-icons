@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "Zeit",
+  current: "Aktuelles Ereignis",
+  alert: "Radar-Missionen nicht einlösen",
+
+  filters: {
+    all: "Alle",
+    army: "Armee",
+    hero: "Helden",
+    shelter: "Unterkunft",
+    vehicle: "Fahrzeuge",
+    science: "Forschung"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["So","Mo","Di","Mi","Do","Fr","Sa"],
+
+  dayTitles: {
+    peace: "Friedenszeit",
+    vehicle: "Fahrzeugverbesserung",
+    shelter: "Unterkunftsausbau",
+    science: "Zeitalter der Wissenschaft",
+    hero: "Heldeninitiative",
+    growth: "Ganzheitliches Wachstum",
+    enemy: "Feindjäger"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "Fahrzeugverbesserung",
+    "Shelter Upgrade": "Unterkunftsausbau",
+    "Age of Science": "Zeitalter der Wissenschaft",
+    "Hero Initiative": "Heldeninitiative",
+    "Army Expansion": "Armeeerweiterung"
   }
 }

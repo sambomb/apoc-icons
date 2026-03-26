@@ -1,41 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZCalendar</title>
+
 <link rel="stylesheet" href="/src/styles.css">
 </head>
 
 <body>
 
-<div id="topBar">
-  <div id="currentEventBar"></div>
+<div id="app">
 
-  <div class="controls">
-    <button id="timeBtn">24H</button>
-    <select id="langSelect"></select>
+  <div id="topBar">
+    <div id="currentEventBar"></div>
+
+    <div class="controls">
+      <button id="timeBtn">24H</button>
+      <select id="langSelect"></select>
+    </div>
   </div>
+
+  <div id="alertBar"></div>
+
+  <div id="eventFilters">
+    <button data-filter="all"></button>
+    <button data-filter="army"></button>
+    <button data-filter="hero"></button>
+    <button data-filter="shelter"></button>
+    <button data-filter="vehicle"></button>
+    <button data-filter="science"></button>
+  </div>
+
+  <table id="apocTable">
+    <thead>
+      <tr id="tableHead"></tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div id="timeInfo"></div>
+
 </div>
-
-<div id="alertBar"></div>
-<div id="timeInfo"></div>
-
-<div id="eventFilters">
-  <button data-filter="all"></button>
-  <button data-filter="army"></button>
-  <button data-filter="hero"></button>
-  <button data-filter="shelter"></button>
-  <button data-filter="vehicle"></button>
-  <button data-filter="science"></button>
-</div>
-
-<table id="apocTable">
-  <thead>
-    <tr id="tableHead"></tr>
-  </thead>
-  <tbody id="tableBody"></tbody>
-</table>
 
 <script type="module" src="/src/index.js"></script>
 

@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "시간",
+  current: "현재 이벤트",
+  alert: "레이더 미션을 수령하지 마세요",
+
+  filters: {
+    all: "전체",
+    army: "군대",
+    hero: "영웅",
+    shelter: "쉘터",
+    vehicle: "차량",
+    science: "과학"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["일","월","화","수","목","금","토"],
+
+  dayTitles: {
+    peace: "평화 시간",
+    vehicle: "차량 강화",
+    shelter: "쉘터 개발",
+    science: "과학 시대",
+    hero: "영웅 계획",
+    growth: "통합 성장",
+    enemy: "적 섬멸"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "차량 강화",
+    "Shelter Upgrade": "쉘터 개발",
+    "Age of Science": "과학 시대",
+    "Hero Initiative": "영웅 계획",
+    "Army Expansion": "군 확장"
   }
 }

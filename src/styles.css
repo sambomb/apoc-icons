@@ -1,52 +1,17 @@
 body{
-  background:#0b0f0f;
-  color:#fff;
-  font-family:Arial;
+  background:#000;
+  color:#eaffff;
   margin:0;
-  text-align:center;
+  transition:all 0.3s;
 }
 
-#topBar{
-  display:flex;
-  justify-content:space-between;
-  padding:10px;
+/* RTL SUPPORT */
+body.rtl{
+  direction:rtl;
+  text-align:right;
 }
 
-.controls{
-  display:flex;
-  gap:10px;
-}
-
-#alertBar{
-  text-align:center;
-  font-weight:bold;
-  margin:10px;
-}
-
-.alert.active{
-  color:#ff3b3b;
-}
-
-#eventFilters{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin:10px;
-}
-
-#eventFilters button{
-  background:#111;
-  color:#fff;
-  border:1px solid #333;
-  padding:6px 10px;
-  cursor:pointer;
-}
-
-#eventFilters button.selected{
-  background:#00ffcc;
-  color:#000;
-}
-
+/* TABLE */
 table{
   width:100%;
   border-collapse:collapse;
@@ -55,36 +20,51 @@ table{
 th,td{
   border:1px solid #222;
   padding:8px;
+  text-align:center;
 }
 
-.day-title{
-  font-size:11px;
-  color:#00ffcc;
+body.rtl th,
+body.rtl td{
+  text-align:center;
 }
 
-.today{
-  background:#0f2a2a;
-}
-
+/* ACTIVE */
 .cell.active{
-  background:#003f3f;
   border:2px solid #00ffcc;
+  box-shadow:0 0 10px #00ffcc;
 }
 
+/* DIM */
 .cell.dim{
   opacity:0.2;
 }
 
-.cell-time{
-  font-size:11px;
-  color:#aaa;
+/* TODAY COLUMN */
+.today-col{
+  background:#021c1c;
 }
 
-.radar-icon{
-  width:14px;
-  margin:4px 0;
+/* ALERT */
+.alert.active{
+  color:#ff3b3b;
+  font-weight:bold;
+  text-align:center;
 }
 
+/* FILTERS */
+#eventFilters{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+
+button.selected{
+  background:#00ffcc;
+  color:#000;
+}
+
+/* TIME */
 #timeInfo{
+  text-align:center;
   margin:15px;
 }

@@ -1,6 +1,6 @@
 import { EVENTS, ICONS, DAY_KEYS } from "./events.js"
-import { getApoc } from "./calctime.js"
-import { T } from "./translate.js"
+import { getApoc, formatLocalTime } from "./calctime.js"
+import { T, CURRENT_LANG } from "./translate.js"
 
 let currentFilter = "all"
 
@@ -83,18 +83,14 @@ function highlightNow(){
   const row = Math.floor(h/4)
 
   document.querySelectorAll(".cell").forEach(c=>{
-    c.classList.remove("active")
+    c.classList.remove("active","today-col")
   })
 
-  document.querySelectorAll(".day-col").forEach(c=>{
-    c.classList.remove("today")
-  })
+  document.querySelectorAll(`.cell[data-day="${day}"]`)
+    .forEach(c=>c.classList.add("today-col"))
 
-  const cell = document.querySelector(`.cell[data-day="${day}"][data-hour="${row*4}"]`)
-  const col = document.querySelector(`.day-col[data-day="${day}"]`)
-
-  if(cell) cell.classList.add("active")
-  if(col) col.classList.add("today")
+  const active = document.querySelector(`.cell[data-day="${day}"][data-hour="${row*4}"]`)
+  if(active) active.classList.add("active")
 }
 
 function updateCurrent(){
@@ -112,15 +108,19 @@ function updateCurrent(){
 function updateNextEvent(){
 
   const { h, m } = getApoc()
+
   const nextHour = Math.ceil((h+0.01)/4)*4 % 24
 
-  let diff = (nextHour - h + 24) % 24
-  let mins = diff*60 - m
+  let totalMin = (nextHour - h + 24) % 24 * 60 - m
+  if(totalMin < 0) totalMin += 1440
 
-  if(mins < 0) mins += 1440
+  const hh = Math.floor(totalMin / 60)
+  const mm = totalMin % 60
+
+  const local = formatLocalTime(new Date(), CURRENT_LANG)
 
   document.getElementById("timeInfo").innerText =
-    `Local ${new Date().toLocaleTimeString()} | Apoc ${formatHour(h)}:${String(m).padStart(2,"0")} | Next ${mins}m`
+    `Local ${local} | Apoc ${formatHour(h)}:${String(m).padStart(2,"0")} | Next ${String(hh).padStart(2,"0")}:${String(mm).padStart(2,"0")}`
 }
 
 function updateAlert(){

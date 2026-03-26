@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "Waktu",
+  current: "Event Saat Ini",
+  alert: "Jangan klaim misi radar",
+
+  filters: {
+    all: "Semua",
+    army: "Tentara",
+    hero: "Pahlawan",
+    shelter: "Tempat Perlindungan",
+    vehicle: "Kendaraan",
+    science: "Sains"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["Min","Sen","Sel","Rab","Kam","Jum","Sab"],
+
+  dayTitles: {
+    peace: "Waktu Damai",
+    vehicle: "Peningkatan Kendaraan",
+    shelter: "Pengembangan Shelter",
+    science: "Era Sains",
+    hero: "Inisiatif Pahlawan",
+    growth: "Pertumbuhan Menyeluruh",
+    enemy: "Pemburu Musuh"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "Peningkatan Kendaraan",
+    "Shelter Upgrade": "Pengembangan Shelter",
+    "Age of Science": "Era Sains",
+    "Hero Initiative": "Inisiatif Pahlawan",
+    "Army Expansion": "Ekspansi Tentara"
   }
 }

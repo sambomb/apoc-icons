@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "Ora",
+  current: "Evento corrente",
+  alert: "Non riscattare le missioni radar",
+
+  filters: {
+    all: "Tutti",
+    army: "Esercito",
+    hero: "Eroi",
+    shelter: "Rifugio",
+    vehicle: "Veicoli",
+    science: "Scienza"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"],
+
+  dayTitles: {
+    peace: "Tempo di pace",
+    vehicle: "Miglioria veicoli",
+    shelter: "Sviluppo rifugio",
+    science: "Era della scienza",
+    hero: "Iniziativa eroi",
+    growth: "Crescita olistica",
+    enemy: "Cacciatore di nemici"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "Miglioria veicoli",
+    "Shelter Upgrade": "Sviluppo rifugio",
+    "Age of Science": "Era della scienza",
+    "Hero Initiative": "Iniziativa eroi",
+    "Army Expansion": "Espansione esercito"
   }
 }

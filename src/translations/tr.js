@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "Zaman",
+  current: "Mevcut Etkinlik",
+  alert: "Radar görevlerini alma",
+
+  filters: {
+    all: "Tümü",
+    army: "Ordu",
+    hero: "Kahraman",
+    shelter: "Sığınak",
+    vehicle: "Araç",
+    science: "Bilim"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["Paz","Pzt","Sal","Çar","Per","Cum","Cts"],
+
+  dayTitles: {
+    peace: "Barış Zamanı",
+    vehicle: "Araç Geliştirme",
+    shelter: "Sığınak Geliştirme",
+    science: "Bilim Çağı",
+    hero: "Kahraman Girişimi",
+    growth: "Bütünsel Büyüme",
+    enemy: "Düşman Avcısı"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "Araç Geliştirme",
+    "Shelter Upgrade": "Sığınak Geliştirme",
+    "Age of Science": "Bilim Çağı",
+    "Hero Initiative": "Kahraman Girişimi",
+    "Army Expansion": "Ordu Genişlemesi"
   }
 }

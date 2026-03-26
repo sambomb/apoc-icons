@@ -1,38 +1,34 @@
 export default {
-  "time": "Time",
-  "current": "Current Event",
-  "alert": "Do not claim radar missions",
-  "filters": {
-    "all": "Todos",
-    "army": "Army",
-    "hero": "Hero",
-    "shelter": "Shelter",
-    "vehicle": "Vehicle",
-    "science": "Science"
+  time: "时间",
+  current: "当前活动",
+  alert: "不要领取雷达任务",
+
+  filters: {
+    all: "全部",
+    army: "军队",
+    hero: "英雄",
+    shelter: "避难所",
+    vehicle: "车辆",
+    science: "科研"
   },
-  "days": [
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"
-  ],
-  "dayTitles": {
-    "peace": "Peace Time",
-    "vehicle": "Mod Vehicle Boost",
-    "shelter": "Shelter Upgrade",
-    "science": "Age of Science",
-    "hero": "Hero Initiative",
-    "growth": "Holistic Growth",
-    "enemy": "Enemy Buster"
+
+  days: ["日","一","二","三","四","五","六"],
+
+  dayTitles: {
+    peace: "和平时期",
+    vehicle: "车辆强化",
+    shelter: "避难所发展",
+    science: "科技时代",
+    hero: "英雄计划",
+    growth: "全面成长",
+    enemy: "歼灭敌人"
   },
-  "events": {
-    "Mod Vehicle Boost": "Mod Vehicle Boost",
-    "Shelter Upgrade": "Shelter Upgrade",
-    "Age of Science": "Age of Science",
-    "Hero Initiative": "Hero Initiative",
-    "Army Expansion": "Army Expansion"
+
+  events: {
+    "Mod Vehicle Boost": "车辆强化",
+    "Shelter Upgrade": "避难所发展",
+    "Age of Science": "科技时代",
+    "Hero Initiative": "英雄计划",
+    "Army Expansion": "军队扩张"
   }
 }
