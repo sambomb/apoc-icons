@@ -32,5 +32,8 @@ export default {
     "Army Expansion": "Расширение армии"
   },
   timeFormat24: "24ч",
-  timeFormat12: "12ч"
+  timeFormat12: "12ч",
+  localLabel: "Местное время",
+  apocLabel: "Время Апокалипсиса",
+  nextLabel: "Следующее событие"
 }

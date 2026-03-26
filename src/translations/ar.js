@@ -32,5 +32,8 @@ export default {
     "Army Expansion": "توسيع الجيش"
   },
   timeFormat24: "٢٤ س",
-  timeFormat12: "١٢ س"
+  timeFormat12: "١٢ س",
+  localLabel: "الوقت المحلي",
+  apocLabel: "وقت نهاية العالم",
+  nextLabel: "الحدث التالي"
 }

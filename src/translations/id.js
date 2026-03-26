@@ -34,5 +34,8 @@ export default {
     "Army Expansion": "Ekspansi Tentara"
   },
   timeFormat24: "24J",
-  timeFormat12: "12J"
+  timeFormat12: "12J",
+  localLabel: "Waktu Lokal",
+  apocLabel: "Waktu Apocalypse",
+  nextLabel: "Event Berikutnya"
 }

@@ -34,5 +34,8 @@ export default {
     "Army Expansion": "Upanuzi wa Jeshi"
   },
   timeFormat24: "24Saa",
-  timeFormat12: "12Saa"
+  timeFormat12: "12Saa",
+  localLabel: "Muda wa Karibu",
+  apocLabel: "Muda wa Apocalypse",
+  nextLabel: "Tukio Lijalo"
 }

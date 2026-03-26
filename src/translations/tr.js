@@ -34,5 +34,8 @@ export default {
     "Army Expansion": "Ordu Genişlemesi"
   },
   timeFormat24: "24s",
-  timeFormat12: "12s"
+  timeFormat12: "12s",
+  localLabel: "Yerel Saat",
+  apocLabel: "Kıyamet Saati",
+  nextLabel: "Sonraki Etkinlik"
 }

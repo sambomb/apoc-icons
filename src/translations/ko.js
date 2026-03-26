@@ -34,5 +34,8 @@ export default {
     "Army Expansion": "군 확장"
   },
   timeFormat24: "24시",
-  timeFormat12: "12시"
+  timeFormat12: "12시",
+  localLabel: "현지 시간",
+  apocLabel: "아포칼립스 시간",
+  nextLabel: "다음 이벤트"
 }

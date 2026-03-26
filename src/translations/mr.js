@@ -32,5 +32,8 @@ export default {
     "Army Expansion": "सेना विस्तार"
   },
   timeFormat24: "२४ता.",
-  timeFormat12: "१२ता."
+  timeFormat12: "१२ता.",
+  localLabel: "स्थानिक वेळ",
+  apocLabel: "अपोकॅलिप्स वेळ",
+  nextLabel: "पुढील इव्हेंट"
 }

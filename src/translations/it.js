@@ -34,5 +34,8 @@ export default {
     "Army Expansion": "Espansione esercito"
   },
   timeFormat24: "24h",
-  timeFormat12: "12h"
+  timeFormat12: "12h",
+  localLabel: "Ora Locale",
+  apocLabel: "Ora Apocalisse",
+  nextLabel: "Prossimo Evento"
 }

@@ -34,5 +34,8 @@ export default {
     "Army Expansion": "軍拡張"
   },
   timeFormat24: "24時間",
-  timeFormat12: "12時間"
+  timeFormat12: "12時間",
+  localLabel: "現地時間",
+  apocLabel: "アポカリプス時間",
+  nextLabel: "次のイベント"
 }

@@ -34,5 +34,8 @@ export default {
     "Army Expansion": "军队扩张"
   },
   timeFormat24: "24小时",
-  timeFormat12: "12小时"
+  timeFormat12: "12小时",
+  localLabel: "本地时间",
+  apocLabel: "末日时间",
+  nextLabel: "下一个活动"
 }

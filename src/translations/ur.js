@@ -32,5 +32,8 @@ export default {
     "Army Expansion": "فوج کی توسیع"
   },
   timeFormat24: "۲۴ گ",
-  timeFormat12: "۱۲ گ"
+  timeFormat12: "۱۲ گ",
+  localLabel: "مقامی وقت",
+  apocLabel: "اپوکلیپس وقت",
+  nextLabel: "اگلا ایونٹ"
 }
