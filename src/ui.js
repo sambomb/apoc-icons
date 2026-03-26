@@ -152,37 +152,41 @@ function buildTable(){
 //
 function fillCells(){
 
-  const baseDate = getApocDayStart()
+  const baseDate = getApocDayStart();
+  const now = new Date();
 
-  document.querySelectorAll(".cell").forEach(cell=>{
+  document.querySelectorAll(".cell").forEach(cell => {
+    const day = +cell.dataset.day;
+    const hour = +cell.dataset.hour;
+    const ev = EVENTS[hour/4][day];
+    const eventType = getEventType(ev);
 
-    const day = +cell.dataset.day
-    const hour = +cell.dataset.hour
+    // Data UTC do evento (apocalypse calendar)
+    let eventDate = new Date(baseDate);
+    eventDate.setUTCDate(baseDate.getUTCDate() + day);
+    eventDate.setUTCHours(hour, 0, 0, 0);
 
-    const ev = EVENTS[hour/4][day]
-    const eventType = getEventType(ev)
+    // Se o evento já passou, mostrar só para a próxima semana
+    if (eventDate < now) {
+      eventDate.setUTCDate(eventDate.getUTCDate() + 7);
+    }
 
-    const cellDate = new Date(baseDate)
-    cellDate.setUTCDate(baseDate.getUTCDate() + day)
+    // Data/hora local formatada
+    const localDateStr = eventDate.toLocaleDateString(CURRENT_LANG, { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const localTimeStr = eventDate.toLocaleTimeString(CURRENT_LANG, { hour: '2-digit', minute: '2-digit', hour12: !is24h() });
 
-    cell.dataset.event = eventType
+    cell.dataset.event = eventType;
 
     cell.innerHTML = `
       <div class="cell-date">
-        ${T.dayLabel} ${day} • ${formatDate(cellDate, CURRENT_LANG)}
+        ${localDateStr} ${localTimeStr}
       </div>
-
-      <div class="cell-time">
-        ${String(hour).padStart(2,"0")}:00
-      </div>
-
       <img src="${getIcon(day,hour)}" class="radar-icon">
-
       <div class="cell-event">
         ${T.events[ev]}
       </div>
-    `
-  })
+    `;
+  });
 }
 
 //
