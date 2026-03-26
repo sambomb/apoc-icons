@@ -43,7 +43,20 @@ const modules = {
   './translations/sw.js': () => Promise.resolve(swMod)
 }
 
-export let T = {}
+export let T = {
+  time: "Time",
+  current: "Current",
+  alert: "Alert",
+  localLabel: "Local",
+  apocLabel: "Apocalypse", 
+  nextLabel: "Next",
+  dayLabel: "Day",
+  days: [],
+  dayTitles: {},
+  events: {},
+  timeFormat24: "24H",
+  timeFormat12: "12H"
+}
 export let CURRENT_LANG = "en"
 
 export const LANGS = [
@@ -106,10 +119,13 @@ export async function loadLang(lang){
 
   const key = `./translations/${lang}.js`
   if(!modules[key]){
-    console.error("Language file missing:", key)
-    return
+    console.warn("Language file missing:", key, "- falling back to English")
+    lang = "en"
+    CURRENT_LANG = "en"
   }
-  const mod = await modules[key]()
+  
+  const finalKey = `./translations/${lang}.js`
+  const mod = await modules[finalKey]()
   const base = (await modules['./translations/en.js']()).default
   // Fallback seguro: retorna chave do inglês se faltar
   T = new Proxy(mod.default, {
@@ -124,7 +140,10 @@ export async function loadLang(lang){
 export function detectLang(){
 
   const saved = localStorage.getItem("lang")
-  if(saved) return saved
+  if(saved) {
+    const validCode = LANGS.find(l => l.code === saved)?.code
+    if(validCode) return validCode
+  }
 
   const nav = (navigator.language || "en").toLowerCase()
 
@@ -132,7 +151,8 @@ export function detectLang(){
   if(nav.startsWith("pt")) return "pt-pt"
 
   const short = nav.split("-")[0]
-  return LANGS.find(l => l.code === short)?.code || "en"
+  const found = LANGS.find(l => l.code === short)?.code
+  return found || "en"
 }
 
 export function buildLangSelect(){
