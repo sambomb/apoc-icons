@@ -1,8 +1,8 @@
 
 export const ICONS={
- red:"/src/images/red.png",
- gold:"/src/images/gold.png",
- white:"/src/images/white.png"
+ red:"images/red.png",
+ gold:"images/gold.png",
+ white:"images/white.png"
 };
 
 export const DAY_KEYS=["peace","vehicle","shelter","science","hero","growth","enemy"];
