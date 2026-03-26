@@ -51,7 +51,19 @@ function setTimeButton(){
   btn.textContent = is24h() ? t24 : t12
 }
 
+function formatClockParts(hour, minute){
+  const hh = String(hour).padStart(2, "0")
+  const mm = String(minute).padStart(2, "0")
+
+  if(is24h()) return `${hh}:${mm}`
+
+  const h12 = hour % 12 === 0 ? 12 : hour % 12
+  const suffix = hour >= 12 ? "PM" : "AM"
+  return `${String(h12).padStart(2, "0")}:${mm} ${suffix}`
+}
+
 function updateAll(){
+  fillCells()
   updateCurrent()
   updateAlert()
   highlightNow()
@@ -260,9 +272,10 @@ function updateNext(){
 
   const local = getLocal()
   const localStr = formatTime(local, CURRENT_LANG)
+  const apocStr = formatClockParts(currentHour, currentMin)
 
   document.getElementById("timeInfo").innerText =
-    `${T.localLabel}: ${localStr} | ${T.apocLabel}: ${String(currentHour).padStart(2,"0")}:${String(currentMin).padStart(2,"0")} | ${T.nextLabel}: ${String(diffHours).padStart(2,"0")}:${String(diffMinutes).padStart(2,"0")}`
+    `${T.localLabel}: ${localStr} | ${T.apocLabel}: ${apocStr} | ${T.nextLabel}: ${String(diffHours).padStart(2,"0")}:${String(diffMinutes).padStart(2,"0")}`
 }
 
 //
