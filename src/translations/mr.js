@@ -30,5 +30,9 @@ export default {
     "Age of Science": "विज्ञान युग",
     "Hero Initiative": "नायक उपक्रम",
     "Army Expansion": "सेना विस्तार"
-  }
+  },
+  timeFormat24: "२४ता.",
+  timeFormat12: "१२ता."
+  timeFormat24: "२४ता.",
+  timeFormat12: "१२ता."
 }

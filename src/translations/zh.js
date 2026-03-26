@@ -1,3 +1,5 @@
+  timeFormat24: "24小时",
+  timeFormat12: "12小时"
 export default {
   time: "时间",
   current: "当前活动",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "科技时代",
     "Hero Initiative": "英雄计划",
     "Army Expansion": "军队扩张"
-  }
+  },
+  timeFormat24: "24小时",
+  timeFormat12: "12小时"
 }

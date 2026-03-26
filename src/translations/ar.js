@@ -30,5 +30,7 @@ export default {
     "Age of Science": "عصر العلم",
     "Hero Initiative": "مبادرة الأبطال",
     "Army Expansion": "توسيع الجيش"
-  }
+  },
+  timeFormat24: "٢٤ س",
+  timeFormat12: "١٢ س"
 }

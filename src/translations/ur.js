@@ -30,5 +30,7 @@ export default {
     "Age of Science": "سائنس کا دور",
     "Hero Initiative": "ہیروز کا اقدام",
     "Army Expansion": "فوج کی توسیع"
-  }
+  },
+  timeFormat24: "۲۴ گ",
+  timeFormat12: "۱۲ گ"
 }

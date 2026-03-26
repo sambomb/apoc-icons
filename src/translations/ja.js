@@ -1,3 +1,5 @@
+  timeFormat24: "24時間",
+  timeFormat12: "12時間"
 export default {
   time: "時間",
   current: "現在のイベント",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "科学時代",
     "Hero Initiative": "ヒーロー計画",
     "Army Expansion": "軍拡張"
-  }
+  },
+  timeFormat24: "24時間",
+  timeFormat12: "12時間"
 }

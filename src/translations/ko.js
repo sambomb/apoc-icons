@@ -1,3 +1,5 @@
+  timeFormat24: "24시",
+  timeFormat12: "12시"
 export default {
   time: "시간",
   current: "현재 이벤트",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "과학 시대",
     "Hero Initiative": "영웅 계획",
     "Army Expansion": "군 확장"
-  }
+  },
+  timeFormat24: "24시",
+  timeFormat12: "12시"
 }

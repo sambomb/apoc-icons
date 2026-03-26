@@ -1,3 +1,5 @@
+  timeFormat24: "24J",
+  timeFormat12: "12J"
 export default {
   time: "Waktu",
   current: "Event Saat Ini",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "Era Sains",
     "Hero Initiative": "Inisiatif Pahlawan",
     "Army Expansion": "Ekspansi Tentara"
-  }
+  },
+  timeFormat24: "24J",
+  timeFormat12: "12J"
 }

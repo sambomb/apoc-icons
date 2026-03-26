@@ -1,24 +1,54 @@
 import { EVENTS, ICONS, DAY_KEYS } from "./events.js"
-import { getLocal, formatTime, formatDate, toggleFormat } from "./calctime.js"
+import { getLocal, formatTime, formatDate, toggleFormat, is24h } from "./calctime.js"
 import { T, CURRENT_LANG } from "./translate.js"
 
-const SERVER_OFFSET = -2
+const SERVER_OFFSET = "UTC-2" // accepts numeric (+2, -2, 5.5), or string (UTC+5:30, +5:30, -0530)
 
 let currentFilter = "all"
 
 export function initUI(){
+  const timeBtn = document.getElementById("timeBtn")
 
-  document.getElementById("timeBtn").onclick = ()=>{
+  timeBtn.onclick = ()=>{
     toggleFormat()
+    setTimeButton()
     updateAll()
   }
 
+  setTimeButton()
   buildTable()
   fillCells()
   applyTranslations()
   hookFilters()
 
+  // Aviso de tradução automática
+  showAutoTranslationNotice()
+
   setInterval(updateAll,1000)
+}
+
+function showAutoTranslationNotice(){
+  if(window.CURRENT_LANG === "auto" || (window.localStorage && localStorage.getItem("lang") === "auto")){
+    let notice = document.getElementById("autoTransNotice")
+    if(!notice){
+      notice = document.createElement("div")
+      notice.id = "autoTransNotice"
+      notice.style.cssText = "background:#222;color:#ff0;padding:6px;text-align:center;font-size:13px;"
+      notice.innerText = "🌐 Tradução automática via Google Translate"
+      document.body.insertBefore(notice, document.body.firstChild)
+    }
+  } else {
+    const notice = document.getElementById("autoTransNotice")
+    if(notice) notice.remove()
+  }
+}
+
+function setTimeButton(){
+  const btn = document.getElementById("timeBtn")
+  // Fallback seguro para tradução
+  let t24 = T.timeFormat24 || "24H"
+  let t12 = T.timeFormat12 || "12H"
+  btn.textContent = is24h() ? t24 : t12
 }
 
 function updateAll(){
@@ -31,20 +61,57 @@ function updateAll(){
 //
 // 🔥 CORE: APOCALYPSE TIME ENGINE
 //
+function parseServerOffset(offset){
+  if(typeof offset === "number") return offset * 3600000
+
+  if(typeof offset === "string"){
+    let normalized = offset.trim().toUpperCase()
+
+    if(normalized.startsWith("UTC")){
+      normalized = normalized.substring(3)
+    }
+
+    // Support +5:30, -0530, +5.5
+    const reHms = /^([+-])(\d{1,2})(?::?(\d{2}))?$/
+    const m = normalized.match(reHms)
+    if(m){
+      const sign = m[1] === "+" ? 1 : -1
+      const hours = Number(m[2])
+      const minutes = m[3] ? Number(m[3]) : 0
+      return sign * ((hours * 60 + minutes) * 60000)
+    }
+
+    const asNum = Number(normalized)
+    if(!Number.isNaN(asNum)){
+      return asNum * 3600000
+    }
+  }
+
+  console.warn("Invalid SERVER_OFFSET", offset)
+  return 0
+}
+
 function getApocNow(){
-
   const now = new Date()
-  const utc = now.getTime() + now.getTimezoneOffset()*60000
-
-  return new Date(utc + SERVER_OFFSET * 3600000)
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000
+  const offsetMs = parseServerOffset(SERVER_OFFSET)
+  return new Date(utc + offsetMs)
 }
 
 function getApocDayStart(){
-
   const apoc = getApocNow()
-  apoc.setHours(0,0,0,0)
+  const start = new Date(apoc)
+  start.setUTCHours(0,0,0,0)
+  return start
+}
 
-  return apoc
+function getEventType(eventName){
+  if(eventName.includes("Army")) return "army"
+  if(eventName.includes("Vehicle")) return "vehicle"
+  if(eventName.includes("Shelter")) return "shelter"
+  if(eventName.includes("Science")) return "science"
+  if(eventName.includes("Hero")) return "hero"
+  return "all"
 }
 
 //
@@ -93,9 +160,12 @@ function fillCells(){
     const hour = +cell.dataset.hour
 
     const ev = EVENTS[hour/4][day]
+    const eventType = getEventType(ev)
 
     const cellDate = new Date(baseDate)
-    cellDate.setDate(baseDate.getDate() + day)
+    cellDate.setUTCDate(baseDate.getUTCDate() + day)
+
+    cell.dataset.event = eventType
 
     cell.innerHTML = `
       <div class="cell-date">
@@ -122,8 +192,8 @@ function updateCurrent(){
 
   const now = getApocNow()
 
-  const day = now.getDay()
-  const row = Math.floor(now.getHours()/4)
+  const day = now.getUTCDay()
+  const row = Math.floor(now.getUTCHours()/4)
 
   const ev = EVENTS[row][day]
 
@@ -138,8 +208,8 @@ function highlightNow(){
 
   const now = getApocNow()
 
-  const day = now.getDay()
-  const hour = now.getHours()
+  const day = now.getUTCDay()
+  const hour = now.getUTCHours()
   const row = Math.floor(hour/4)*4
 
   document.querySelectorAll(".cell").forEach(c=>{
@@ -161,16 +231,14 @@ function updateNext(){
 
   const now = getApocNow()
 
-  const currentHour = now.getHours()
-  const currentMin = now.getMinutes()
+  const currentHour = now.getUTCHours()
+  const currentMin = now.getUTCMinutes()
 
   let nextHour = Math.ceil((currentHour + currentMin/60)/4)*4
-
   if(nextHour === 24) nextHour = 0
 
-  let diffHours = (nextHour - currentHour + 24) % 24
   let diffMinutes = (60 - currentMin) % 60
-
+  let diffHours = (nextHour - currentHour + 24) % 24
   if(diffMinutes !== 0) diffHours--
 
   if(diffHours < 0) diffHours = 23
@@ -179,7 +247,7 @@ function updateNext(){
   const localStr = formatTime(local, CURRENT_LANG)
 
   document.getElementById("timeInfo").innerText =
-    `${T.localLabel}: ${localStr} | ${T.apocLabel}: ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")} | ${T.nextLabel}: ${String(diffHours).padStart(2,"0")}:${String(diffMinutes).padStart(2,"0")}`
+    `${T.localLabel}: ${localStr} | ${T.apocLabel}: ${String(currentHour).padStart(2,"0")}:${String(currentMin).padStart(2,"0")} | ${T.nextLabel}: ${String(diffHours).padStart(2,"0")}:${String(diffMinutes).padStart(2,"0")}`
 }
 
 //
@@ -189,8 +257,8 @@ function updateAlert(){
 
   const now = getApocNow()
 
-  const d = now.getDay()
-  const h = now.getHours()
+  const d = now.getUTCDay()
+  const h = now.getUTCHours()
 
   const isRed = getIcon(d,h) === ICONS.red
 
@@ -239,16 +307,16 @@ function applyFilter(){
 
   document.querySelectorAll(".cell").forEach(cell=>{
 
-    const txt = cell.innerText.toLowerCase()
+    const eventType = cell.dataset.event || "all"
 
     if(currentFilter==="all"){
       cell.classList.remove("dim")
       return
     }
 
-    if(txt.includes(currentFilter)){
+    if(eventType === currentFilter){
       cell.classList.remove("dim")
-    }else{
+    } else {
       cell.classList.add("dim")
     }
   })

@@ -1,3 +1,5 @@
+  timeFormat24: "২৪ঘণ্টা",
+  timeFormat12: "১২ঘণ্টা"
 export default {
   time: "সময়",
   current: "বর্তমান ইভেন্ট",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "বিজ্ঞান যুগ",
     "Hero Initiative": "নায়ক উদ্যোগ",
     "Army Expansion": "সেনা সম্প্রসারণ"
-  }
+  },
+  timeFormat24: "২৪ঘণ্টা",
+  timeFormat12: "১২ঘণ্টা"
 }

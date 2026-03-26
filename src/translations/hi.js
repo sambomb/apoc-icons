@@ -1,3 +1,5 @@
+  timeFormat24: "24घं",
+  timeFormat12: "12घं"
 export default {
   time: "समय",
   current: "वर्तमान घटना",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "विज्ञान युग",
     "Hero Initiative": "हीरो पहल",
     "Army Expansion": "सेना विस्तार"
-  }
+  },
+  timeFormat24: "24घं",
+  timeFormat12: "12घं"
 }

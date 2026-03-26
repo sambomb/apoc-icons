@@ -1,3 +1,7 @@
+    timeFormat24: "24Saa",
+    timeFormat12: "12Saa"
+  timeFormat24: "24Saa",
+  timeFormat12: "12Saa"
 export default {
   time: "Muda",
   current: "Tukio la Sasa",
@@ -30,5 +34,7 @@ export default {
     "Age of Science": "Enzi ya Sayansi",
     "Hero Initiative": "Mpango wa Mashujaa",
     "Army Expansion": "Upanuzi wa Jeshi"
-  }
+  },
+  timeFormat24: "24Saa",
+  timeFormat12: "12Saa"
 }

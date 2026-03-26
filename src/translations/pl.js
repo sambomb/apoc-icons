@@ -1,3 +1,5 @@
+  timeFormat24: "24g",
+  timeFormat12: "12g"
 export default {
   time: "Czas",
   current: "Bieżące wydarzenie",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "Era nauki",
     "Hero Initiative": "Inicjatywa bohaterów",
     "Army Expansion": "Rozszerzenie armii"
-  }
+  },
+  timeFormat24: "24g",
+  timeFormat12: "12g"
 }

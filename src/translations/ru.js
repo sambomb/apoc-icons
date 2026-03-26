@@ -30,5 +30,7 @@ export default {
     "Age of Science": "Эра науки",
     "Hero Initiative": "Инициатива героев",
     "Army Expansion": "Расширение армии"
-  }
+  },
+  timeFormat24: "24ч",
+  timeFormat12: "12ч"
 }

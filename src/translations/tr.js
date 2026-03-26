@@ -1,3 +1,5 @@
+  timeFormat24: "24s",
+  timeFormat12: "12s"
 export default {
   time: "Zaman",
   current: "Mevcut Etkinlik",
@@ -30,5 +32,7 @@ export default {
     "Age of Science": "Bilim Çağı",
     "Hero Initiative": "Kahraman Girişimi",
     "Army Expansion": "Ordu Genişlemesi"
-  }
+  },
+  timeFormat24: "24s",
+  timeFormat12: "12s"
 }
