@@ -198,6 +198,9 @@ function fillCells(){
       year: "numeric"
     })
     const localTimeStr = formatTime(occurrenceLocal, CURRENT_LANG)
+    const shieldHtml = day === 6
+      ? `<img src="/zcalendar/shield.png" class="radar-icon shield-icon">`
+      : ""
 
     cell.dataset.event = eventType
 
@@ -205,7 +208,10 @@ function fillCells(){
       <div class="cell-date">
         ${localDateStr} ${localTimeStr}
       </div>
-      <img src="${getIcon(day,hour)}" class="radar-icon">
+      <div class="cell-icons">
+        <img src="${getIcon(day,hour)}" class="radar-icon">
+        ${shieldHtml}
+      </div>
       <div class="cell-event">
         ${T.events[ev]}
       </div>
