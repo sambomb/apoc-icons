@@ -6,44 +6,48 @@ const withBase = (example) => ({
 })
 
 const HERO_ENTRIES = [
-  { id: "hero-katrina", name: "Katrina", tier: "S-Type" },
-  { id: "hero-sophia", name: "Sophia", tier: "S-Type" },
-  { id: "hero-laura", name: "Laura", tier: "S-Type" },
-  { id: "hero-chinatsu", name: "Chinatsu", tier: "S-Type" },
-  { id: "hero-mia", name: "Mia", tier: "S-Type" },
-  { id: "hero-oliveira", name: "Oliveira", tier: "S-Type" },
-  { id: "hero-amelia", name: "Amelia", tier: "S-Type" },
-  { id: "hero-scarlett", name: "Scarlett", tier: "S-Type" },
-  { id: "hero-evelyn", name: "Evelyn", tier: "S-Type" },
-  { id: "hero-selena", name: "Selena", tier: "S-Type" },
-  { id: "hero-vivian", name: "Vivian", tier: "A-Type" },
-  { id: "hero-miranda", name: "Miranda", tier: "A-Type" },
-  { id: "hero-fiona", name: "Fiona", tier: "A-Type" },
-  { id: "hero-elizabeth", name: "Elizabeth", tier: "A-Type" },
-  { id: "hero-maria", name: "Maria", tier: "A-Type" },
-  { id: "hero-isabella", name: "Isabella", tier: "A-Type" },
-  { id: "hero-leah", name: "Leah", tier: "A-Type" },
-  { id: "hero-ava", name: "Ava", tier: "A-Type" },
-  { id: "hero-christina", name: "Christina", tier: "A-Type" },
-  { id: "hero-athena", name: "Athena", tier: "B-Type" },
-  { id: "hero-audrey", name: "Audrey", tier: "B-Type" },
-  { id: "hero-william", name: "William", tier: "B-Type" },
-  { id: "hero-angelina", name: "Angelina", tier: "B-Type" },
-  { id: "hero-natalie", name: "Natalie", tier: "B-Type" },
-  { id: "hero-giselle", name: "Giselle", tier: "B-Type" }
+  { id: "hero-katrina", name: "Katrina", tier: "S-Type", faction: "Blood Rose" },
+  { id: "hero-sophia", name: "Sophia", tier: "S-Type", faction: "Blood Rose" },
+  { id: "hero-laura", name: "Laura", tier: "S-Type", faction: "Blood Rose" },
+  { id: "hero-chinatsu", name: "Chinatsu", tier: "S-Type", faction: "Wings of Dawn" },
+  { id: "hero-mia", name: "Mia", tier: "S-Type", faction: "Wings of Dawn" },
+  { id: "hero-oliveira", name: "Oliveira", tier: "S-Type", faction: "Blood Rose" },
+  { id: "hero-amelia", name: "Amelia", tier: "S-Type", faction: "Wings of Dawn" },
+  { id: "hero-scarlett", name: "Scarlett", tier: "S-Type", faction: "Wings of Dawn" },
+  { id: "hero-evelyn", name: "Evelyn", tier: "S-Type", faction: "Order Guard" },
+  { id: "hero-selena", name: "Selena", tier: "S-Type", faction: "Order Guard" },
+  { id: "hero-vivian", name: "Vivian", tier: "A-Type", faction: "Blood Rose" },
+  { id: "hero-miranda", name: "Miranda", tier: "A-Type", faction: "Blood Rose" },
+  { id: "hero-fiona", name: "Fiona", tier: "A-Type", faction: "Blood Rose" },
+  { id: "hero-elizabeth", name: "Elizabeth", tier: "A-Type", faction: "Wings of Dawn" },
+  { id: "hero-maria", name: "Maria", tier: "A-Type", faction: "Order Guard" },
+  { id: "hero-isabella", name: "Isabella", tier: "A-Type", faction: "Blood Rose" },
+  { id: "hero-leah", name: "Leah", tier: "A-Type", faction: "Wings of Dawn" },
+  { id: "hero-ava", name: "Ava", tier: "A-Type", faction: "Wings of Dawn" },
+  { id: "hero-christina", name: "Christina", tier: "A-Type", faction: "Order Guard" },
+  { id: "hero-athena", name: "Athena", tier: "B-Type", faction: "Order Guard" },
+  { id: "hero-audrey", name: "Audrey", tier: "B-Type", faction: "Blood Rose" },
+  { id: "hero-william", name: "William", tier: "B-Type", faction: "Order Guard" },
+  { id: "hero-angelina", name: "Angelina", tier: "B-Type", faction: "Order Guard" },
+  { id: "hero-natalie", name: "Natalie", tier: "B-Type", faction: "Order Guard" },
+  { id: "hero-giselle", name: "Giselle", tier: "B-Type", faction: "Order Guard" }
 ]
 
-const HERO_GUIDES = HERO_ENTRIES.map((hero) => ({
+const HERO_GUIDES = HERO_ENTRIES.map((hero, index) => ({
   id: hero.id,
   group: "resources",
   badge: "Hero",
   title: hero.name,
+  tier: hero.tier,
+  faction: hero.faction,
+  heroOrder: index,
   summary: `${hero.name} profile and planning notes for Hero Initiative and long-term roster growth.`,
   sections: [
     {
       title: "Profile snapshot",
       items: [
         `Type in source list: ${hero.tier}.`,
+        `Faction: ${hero.faction}.`,
         "Use this page to track your own star level, skill levels and equipment breakpoint progression.",
         "Prioritize upgrades for active march formations before investing in secondary heroes."
       ]
@@ -67,6 +71,7 @@ const ENEMY_GUIDES = [
     group: "resources",
     badge: "Enemy",
     title: "Boomer",
+    image: "enemies/boomer.png",
     summary: "Generic world enemy in the Lv.1-10 range, with high scoring value in Mod Vehicle Boost.",
     sections: [
       {
@@ -94,6 +99,7 @@ const ENEMY_GUIDES = [
     group: "resources",
     badge: "Enemy",
     title: "Zombie",
+    image: "enemies/zombie.png",
     summary: "Generic world enemy in the Lv.1-30 range with reconciled reward values by level.",
     sections: [
       {
@@ -121,6 +127,7 @@ const ENEMY_GUIDES = [
     group: "resources",
     badge: "Enemy",
     title: "Berserk Zombie",
+    image: "enemies/berserk-zombie.png",
     summary: "Special mission enemy, not part of the generic Zombie/Boomer farm loop.",
     sections: [
       {
@@ -148,6 +155,7 @@ const ENEMY_GUIDES = [
     group: "resources",
     badge: "Enemy",
     title: "Bloods' Goons",
+    image: "enemies/bloods-goons.png",
     summary: "Generic enemy target category prioritized by route safety and reward quality.",
     sections: [
       {
@@ -175,6 +183,7 @@ const ENEMY_GUIDES = [
     group: "resources",
     badge: "Enemy",
     title: "Fury Lord",
+    image: "enemies/furylord.png",
     summary: "Special event boss with damage-based contribution and server-wide impact.",
     sections: [
       {

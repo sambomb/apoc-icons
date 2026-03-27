@@ -2,11 +2,11 @@ import { EVENTS, ICONS, DAY_KEYS } from "./events.js"
 import { getLocal, formatTime, toggleFormat, is24h } from "./calctime.js"
 import { T, CURRENT_LANG } from "./translate.js"
 import { GUIDE_GROUPS, GUIDE_SETS, GUIDE_MAP, GUIDE_STATS } from "./guides.js"
-import { DAY_IDS_BY_INDEX, MENU_GROUPS, getGuidePath, getHomePath } from "./routes.js"
+import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
 import { displayedToBasePoints, POINT_EXAMPLES } from "./points.js"
 
 const SERVER_OFFSET = "UTC-2"
-const DONATE_URL = "https://www.paypal.com/donate/?hosted_button_id=QTEZKD4D7MWBU"
+const DONATE_URL = "https://www.paypal.com/donate/?hosted_button_id=EQ4XU8W5PWUBA"
 const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL)
   ? import.meta.env.BASE_URL
   : "/"
@@ -66,9 +66,26 @@ function formatGuideLinks(ids){
 }
 
 function renderGuideCard(guide){
+  const heroTierClass = guide.id.startsWith("hero-")
+    ? guide.tier === "S-Type"
+      ? "hero-tier-s"
+      : guide.tier === "A-Type"
+        ? "hero-tier-a"
+        : "hero-tier-b"
+    : ""
+
+  const factionMeta = guide.id.startsWith("hero-") && guide.faction
+    ? `
+      <span class="hero-faction-chip">
+        ${escapeHtml(guide.faction)}
+      </span>
+    `
+    : ""
+
   return `
-    <a class="guide-card" href="${getGuidePath(guide.id)}">
+    <a class="guide-card ${heroTierClass}" href="${getGuidePath(guide.id)}">
       <span class="guide-card-badge">${escapeHtml(guide.badge)}</span>
+      ${factionMeta}
       <h3>${escapeHtml(guideTitle(guide))}</h3>
       <p>${escapeHtml(guideSummary(guide))}</p>
       <span class="guide-card-cta">${escapeHtml(textOr(T.guideOpen, "Open page"))}</span>
@@ -136,6 +153,46 @@ function renderTopMenu(){
   const menuRoot = document.getElementById("siteMenu")
   if(!menuRoot) return
 
+  const renderGroupItems = (group) => {
+    if(group.id !== "heroes"){
+      return group.items.map((item) => {
+        const guide = GUIDE_MAP[item.id]
+        const title = guide ? guideTitle(guide) : item.id
+        return `<li><a class="submenu-link" href="${getGuidePath(item.id)}">${escapeHtml(title)}</a></li>`
+      }).join("")
+    }
+
+    const introItem = group.items.find((item) => item.id === "resource-heroes")
+    const introGuide = introItem ? GUIDE_MAP[introItem.id] : null
+    const introTitle = introGuide ? guideTitle(introGuide) : "Heroes"
+
+    const factionHtml = HERO_FACTION_MENU.map((faction) => {
+      const heroLinks = faction.heroIds
+        .map((heroId) => {
+          const heroGuide = GUIDE_MAP[heroId]
+          if(!heroGuide) return ""
+          const tierClass = heroGuide.tier === "S-Type"
+            ? "tier-s"
+            : heroGuide.tier === "A-Type"
+              ? "tier-a"
+              : "tier-b"
+          return `<li><a class="submenu-link hero-submenu-link ${tierClass}" href="${getGuidePath(heroId)}"><span>${escapeHtml(guideTitle(heroGuide))}</span></a></li>`
+        })
+        .join("")
+
+      return `
+        <li class="submenu-divider" role="presentation"></li>
+        <li class="submenu-faction-title" role="presentation">${escapeHtml(faction.title)}</li>
+        ${heroLinks}
+      `
+    }).join("")
+
+    return `
+      <li><a class="submenu-link" href="${getGuidePath("resource-heroes")}">${escapeHtml(introTitle)}</a></li>
+      ${factionHtml}
+    `
+  }
+
   menuRoot.innerHTML = MENU_GROUPS.map((group) => {
     if(group.id === "calendar"){
       return `
@@ -149,11 +206,7 @@ function renderTopMenu(){
       <li class="menu-group">
         <button class="menu-link menu-toggle" type="button">${escapeHtml(textOr(T[group.titleKey], group.id))}</button>
         <ul class="submenu">
-          ${group.items.map((item) => {
-            const guide = GUIDE_MAP[item.id]
-            const title = guide ? guideTitle(guide) : item.id
-            return `<li><a class="submenu-link" href="${getGuidePath(item.id)}">${escapeHtml(title)}</a></li>`
-          }).join("")}
+          ${renderGroupItems(group)}
         </ul>
       </li>
     `

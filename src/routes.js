@@ -8,6 +8,52 @@ export const DAY_IDS_BY_INDEX = [
   "day-enemy"
 ]
 
+export const HERO_FACTION_MENU = [
+  {
+    id: "blood-rose",
+    title: "Blood Rose",
+    heroIds: [
+      "hero-katrina",
+      "hero-sophia",
+      "hero-laura",
+      "hero-oliveira",
+      "hero-vivian",
+      "hero-miranda",
+      "hero-fiona",
+      "hero-isabella",
+      "hero-audrey"
+    ]
+  },
+  {
+    id: "wings-of-dawn",
+    title: "Wings of Dawn",
+    heroIds: [
+      "hero-chinatsu",
+      "hero-mia",
+      "hero-amelia",
+      "hero-scarlett",
+      "hero-elizabeth",
+      "hero-leah",
+      "hero-ava"
+    ]
+  },
+  {
+    id: "order-guard",
+    title: "Order Guard",
+    heroIds: [
+      "hero-evelyn",
+      "hero-selena",
+      "hero-maria",
+      "hero-christina",
+      "hero-athena",
+      "hero-william",
+      "hero-angelina",
+      "hero-natalie",
+      "hero-giselle"
+    ]
+  }
+]
+
 export const GUIDE_ROUTES = [
   { id: "day-peace", path: "ad/day-0.html", group: "allianceDuel" },
   { id: "day-vehicle", path: "ad/day-1.html", group: "allianceDuel" },
