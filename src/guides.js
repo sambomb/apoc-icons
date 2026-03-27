@@ -379,13 +379,13 @@ export const GUIDE_SETS = {
       group: "days",
       badge: "Day Guide",
       title: "Sunday: Peace Time",
-      summary: "Use the calm day to bank radar, stage queues and avoid accidental claims before the weekly scoring loop begins.",
+      summary: "Use the calm day only for setup: bank radar, stage queues and lock your week before scoring starts.",
       sections: [
         {
           title: "Best use of the day",
           items: [
             "Cap radar stacks without claiming low-value tasks too early.",
-            "Queue research, buildings and troop prep so each can be finished on its matching event type later in the week.",
+            "Queue research, buildings and troop prep so each one finishes on its matching day.",
             "Audit shield timers and relocation plans before kill-focused days start."
           ]
         },
@@ -406,13 +406,13 @@ export const GUIDE_SETS = {
       group: "days",
       badge: "Day Guide",
       title: "Monday: Day 1 - Mod Vehicle Boost",
-      summary: "Open the week by cashing in saved vehicle materials and converting fuel into the highest-confidence Boomer points.",
+      summary: "Spend saved vehicle resources only on Day 1 and convert fuel into consistent Boomer points.",
       sections: [
         {
           title: "Priority actions",
           items: [
             "Spend saved Modification Blueprints and Golden Wrenches first because they are deterministic points.",
-            "Use Laura-related radar missions and stored radar claims only after the day turns live.",
+            "Use Laura-related radar missions and stored radar claims only after Day 1 turns live.",
             "Favor Boomer rallies you can clear consistently over low-return creep farming."
           ]
         },
@@ -437,10 +437,10 @@ export const GUIDE_SETS = {
           ]
         },
         {
-          title: "Community timing note",
+          title: "Radar mission handling",
           items: [
-            "The Sardinha guide highlights 08:00-11:59 and 20:00-23:59 Apocalypse Time as useful focus windows for this day.",
-            "Use these windows as planning anchors, but verify your server behavior in-game."
+            "Before reset, complete radar tasks but leave them unclaimed so they can be released on Day 1 windows.",
+            "Only claim stacked radar missions when the scoring window is active to avoid leaking points."
           ]
         }
       ],
@@ -452,7 +452,7 @@ export const GUIDE_SETS = {
       group: "days",
       badge: "Day Guide",
       title: "Tuesday: Day 2 - Shelter Upgrade",
-      summary: "Construction payoff day. Finish staged timers, push core buildings and avoid wasting speedups on weak power returns.",
+      summary: "Construction day: finish staged timers, push core buildings and spend speedups only on high-return upgrades.",
       sections: [
         {
           title: "Priority actions",
@@ -478,7 +478,7 @@ export const GUIDE_SETS = {
       group: "days",
       badge: "Day Guide",
       title: "Wednesday: Day 3 - Age of Science",
-      summary: "Research day should feel planned, not improvised: badges, helps and speedups should all be queued before reset.",
+      summary: "Research day should be pre-planned: badges, helps and speedups must already be queued before reset.",
       sections: [
         {
           title: "Priority actions",
@@ -504,7 +504,7 @@ export const GUIDE_SETS = {
       group: "days",
       badge: "Day Guide",
       title: "Thursday: Day 4 - Hero Initiative",
-      summary: "Turn saved tickets, EXP and fragments into one deliberate troop spike instead of spreading them across the whole roster.",
+      summary: "Convert saved tickets, EXP and fragments into one focused combat spike instead of spreading upgrades.",
       sections: [
         {
           title: "Priority actions",
@@ -530,7 +530,7 @@ export const GUIDE_SETS = {
       group: "days",
       badge: "Day Guide",
       title: "Friday: Day 5 - Holistic Growth",
-      summary: "Treat Growth day as a cross-system maintenance window: economy, boxes, buffs and medium-value upgrades that do not belong to a sharper scoring theme.",
+      summary: "Use Day 5 as a controlled maintenance window: economy, boxes, buffs and setup for Day 6 safety.",
       sections: [
         {
           title: "Priority actions",
@@ -545,7 +545,8 @@ export const GUIDE_SETS = {
           items: [
             "Last Z Wiki recommends saving golden resource boxes until higher HQ levels for better value.",
             "Holding the alliance donation button is faster and earns points more efficiently than tapping repeatedly.",
-            "Radar stacking can be prepared here so claims are released on the exact event windows where they score better."
+            "Radar stacking can be prepared here so claims are released on the exact event windows where they score better.",
+            "Refresh and verify Peace Shield timers on Day 5 so you enter Day 6 with safe coverage."
           ]
         }
       ],
@@ -557,7 +558,7 @@ export const GUIDE_SETS = {
       group: "days",
       badge: "Day Guide",
       title: "Saturday: Day 6 - Enemy Buster",
-      summary: "Final day is about controlled aggression and event discipline: offense, shield control and alliance-coordinated rallies.",
+      summary: "Final day is controlled aggression: offense timing, shield discipline and alliance-coordinated rallies.",
       sections: [
         {
           title: "Priority actions",
@@ -578,6 +579,7 @@ export const GUIDE_SETS = {
         {
           title: "Defense rules",
           items: [
+            "Carry over the Day 5 shield check: do not start Day 6 with uncertain Peace Shield coverage.",
             "Refresh shield coverage before going offline or before cross-state windows intensify.",
             "Track attacker coordinates from alliance intelligence and shared recon reports."
           ]
@@ -588,6 +590,60 @@ export const GUIDE_SETS = {
     }
   ],
   resources: [
+    {
+      id: "resource-general-tips",
+      group: "resources",
+      badge: "Reference",
+      title: "General Tips",
+      summary: "High-impact practical tips reconciled from Last Z Wiki pages for weekly planning, spending discipline and risk control.",
+      sections: [
+        {
+          title: "Daily and weekly discipline",
+          items: [
+            "Use event-day specialization: spend each resource on its strongest scoring day instead of daily trickle spending.",
+            "Save high-value boxes and premium materials for planned pushes where they unlock real progression.",
+            "Keep a fixed reset routine: radar stack check, queue check, shield check and alliance coordination."
+          ]
+        },
+        {
+          title: "Combat and safety habits",
+          items: [
+            "Never launch risky fights without checking hospital space, march return and nearby alliance support.",
+            "Treat Peace Shield as scheduled risk control, not emergency panic usage.",
+            "Track your server-specific event behavior and update your own playbook each week."
+          ]
+        }
+      ],
+      related: ["day-peace", "day-growth", "resource-shield"],
+      sources: ["Last Z Wiki: Useful tips", "Last Z Wiki: Beginner tips", "Community practice notes"]
+    },
+    {
+      id: "resource-buildings",
+      group: "resources",
+      badge: "System",
+      title: "Buildings Overview",
+      summary: "Practical building priorities adapted from Last Z Wiki building references, focused on progression bottlenecks.",
+      sections: [
+        {
+          title: "Core upgrade priorities",
+          items: [
+            "Headquarters path comes first because it gates most systems, research and higher-tier training options.",
+            "Keep builder usage tight: prioritize buildings that unlock the next meaningful upgrade chain.",
+            "Avoid spending speedups on low-impact side upgrades during core progression windows."
+          ]
+        },
+        {
+          title: "Synergy with event days",
+          items: [
+            "Pre-stage long construction timers so final completions land on Shelter Upgrade day.",
+            "Align building goals with lab and troop bottlenecks to avoid idle days between event types.",
+            "Review resource and prerequisite costs before reset so construction decisions are fast and deliberate."
+          ]
+        }
+      ],
+      related: ["type-shelter", "day-shelter", "type-science"],
+      sources: ["Last Z Wiki: Buildings", "Last Z Wiki: Beginner tips"]
+    },
     {
       id: "resource-radar",
       group: "resources",

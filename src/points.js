@@ -28,6 +28,7 @@ const BOOMER_LEVEL_REWARD = [
 export const SCORE_TABLE = {
   "type-vehicle": {
     title: "Mod Vehicle Boost",
+    disableConversion: true,
     entries: [
       { action: "Consume 1 Modification Blueprint", basePoints: 4 },
       { action: "Consume 1 Golden Wrench", basePoints: 600 },
@@ -40,6 +41,7 @@ export const SCORE_TABLE = {
   },
   "type-shelter": {
     title: "Shelter Upgrade",
+    disableConversion: true,
     entries: [
       { action: "Increase Structure Power by 10", basePoints: 1 },
       { action: "Use 1-min Construction Speedup", basePoints: 10 }
@@ -47,6 +49,7 @@ export const SCORE_TABLE = {
   },
   "type-science": {
     title: "Age of Science",
+    disableConversion: true,
     entries: [
       { action: "Increase Tech Power by 10", basePoints: 1 },
       { action: "Use 1-min Research Speedup", basePoints: 10 }
@@ -54,6 +57,7 @@ export const SCORE_TABLE = {
   },
   "type-hero": {
     title: "Hero Initiative",
+    disableConversion: true,
     entries: [
       { action: "Perform 1 Prime Recruit", basePoints: 400 },
       { action: "Consume 2,000 Hero EXP", basePoints: 1 }
@@ -61,8 +65,34 @@ export const SCORE_TABLE = {
   },
   "type-army": {
     title: "Army Expansion",
+    disableConversion: true,
     entries: [
       { action: "Train and assemble 1 Lv. 1 Unit", basePoints: 55 }
+    ]
+  },
+  "day-growth": {
+    title: "Day 5 points",
+    enableBonusInput: true,
+    entries: [
+      { action: "Use a total of 1 min of Speedups", basePoints: 87 },
+      { action: "Increase Structure power by 10 points", basePoints: 2 },
+      { action: "Increase Tech Power by 10 points", basePoints: 2 },
+      { action: "Complete 1 radar events", basePoints: 10800 },
+      { action: "Train and assemble 1 Lv.1 Unit", basePoints: 100 },
+      { action: "Train and assemble 1 Lv.2 Unit", basePoints: 152 },
+      { action: "Train and assemble 1 Lv.3 Unit", basePoints: 200 },
+      { action: "Train and assemble 1 Lv.4 Unit", basePoints: 252 },
+      { action: "Train and assemble 1 Lv.5 Unit", basePoints: 304 },
+      { action: "Train and assemble 1 Lv.6 Unit", basePoints: 348 },
+      { action: "Train and assemble 1 Lv.7 Unit", basePoints: 400 },
+      { action: "Train and assemble 1 Lv.8 Unit", basePoints: 457 },
+      { action: "Train and assemble 1 Lv.9 Unit", basePoints: 500 },
+      { action: "Train and assemble 1 Lv.10 Unit", basePoints: 555 },
+      { action: "Buy packs containing Diamonds [1 Diamonds]", basePoints: 30 },
+      {
+        action: "Promote Units (points = target level points - source level points)",
+        basePoints: 0
+      }
     ]
   },
   "enemy-zombie": {

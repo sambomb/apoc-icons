@@ -29,6 +29,60 @@ function guideSummary(guide){
   return T.guideSummaries?.[guide.id] || guide.summary
 }
 
+function escapeRegExp(value){
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+function renderGuideItem(guideId, item){
+  const text = String(item)
+  if(guideId !== "type-vehicle") return escapeHtml(text)
+
+  const links = [
+    { term: "Modification Blueprints", id: "resource-blueprints" },
+    { term: "Modification Blueprint", id: "resource-blueprints" },
+    { term: "Golden Wrenches", id: "resource-wrenches" },
+    { term: "Golden Wrench", id: "resource-wrenches" },
+    { term: "Boomers", id: "enemy-boomer" },
+    { term: "Boomer", id: "enemy-boomer" },
+    { term: "Radar Events", id: "resource-radar" },
+    { term: "Radar", id: "resource-radar" },
+    { term: "Laura", id: "hero-laura" }
+  ]
+
+  const linksByTerm = new Map(links.map((entry) => [entry.term.toLowerCase(), entry.id]))
+  const pattern = new RegExp(
+    links
+      .map((itemLink) => itemLink.term)
+      .sort((a, b) => b.length - a.length)
+      .map((term) => escapeRegExp(term))
+      .join("|"),
+    "gi"
+  )
+  let cursor = 0
+  let html = ""
+
+  text.replace(pattern, (match, offset) => {
+    const lead = text.slice(cursor, offset)
+    html += escapeHtml(lead)
+    const linkedId = linksByTerm.get(match.toLowerCase())
+    if(linkedId){
+      html += `<a class="inline-guide-link" href="${getGuidePath(linkedId)}">${escapeHtml(match)}</a>`
+    } else {
+      html += escapeHtml(match)
+    }
+    cursor = offset + match.length
+    return match
+  })
+
+  html += escapeHtml(text.slice(cursor))
+  return html
+}
+
+function roundBonusPoints(basePoints, bonusPercent){
+  const factor = 1 + bonusPercent / 100
+  return Math.round(basePoints * factor)
+}
+
 function withBase(path){
   const normalizedBase = BASE_URL.endsWith("/") ? BASE_URL : `${BASE_URL}/`
   return `${normalizedBase}${String(path).replace(/^\/+/, "")}`
@@ -82,24 +136,40 @@ function renderGuidePage(guideId){
   }
 
   const scoreSection = SCORE_TABLE[guideId]
+  const showDisplayedEstimate = !scoreSection?.disableConversion
+  const hasBonusInput = Boolean(scoreSection?.enableBonusInput)
+  const displayedHeader = showDisplayedEstimate
+    ? `<th>${escapeHtml(safeText(T.scoreDisplayed, "Displayed estimate"))}</th>`
+    : ""
+  const bonusHeader = hasBonusInput
+    ? `<th>${escapeHtml(safeText(T.scoreWithBonus, "With bonus"))}</th>`
+    : ""
   const scoreHtml = scoreSection
     ? `
       <section class="guide-detail-card">
         <h3>${escapeHtml(safeText(T.scoreSectionTitle, "Score table (base points)"))}</h3>
+        ${hasBonusInput ? `
+          <div class="bonus-control">
+            <label for="bonusPercentInput">${escapeHtml(safeText(T.bonusPercentLabel, "Bonus points (%)"))}</label>
+            <input id="bonusPercentInput" type="number" min="0" step="0.1" value="0">
+          </div>
+        ` : ""}
         <table class="score-table">
           <thead>
             <tr>
               <th>${escapeHtml(safeText(T.scoreAction, "Action"))}</th>
               <th>${escapeHtml(safeText(T.scoreBase, "Base points"))}</th>
-              <th>${escapeHtml(safeText(T.scoreDisplayed, "Displayed estimate"))}</th>
+              ${displayedHeader}
+              ${bonusHeader}
             </tr>
           </thead>
           <tbody>
             ${scoreSection.entries.map((entry) => `
-              <tr>
+              <tr data-base-points="${entry.basePoints}">
                 <td>${escapeHtml(entry.action)}</td>
                 <td>${entry.basePoints}</td>
-                <td>${Math.round(entry.basePoints * DISPLAY_TO_BASE_DIVISOR)}</td>
+                ${showDisplayedEstimate ? `<td>${Math.round(entry.basePoints * DISPLAY_TO_BASE_DIVISOR)}</td>` : ""}
+                ${hasBonusInput ? `<td class="score-bonus-value">${entry.basePoints}</td>` : ""}
               </tr>
             `).join("")}
           </tbody>
@@ -128,7 +198,7 @@ function renderGuidePage(guideId){
         ${guide.sections.map((section) => `
           <section class="guide-detail-card">
             <h3>${escapeHtml(section.title)}</h3>
-            <ul>${section.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+            <ul>${section.items.map((item) => `<li>${renderGuideItem(guide.id, item)}</li>`).join("")}</ul>
           </section>
         `).join("")}
       </section>
@@ -166,6 +236,27 @@ function renderPointConverter(){
     event.preventDefault()
     update()
   })
+
+  input.addEventListener("input", update)
+  update()
+}
+
+function hookBonusCalculator(){
+  const input = document.getElementById("bonusPercentInput")
+  if(!input) return
+
+  const rows = Array.from(document.querySelectorAll(".score-table tbody tr[data-base-points]"))
+  const update = () => {
+    const bonusPercent = Number(input.value)
+    const safeBonus = Number.isFinite(bonusPercent) ? bonusPercent : 0
+
+    rows.forEach((row) => {
+      const basePoints = Number(row.dataset.basePoints)
+      const output = row.querySelector(".score-bonus-value")
+      if(!output || !Number.isFinite(basePoints)) return
+      output.textContent = String(roundBonusPoints(basePoints, safeBonus))
+    })
+  }
 
   input.addEventListener("input", update)
   update()
@@ -223,9 +314,14 @@ async function init(){
   if(basePointsLabel) basePointsLabel.textContent = safeText(T.scoreBase, "Base points") + ":"
 
   const guideId = document.body.dataset.guideId || ""
+  const converterSection = document.querySelector(".point-converter")
+  if(converterSection && guideId.startsWith("type-")){
+    converterSection.hidden = true
+  }
   renderMenu(guideId)
   renderGuidePage(guideId)
   renderPointConverter()
+  hookBonusCalculator()
   renderDonationPanel()
 }
 

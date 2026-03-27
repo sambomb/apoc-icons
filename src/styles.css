@@ -75,6 +75,8 @@ a{color:inherit;text-decoration:none}
 }
 
 .hero-panel{
+	position:relative;
+	z-index:80;
 	padding:28px;
 	display:grid;
 	grid-template-columns:minmax(0,1.4fr) minmax(320px, .9fr);
@@ -126,6 +128,11 @@ a{color:inherit;text-decoration:none}
 
 .menu-shell{width:100%}
 
+.guide-page-top{
+	position:relative;
+	z-index:80;
+}
+
 .main-menu{
 	margin:0;
 	padding:0;
@@ -134,9 +141,14 @@ a{color:inherit;text-decoration:none}
 	flex-wrap:wrap;
 	gap:10px;
 	justify-content:flex-end;
+	position:relative;
+	z-index:81;
 }
 
-.menu-group{position:relative}
+.menu-group{
+	position:relative;
+	z-index:82;
+}
 
 .submenu{
 	position:absolute;
@@ -151,7 +163,7 @@ a{color:inherit;text-decoration:none}
 	background:var(--panel-strong);
 	box-shadow:0 20px 36px rgba(23,32,51,.14);
 	display:none;
-	z-index:30;
+	z-index:200;
 }
 
 .menu-group.open .submenu,
@@ -412,6 +424,25 @@ th{
 	margin-top:16px;
 }
 
+.bonus-control{
+	display:flex;
+	align-items:center;
+	gap:10px;
+	margin:12px 0 14px;
+	color:var(--muted);
+	font-size:.92rem;
+}
+
+.bonus-control input{
+	width:130px;
+	padding:8px 10px;
+	border:1px solid var(--line);
+	border-radius:10px;
+	font:inherit;
+	background:var(--panel-strong);
+	color:var(--ink);
+}
+
 .cell.active{
 	outline:3px solid rgba(31,122,114,.6);
 	outline-offset:-3px;
@@ -472,6 +503,18 @@ th{
 	margin:0;
 	padding-left:18px;
 	line-height:1.6;
+}
+
+.inline-guide-link{
+	text-decoration:underline;
+	text-decoration-thickness:1.5px;
+	text-underline-offset:2px;
+	color:var(--teal);
+	font-weight:700;
+}
+
+.inline-guide-link:hover{
+	color:var(--accent);
 }
 
 #guideCollections{

@@ -58,6 +58,8 @@ guideTitles:{
 "resource-wrenches":"Golden Wrenches",
 "resource-blueprints":"Modification Blueprints",
 "resource-point-rules":"Point Rules and Base Conversion",
+"resource-general-tips":"General Tips",
+"resource-buildings":"Buildings Overview",
 "enemy-units":"Enemy Units and Target Priority"
 },
 guideSummaries:{

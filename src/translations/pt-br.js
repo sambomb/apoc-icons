@@ -58,6 +58,8 @@ guideTitles:{
 "resource-wrenches":"Golden Wrenches",
 "resource-blueprints":"Modification Blueprints",
 "resource-point-rules":"Regras de Pontuação e Conversão Base",
+"resource-general-tips":"Dicas Gerais",
+"resource-buildings":"Visão Geral de Prédios",
 "enemy-units":"Inimigos e Prioridade de Alvos"
 },
 guideSummaries:{
