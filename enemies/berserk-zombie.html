@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZCalendar Guide</title>
+<link rel="stylesheet" href="../src/styles.css">
+</head>
+<body data-guide-id="enemy-berserk-zombie">
+<div class="guide-page-shell">
+<header class="panel guide-page-top">
+<h2 id="pageBrand">ZCalendar</h2>
+<div class="controls">
+<select id="langSelect"></select>
+</div>
+<nav class="menu-shell" aria-label="Main navigation">
+<ul class="main-menu" id="siteMenu"></ul>
+</nav>
+</header>
+
+<main class="panel" id="guidePageContent"></main>
+
+<section class="point-converter" aria-label="Point converter">
+<h3 id="converterTitle">Point converter</h3>
+<p id="converterHelp">Base = round(Displayed / 2.17), minimum 1.</p>
+<form id="pointConverterForm">
+<input id="displayedPointsInput" type="number" min="1" value="217">
+<button type="submit" id="converterButton">Convert</button>
+</form>
+<p><span id="basePointsLabel">Base points:</span> <strong id="basePointsOutput">100</strong></p>
+</section>
+</div>
+<script type="module" src="../src/page-main.js"></script>
+</body>
+</html>

@@ -8,15 +8,55 @@
 <link rel="stylesheet" href="src/styles.css">
 </head>
 <body>
-<div id="app">
+<div id="app" class="app-shell">
+<header class="hero-panel">
+<div class="hero-copy">
+<p class="section-kicker" id="heroEyebrow"></p>
+<h1 id="heroTitle">ZCalendar</h1>
+<p id="heroIntro"></p>
+</div>
 
-<div id="topBar">
-<div id="currentEventBar"></div>
+<div class="hero-tools">
+<nav class="menu-shell" aria-label="Main navigation">
+<ul class="main-menu" id="siteMenu">
+</ul>
+</nav>
 
 <div class="controls">
 <button id="timeBtn">24H</button>
 <select id="langSelect"></select>
 </div>
+</div>
+</header>
+
+<section class="stats-strip">
+<article class="stat-card">
+<strong id="statEventsCount">0</strong>
+<span id="statEventsLabel"></span>
+</article>
+<article class="stat-card">
+<strong id="statDaysCount">0</strong>
+<span id="statDaysLabel"></span>
+</article>
+<article class="stat-card">
+<strong id="statResourcesCount">0</strong>
+<span id="statResourcesLabel"></span>
+</article>
+</section>
+
+<section class="points-banner panel" id="pointsNotice"></section>
+
+<section class="panel" id="calendar">
+<div class="section-head">
+<div>
+<p class="section-kicker">Live Rotation</p>
+<h2 id="calendarHeading"></h2>
+</div>
+<p id="calendarIntro"></p>
+</div>
+
+<div id="topBar">
+<div id="currentEventBar"></div>
 </div>
 
 <div id="alertBar"></div>
@@ -30,13 +70,39 @@
 <button data-filter="science"></button>
 </div>
 
+<div class="table-wrap">
 <table>
 <thead><tr id="tableHead"></tr></thead>
 <tbody id="tableBody"></tbody>
 </table>
+</div>
 
 <div id="timeInfo"></div>
+</section>
 
+<section class="panel" id="guides">
+<div class="section-head">
+<div>
+<p class="section-kicker">Guide Hub</p>
+<h2 id="guidesHeading"></h2>
+</div>
+<p id="guidesIntro"></p>
+</div>
+
+<div id="guideCollections"></div>
+</section>
+
+<section class="panel" id="guideDetailSection" hidden>
+<div id="guideDetail"></div>
+</section>
+
+<footer class="panel footer-panel" id="sources">
+<p class="section-kicker">Sources</p>
+<h2 id="sourcesHeading"></h2>
+<p id="sourcesBody"></p>
+</footer>
+
+<section class="panel donate-panel" id="donatePanel"></section>
 </div>
 <script type="module" src="src/main.js"></script>
 </body>
