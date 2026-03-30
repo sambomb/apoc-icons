@@ -1,3 +1,5 @@
+import "flag-icons/css/flag-icons.min.css"
+
 // Importar tradução explicitamente para evitar problemas de glob em iframes
 import * as enMod from './translations/en.js'
 import * as ptBrMod from './translations/pt-br.js'
@@ -94,28 +96,36 @@ function cleanStoredLang() {
 }
 
 export const LANGS = [
-  { code: "en", flag: "🇺🇸", name: "English" },
-  { code: "pt-br", flag: "🇧🇷", name: "Português (BR)" },
-  { code: "pt-pt", flag: "🇵🇹", name: "Português (PT)" },
-  { code: "es", flag: "🇪🇸", name: "Español" },
-  { code: "fr", flag: "🇫🇷", name: "Français" },
-  { code: "de", flag: "🇩🇪", name: "Deutsch" },
-  { code: "it", flag: "🇮🇹", name: "Italiano" },
-  { code: "ru", flag: "🇷🇺", name: "Русский" },
-  { code: "zh", flag: "🇨🇳", name: "中文" },
-  { code: "ja", flag: "🇯🇵", name: "日本語" },
-  { code: "ko", flag: "🇰🇷", name: "한국어" },
-  { code: "hi", flag: "🇮🇳", name: "हिन्दी" },
-  { code: "bn", flag: "🇧🇩", name: "বাংলা" },
-  { code: "mr", flag: "🇮🇳", name: "मराठी" },
-  { code: "ar", flag: "🇸🇦", name: "العربية" },
-  { code: "ur", flag: "🇵🇰", name: "اردو" },
-  { code: "id", flag: "🇮🇩", name: "Bahasa Indonesia" },
-  { code: "tr", flag: "🇹🇷", name: "Türkçe" },
-  { code: "pl", flag: "🇵🇱", name: "Polski" },
+  { code: "en", flag: "🇺🇸", flagCode: "us", name: "English" },
+  { code: "pt-br", flag: "🇧🇷", flagCode: "br", name: "Português (BR)" },
+  { code: "pt-pt", flag: "🇵🇹", flagCode: "pt", name: "Português (PT)" },
+  { code: "es", flag: "🇪🇸", flagCode: "es", name: "Español" },
+  { code: "fr", flag: "🇫🇷", flagCode: "fr", name: "Français" },
+  { code: "de", flag: "🇩🇪", flagCode: "de", name: "Deutsch" },
+  { code: "it", flag: "🇮🇹", flagCode: "it", name: "Italiano" },
+  { code: "ru", flag: "🇷🇺", flagCode: "ru", name: "Русский" },
+  { code: "zh", flag: "🇨🇳", flagCode: "cn", name: "中文" },
+  { code: "ja", flag: "🇯🇵", flagCode: "jp", name: "日本語" },
+  { code: "ko", flag: "🇰🇷", flagCode: "kr", name: "한국어" },
+  { code: "hi", flag: "🇮🇳", flagCode: "in", name: "हिन्दी" },
+  { code: "bn", flag: "🇧🇩", flagCode: "bd", name: "বাংলা" },
+  { code: "mr", flag: "🇮🇳", flagCode: "in", name: "मराठी" },
+  { code: "ar", flag: "🇸🇦", flagCode: "sa", name: "العربية" },
+  { code: "ur", flag: "🇵🇰", flagCode: "pk", name: "اردو" },
+  { code: "id", flag: "🇮🇩", flagCode: "id", name: "Bahasa Indonesia" },
+  { code: "tr", flag: "🇹🇷", flagCode: "tr", name: "Türkçe" },
+  { code: "pl", flag: "🇵🇱", flagCode: "pl", name: "Polski" },
   { code: "sw", flag: "🇰🇪", name: "Kiswahili" },
   { code: "auto", flag: "🌐", name: "Outros (Auto Detectar)" }
 ].map((lang) => ({ ...lang, label: `${lang.flag} ${lang.name}` }))
+
+function renderLangFlag(lang){
+  if(lang.flagCode){
+    return `<span class="fi fi-${lang.flagCode} lang-option-flag-icon" aria-hidden="true"></span>`
+  }
+
+  return `<span class="lang-option-flag" aria-hidden="true">${lang.flag || "🌐"}</span>`
+}
 
 export async function loadLang(lang){
   cleanStoredLang()
@@ -261,7 +271,7 @@ export function buildLangSelect(){
     const selectedCode = combo.getAttribute("data-current-lang") || "en"
     const selectedLang = LANGS.find((lang) => lang.code === selectedCode) || LANGS[0]
     triggerContent.innerHTML = `
-      <span class="lang-option-flag" aria-hidden="true">${selectedLang.flag}</span>
+      ${renderLangFlag(selectedLang)}
       <span class="lang-option-name">${selectedLang.name}</span>
     `
   }
@@ -290,7 +300,7 @@ export function buildLangSelect(){
       const activeClass = lang.code === selectedCode ? " active" : ""
       return `
         <button type="button" class="lang-combobox-option${activeClass}" role="option" data-lang="${lang.code}" aria-selected="${lang.code === selectedCode}">
-          <span class="lang-option-flag" aria-hidden="true">${lang.flag}</span>
+          ${renderLangFlag(lang)}
           <span class="lang-option-name">${lang.name}</span>
         </button>
       `
