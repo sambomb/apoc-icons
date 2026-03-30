@@ -732,6 +732,11 @@ th{
 	display:block;
 }
 
+.hero-portrait-zoom{
+	transform:scale(1.28);
+	transform-origin:center 26%;
+}
+
 .hero-card-portrait-wrap{
 	display:grid;
 	place-items:center;

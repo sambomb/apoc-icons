@@ -113,7 +113,8 @@ async function localizeGuideContent(guide){
 
 function renderGuidePortrait(guide){
   if(guide.image){
-    return `<div class="guide-card-portrait-wrap"><img class="guide-card-portrait" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
+    const heroImageClass = guide.id.startsWith("hero-") ? " hero-portrait-zoom" : ""
+    return `<div class="guide-card-portrait-wrap"><img class="guide-card-portrait${heroImageClass}" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
   }
 
   if(!guide.id.startsWith("hero-")) return ""
@@ -129,7 +130,8 @@ function renderGuidePortrait(guide){
 
 function getGuideDetailPortrait(guide){
   if(guide.image){
-    return `<div class="guide-portrait-wrap"><img class="guide-portrait" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
+    const heroImageClass = guide.id.startsWith("hero-") ? " hero-portrait-zoom" : ""
+    return `<div class="guide-portrait-wrap"><img class="guide-portrait${heroImageClass}" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
   }
 
   if(!guide.id.startsWith("hero-")) return ""
@@ -709,17 +711,28 @@ function applyTranslations(){
   document.getElementById("calendarIntro").textContent = textOr(T.calendarIntro, "Use the live table to see the current slot, the next slot and the local date for every 4-hour cycle.")
   const calendarKicker = document.querySelector("#calendar .section-kicker")
   if(calendarKicker) calendarKicker.textContent = textOr(T.calendarKicker, "Live Schedule")
-  document.getElementById("guidesHeading").textContent = textOr(T.guidesHeading, "Guide pages")
-  document.getElementById("guidesIntro").textContent = textOr(T.guidesIntro, "Open the pages below for event-type strategy, day planning and system references built from community sources.")
+
+  const guidesHeadingEl = document.getElementById("guidesHeading")
+  if(guidesHeadingEl) guidesHeadingEl.textContent = textOr(T.guidesHeading, "Guide pages")
+
+  const guidesIntroEl = document.getElementById("guidesIntro")
+  if(guidesIntroEl) guidesIntroEl.textContent = textOr(T.guidesIntro, "Open the pages below for event-type strategy, day planning and system references built from community sources.")
+
   const guidesKicker = document.querySelector("#guideHubCta .section-kicker")
   if(guidesKicker) guidesKicker.textContent = textOr(T.guidesKicker, "Guide Hub")
+
   const openHubLink = document.getElementById("openGuideHubLink")
   if(openHubLink){
     openHubLink.href = getGuidesHubPath()
     openHubLink.textContent = textOr(T.guideOpen, "Open page")
   }
-  document.getElementById("sourcesHeading").textContent = textOr(T.sourcesHeading, "Source base")
-  document.getElementById("sourcesBody").textContent = textOr(T.sourcesBody, "This guide hub is written as original summaries based on community references from Last Z Wiki, Fandom, LastZData and Sardinha's notes. Reconfirm live values in-game because server rules and seasonal content can change.")
+
+  const sourcesHeadingEl = document.getElementById("sourcesHeading")
+  if(sourcesHeadingEl) sourcesHeadingEl.textContent = textOr(T.sourcesHeading, "Source base")
+
+  const sourcesBodyEl = document.getElementById("sourcesBody")
+  if(sourcesBodyEl) sourcesBodyEl.textContent = textOr(T.sourcesBody, "This guide hub is written as original summaries based on community references from Last Z Wiki, Fandom, LastZData and Sardinha's notes. Reconfirm live values in-game because server rules and seasonal content can change.")
+
   const sourceLinksEl = document.getElementById("sourceLinks")
   if(sourceLinksEl){
     const links = [

@@ -60,7 +60,8 @@ async function localizeGuideContent(guide){
 
 function renderGuidePortrait(guide){
   if(guide.image){
-    return `<div class="guide-card-portrait-wrap"><img class="guide-card-portrait" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
+    const heroImageClass = guide.id.startsWith("hero-") ? " hero-portrait-zoom" : ""
+    return `<div class="guide-card-portrait-wrap"><img class="guide-card-portrait${heroImageClass}" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
   }
 
   if(!guide.id.startsWith("hero-")) return ""

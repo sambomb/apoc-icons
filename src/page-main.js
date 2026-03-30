@@ -173,7 +173,8 @@ function linkifyText(text){
 
 function getPortraitHtml(guide){
   if(guide.image){
-    return `<div class="guide-portrait-wrap"><img class="guide-portrait" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
+    const heroImageClass = guide.id.startsWith("hero-") ? " hero-portrait-zoom" : ""
+    return `<div class="guide-portrait-wrap"><img class="guide-portrait${heroImageClass}" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
   }
 
   if(!guide.id.startsWith("hero-")) return ""
