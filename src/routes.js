@@ -71,11 +71,23 @@ export const GUIDE_ROUTES = [
 
   { id: "resource-radar", path: "missions/radar.html", group: "missions" },
   { id: "resource-bounty", path: "missions/bounty.html", group: "missions" },
-  { id: "resource-interstate-truck", path: "missions/interstate-truck.html", group: "missions" },
+  { id: "resource-intercity-trades", path: "missions/intercity-trades.html", group: "missions" },
 
   { id: "resource-shield", path: "items/shield.html", group: "items" },
   { id: "resource-wrenches", path: "items/golden-wrenches.html", group: "items" },
   { id: "resource-blueprints", path: "items/modification-blueprints.html", group: "items" },
+  { id: "resource-skill-books", path: "items/skill-books.html", group: "items" },
+  { id: "resource-power-cores", path: "items/power-cores.html", group: "items" },
+  { id: "resource-enhancement-alloys", path: "items/enhancement-alloys.html", group: "items" },
+  { id: "resource-badges", path: "items/badges.html", group: "items" },
+  { id: "resource-diamonds", path: "items/diamonds.html", group: "items" },
+  { id: "resource-prime-recruits", path: "items/prime-recruits.html", group: "items" },
+  { id: "resource-exclusive-equipment-fragments", path: "items/exclusive-equipment-fragments.html", group: "items" },
+  { id: "resource-hero-fragments", path: "items/hero-fragments.html", group: "items" },
+  { id: "resource-refugees", path: "items/refugees.html", group: "items" },
+  { id: "resource-construction-speedups", path: "items/construction-speedups.html", group: "items" },
+  { id: "resource-research-speedups", path: "items/research-speedups.html", group: "items" },
+  { id: "resource-training-speedups", path: "items/training-speedups.html", group: "items" },
 
   { id: "resource-heroes", path: "heroes/index.html", group: "heroes" },
 

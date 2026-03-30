@@ -763,6 +763,13 @@ export const GUIDE_SETS = {
             "Keep fuel, speedups and recruit tickets separated by purpose instead of spending opportunistically.",
             "Use shared alliance notes for Boomer targets, truck routes and bounty timing."
           ]
+        },
+        {
+          title: "Radar claim alert windows",
+          items: [
+            "Do not collect stacked Radar rewards from 00:00-07:59 and 12:00-19:59 Apocalypse Time.",
+            "Prefer collecting Radar rewards during 08:00-11:59 and 20:00-23:59 Apocalypse Time when your plan needs score conversion windows."
+          ]
         }
       ],
       related: ["resource-radar", "resource-shield"],
@@ -785,7 +792,7 @@ export const GUIDE_SETS = {
           ]
         },
         {
-          title: "Tips (validated from Sardinha Day 1)",
+          title: "Tips",
           items: [
             "Collect Modification Blueprints, Golden Wrenches and Fuel during the week and spend on Day 1.",
             "Prioritize the windows 08:00-11:59 and 20:00-23:59 Apocalypse Time for concentrated scoring.",
@@ -793,6 +800,13 @@ export const GUIDE_SETS = {
             "At Radar Intensity 7+, refresh is 8 events every 8h, so stacking before reset is a major advantage.",
             "Laura can generate extra Radar Events; save those claims for Day 1.",
             "Use fuel mainly on Boomers you can defeat reliably; creep points per fuel are usually weaker than Boomer routes."
+          ]
+        },
+        {
+          title: "Radar claim alert windows",
+          items: [
+            "Do not collect stacked Radar rewards from 00:00-07:59 and 12:00-19:59 Apocalypse Time.",
+            "Prefer collecting Radar rewards during 08:00-11:59 and 20:00-23:59 Apocalypse Time for Day 1 scoring bursts."
           ]
         },
         {
@@ -907,9 +921,16 @@ export const GUIDE_SETS = {
             "Radar stacking can be prepared here so claims are released on the exact event windows where they score better.",
             "Refresh and verify Peace Shield timers on Day 5 so you enter Day 6 with safe coverage."
           ]
+        },
+        {
+          title: "Radar claim alert windows",
+          items: [
+            "Do not collect stacked Radar rewards from 00:00-07:59 and 12:00-19:59 Apocalypse Time.",
+            "Prefer collecting Radar rewards during 08:00-11:59 and 20:00-23:59 Apocalypse Time when preparing Day 6 transitions."
+          ]
         }
       ],
-      related: ["resource-radar", "resource-bounty", "resource-interstate-truck"],
+      related: ["resource-radar", "resource-bounty", "resource-intercity-trades"],
       sources: ["Sardinha index: Day 5", "Last Z Wiki: tips page"]
     },
     {
@@ -1177,18 +1198,241 @@ export const GUIDE_SETS = {
       sources: ["Fandom: Full Preparedness", "Sardinha guide: Day 1"]
     },
     {
-      id: "resource-interstate-truck",
+      id: "resource-skill-books",
+      group: "resources",
+      badge: "Item",
+      title: "Skill Books",
+      summary: "Skill Books are best saved for Hero Initiative bursts where one focused upgrade path gives better score efficiency.",
+      sections: [
+        {
+          title: "Why they matter",
+          items: [
+            "Skill Books directly convert into hero progression during Hero Initiative.",
+            "Focused upgrades on your main lineup usually outperform spreading books across many side heroes."
+          ]
+        },
+        {
+          title: "Practical use",
+          items: [
+            "Save books for Day 4 windows and pair them with Hero Fragments and Prime Recruits.",
+            "Prioritize skill levels that change march survivability or damage breakpoints first."
+          ]
+        }
+      ],
+      related: ["day-hero", "type-hero", "resource-hero-fragments", "resource-prime-recruits"],
+      sources: ["Community planning notes", "Hero progression references"]
+    },
+    {
+      id: "resource-power-cores",
+      group: "resources",
+      badge: "Item",
+      title: "Power Cores",
+      summary: "Power Cores are Hero Initiative consumables and should be timed with your highest-value hero upgrade windows.",
+      sections: [
+        {
+          title: "Usage model",
+          items: [
+            "Batch core spending with other Day 4 materials instead of using them on random days.",
+            "Track your core stock to avoid partial upgrades that do not finish a meaningful breakpoint."
+          ]
+        }
+      ],
+      related: ["day-hero", "type-hero", "resource-skill-books"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-enhancement-alloys",
+      group: "resources",
+      badge: "Item",
+      title: "Enhancement Alloys",
+      summary: "Enhancement Alloys are best consumed in planned hero-equipment bursts to avoid fragmenting progression.",
+      sections: [
+        {
+          title: "Best practice",
+          items: [
+            "Use alloys when you can finish an equipment threshold instead of splitting tiny upgrades.",
+            "Pair alloy spending with Exclusive Equipment Fragments during Hero Initiative windows."
+          ]
+        }
+      ],
+      related: ["day-hero", "resource-exclusive-equipment-fragments"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-badges",
+      group: "resources",
+      badge: "Item",
+      title: "Badges",
+      summary: "Badges are core research currency; disciplined saving for science windows prevents low-value leak spending.",
+      sections: [
+        {
+          title: "Best use",
+          items: [
+            "Spend badges during Age of Science to stack score and progression together.",
+            "Plan badge usage around prerequisite chains so each unlock advances the next objective."
+          ]
+        }
+      ],
+      related: ["day-science", "type-science", "resource-research-speedups"],
+      sources: ["Laboratory references", "Community planning notes"]
+    },
+    {
+      id: "resource-diamonds",
+      group: "resources",
+      badge: "Item",
+      title: "Diamonds",
+      summary: "Diamonds touch multiple scoring categories, so use them only on purchases aligned with the current event objective.",
+      sections: [
+        {
+          title: "Spending discipline",
+          items: [
+            "Avoid impulsive diamond use outside event windows that convert to useful score.",
+            "Track diamond sinks by day so purchases contribute to your planned chest path."
+          ]
+        }
+      ],
+      related: ["day-hero", "day-growth", "day-shelter", "day-science"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-prime-recruits",
+      group: "resources",
+      badge: "Item",
+      title: "Prime Recruits",
+      summary: "Prime Recruits should be pooled for Hero Initiative rather than consumed on low-impact days.",
+      sections: [
+        {
+          title: "Recruit timing",
+          items: [
+            "Use Prime Recruits during Day 4 to pair pull value with event scoring.",
+            "If possible, synchronize with Hero Fragments and Skill Books for one consolidated push."
+          ]
+        }
+      ],
+      related: ["day-hero", "type-hero", "resource-hero-fragments"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-exclusive-equipment-fragments",
+      group: "resources",
+      badge: "Item",
+      title: "Exclusive Equipment Fragments",
+      summary: "Exclusive Equipment Fragments are premium hero power materials and should be committed only to your active main lineup.",
+      sections: [
+        {
+          title: "Priority model",
+          items: [
+            "Prioritize heroes you field daily in rallies and PvP.",
+            "Delay upgrades on secondary heroes until core march equipment is stable."
+          ]
+        }
+      ],
+      related: ["day-hero", "resource-enhancement-alloys", "resource-heroes"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-hero-fragments",
+      group: "resources",
+      badge: "Item",
+      title: "Hero Fragments",
+      summary: "Hero Fragments are highest value when spent in concentrated star-level pushes during Hero Initiative.",
+      sections: [
+        {
+          title: "Fragment strategy",
+          items: [
+            "Pool fragments by target hero and avoid splitting between too many projects.",
+            "Use Day 4 as your default spend point unless a server-specific event changes priorities."
+          ]
+        }
+      ],
+      related: ["day-hero", "resource-prime-recruits", "resource-skill-books"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-refugees",
+      group: "resources",
+      badge: "System",
+      title: "Refugees",
+      summary: "Refugee recruitment contributes to Shelter-day planning and should be timed with your building and speedup flow.",
+      sections: [
+        {
+          title: "Recruit planning",
+          items: [
+            "Save higher-value recruitment actions for Shelter Upgrade windows when possible.",
+            "Prioritize refugees that improve long-term city efficiency and task throughput."
+          ]
+        }
+      ],
+      related: ["day-shelter", "type-shelter"],
+      sources: ["Tips references", "Community planning notes"]
+    },
+    {
+      id: "resource-construction-speedups",
+      group: "resources",
+      badge: "Item",
+      title: "Construction Speedups",
+      summary: "Construction Speedups should be staged for Day 2 building completions, not burned reactively.",
+      sections: [
+        {
+          title: "Timing windows",
+          items: [
+            "Use short speedups to close chest breakpoints and long speedups to finish major buildings.",
+            "Always stack alliance help before consuming speedups."
+          ]
+        }
+      ],
+      related: ["day-shelter", "type-shelter", "resource-buildings"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-research-speedups",
+      group: "resources",
+      badge: "Item",
+      title: "Research Speedups",
+      summary: "Research Speedups are most efficient when paired with badge-heavy chains during Age of Science.",
+      sections: [
+        {
+          title: "Usage pattern",
+          items: [
+            "Use speedups to complete prerequisite nodes that unlock your next major tech goal.",
+            "Avoid random single-node spending that does not advance your chosen research chain."
+          ]
+        }
+      ],
+      related: ["day-science", "type-science", "resource-badges"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-training-speedups",
+      group: "resources",
+      badge: "Item",
+      title: "Training Speedups",
+      summary: "Training Speedups are core for Army Expansion and Enemy Buster preparation when timed with queue strategy.",
+      sections: [
+        {
+          title: "Queue control",
+          items: [
+            "Finish high-value training queues during Army Expansion windows.",
+            "Reserve enough speedups for emergency troop replacement before Day 6 pressure periods."
+          ]
+        }
+      ],
+      related: ["day-growth", "type-army", "day-enemy"],
+      sources: ["Community planning notes"]
+    },
+    {
+      id: "resource-intercity-trades",
       group: "resources",
       badge: "Tracking Page",
-      title: "Interstate Truck",
-      summary: "Public source detail was sparse in the pages retrieved, so this page is a safe planning sheet for cross-state truck runs rather than a hard mechanic table.",
+      title: "Intercity Trades",
+      summary: "Intercity Trades are timing-sensitive missions and should be aligned with scoring windows and safe march planning.",
       sections: [
         {
           title: "Use this page for planning",
           items: [
             "Record your server's actual launch windows, route duration and protection rules in-game.",
             "Only send valuable cargo when alliance cover, shield timing and return timing are all clear.",
-            "Align truck activity with quieter windows if Enemy Buster or interstate pressure is active."
+            "Align Intercity Trades activity with quieter windows if Enemy Buster pressure is active."
           ]
         },
         {
@@ -1227,7 +1471,7 @@ export const GUIDE_SETS = {
           ]
         }
       ],
-      related: ["day-growth", "resource-interstate-truck"],
+      related: ["day-growth", "resource-intercity-trades"],
       sources: ["Community planning page", "Verify in-game on your server"]
     },
     {
