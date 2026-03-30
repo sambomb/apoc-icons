@@ -115,23 +115,24 @@ function bindTimeButton(){
   }
 }
 
-function getNextRadarCountdown(currentHour, currentMin, currentSec){
+function getNextRadarCountdown(currentHour, currentMin){
   const radarHours = [0, 8, 16]
-  const currentTotalSeconds = currentHour * 3600 + currentMin * 60 + currentSec
 
-  let minDiffSeconds = 24 * 3600
+  let nextHour = Math.ceil((currentHour + currentMin / 60) / 4) * 4
+  if(nextHour === 24) nextHour = 0
 
-  radarHours.forEach((hour) => {
-    let diffSeconds = hour * 3600 - currentTotalSeconds
-    if(diffSeconds <= 0) diffSeconds += 24 * 3600
-    if(diffSeconds < minDiffSeconds){
-      minDiffSeconds = diffSeconds
-    }
-  })
+  while(!radarHours.includes(nextHour)){
+    nextHour = (nextHour + 4) % 24
+  }
 
   return {
-    hours: Math.floor(minDiffSeconds / 3600),
-    minutes: Math.floor((minDiffSeconds % 3600) / 60)
+    minutes: (60 - currentMin) % 60,
+    hours: (() => {
+      let diffHours = (nextHour - currentHour + 24) % 24
+      if(((60 - currentMin) % 60) !== 0) diffHours--
+      if(diffHours < 0) diffHours = 23
+      return diffHours
+    })()
   }
 }
 
@@ -147,7 +148,6 @@ function updateDayPageStatus(guideId){
   const currentDay = now.getUTCDay()
   const currentHour = now.getUTCHours()
   const currentMinute = now.getUTCMinutes()
-  const currentSecond = now.getUTCSeconds()
   const row = Math.floor(currentHour / 4)
   const liveEvent = EVENTS[row]?.[currentDay]
 
@@ -165,7 +165,7 @@ function updateDayPageStatus(guideId){
     const local = getLocal()
     const localStr = formatTime(local, renderManager.text.currentLang)
     const apocStr = formatClockParts(currentHour, currentMinute)
-    const radarCountdown = getNextRadarCountdown(currentHour, currentMinute, currentSecond)
+    const radarCountdown = getNextRadarCountdown(currentHour, currentMinute)
     const nextRadarText = `Next Radar: ${String(radarCountdown.hours).padStart(2, "0")}:${String(radarCountdown.minutes).padStart(2, "0")}`
     timeInfo.textContent = `${safeText(T.localLabel, "Local Time")}: ${localStr} | ${safeText(T.apocLabel, "Apocalypse Time")}: ${apocStr} | ${nextRadarText}`
   }
