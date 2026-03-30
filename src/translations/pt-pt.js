@@ -1,4 +1,6 @@
 export default {
+  menuAllianceDuel: "Duelo da Aliança",
+  menuFullPreparedness: "Preparação Total",
   timeFormat24: "24H",
   timeFormat12: "12H",
   time: "Hora",
