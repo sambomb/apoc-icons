@@ -4,6 +4,20 @@ import { T, CURRENT_LANG } from "./translate.js"
 import { GUIDE_GROUPS, GUIDE_SETS, GUIDE_MAP, GUIDE_STATS } from "./guides.js"
 import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
 import { displayedToBasePoints, POINT_EXAMPLES } from "./points.js"
+import {
+  textOr,
+  escapeHtml,
+  withBasePath,
+  stripSourceAttribution,
+  shouldHideSourceSection,
+  shouldHideSourceItem,
+  linkifyText as sharedLinkifyText,
+  localizeGuideContent as sharedLocalizeGuideContent,
+  guideTitle as sharedGuideTitle,
+  guideSummary as sharedGuideSummary,
+  getHeroInitials,
+  getGuideSections as sharedGetGuideSections
+} from "./guide-helpers.js"
 
 const SERVER_OFFSET = "UTC-2"
 const DONATE_URL = "https://www.paypal.com/donate/?hosted_button_id=EQ4XU8W5PWUBA"
@@ -36,47 +50,21 @@ export function initUI(){
   setInterval(updateAll,1000)
 }
 
-function textOr(value, fallback){
-  return value || fallback
-}
-
-function escapeHtml(value){
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;")
-}
-
 function guideTitle(guide){
-  return T.guideTitles?.[guide.id] || guide.title
+  return sharedGuideTitle(guide, T)
 }
 
 function guideSummary(guide){
-  if(guide.id.startsWith("hero-") && !guide.useGuideSections){
-    return formatTemplate(
-      textOr(T.heroSummaryTemplate, "{name} profile and planning notes for Hero Initiative and long-term roster growth."),
-      { name: guide.title }
-    )
-  }
-  return T.guideSummaries?.[guide.id] || guide.summary
+  return sharedGuideSummary(guide, T)
 }
 
-function formatTemplate(template, values){
-  return Object.entries(values).reduce(
-    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
-    String(template)
-  )
+function linkifyText(text){
+  return sharedLinkifyText(text, GUIDE_MAP, getGuidePath)
 }
 
-function getHeroInitials(name){
-  return String(name)
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() || "")
-    .join("")
+async function localizeGuideContent(guide){
+  const lang = CURRENT_LANG || localStorage.getItem("lang") || "en"
+  return sharedLocalizeGuideContent(guide, lang)
 }
 
 function renderGuidePortrait(guide){
@@ -116,47 +104,7 @@ function getGuideDetailPortrait(guide){
 }
 
 function getGuideSections(guide){
-  if(guide.useGuideSections) return guide.sections
-  if(!guide.id.startsWith("hero-")) return guide.sections
-
-  const sections = [
-    {
-      title: textOr(T.heroSectionProfile, "Profile snapshot"),
-      items: [
-        formatTemplate(textOr(T.heroProfileType, "Type in source list: {tier}."), { tier: guide.tier }),
-        formatTemplate(textOr(T.heroProfileFaction, "Faction: {faction}."), { faction: guide.faction }),
-        textOr(T.heroProfileStars, "Use this page to track star level, equipment breakpoints and daily upgrade targets."),
-        textOr(T.heroProfileMainMarch, "Keep your main march heroes ahead of side rosters during Hero Initiative spending windows.")
-      ]
-    }
-  ]
-
-  if(guide.skillBullets && guide.skillBullets.length > 0){
-    sections.push({
-      title: textOr(T.heroSectionSkills, "Skill planning"),
-      items: guide.skillBullets
-    })
-  } else {
-    sections.push({
-      title: textOr(T.heroSectionSkills, "Skill planning"),
-      items: [
-        textOr(T.heroSkillsCore, "Prioritize the core combat skill used in your main lineup before spreading books across backup heroes."),
-        textOr(T.heroSkillsPassive, "Permanent passives and march-impact skills usually give better long-term value than niche utility upgrades."),
-        textOr(T.heroSkillsBooks, "Save books and fragments for Hero Initiative so skill upgrades contribute to both power growth and event score.")
-      ]
-    })
-  }
-
-  sections.push({
-    title: textOr(T.heroSectionPower, "Power model checklist"),
-    items: [
-      textOr(T.heroPowerLevel, "Hero strength comes from level, stars, skill levels and exclusive equipment."),
-      textOr(T.heroPowerBonuses, "Vehicle boosts, tech, buildings and lineup synergy also change total march performance."),
-      textOr(T.heroPowerBatch, "Batch upgrades during event windows so one resource push completes multiple objectives.")
-    ]
-  })
-
-  return sections
+  return sharedGetGuideSections(guide, T)
 }
 
 function formatGuideLinks(ids){
@@ -232,9 +180,7 @@ function buildStaticShell(){
 }
 
 function withBase(path){
-  if(/^https?:\/\//i.test(String(path))) return String(path)
-  const normalizedBase = BASE_URL.endsWith("/") ? BASE_URL : `${BASE_URL}/`
-  return `${normalizedBase}${String(path).replace(/^\/+/, "")}`
+  return withBasePath(path, BASE_URL)
 }
 
 function renderDonatePanel(){
@@ -636,7 +582,7 @@ function hookGuideRouting(){
   renderRoute()
 }
 
-function renderRoute(){
+async function renderRoute(){
   const rawHash = window.location.hash.replace(/^#/, "")
   const detailSection = document.getElementById("guideDetailSection")
   const guideId = rawHash.startsWith("guide/") ? rawHash.slice(6) : ""
@@ -651,8 +597,17 @@ function renderRoute(){
     return
   }
 
-  const guide = GUIDE_MAP[guideId]
+  const guide = await localizeGuideContent(GUIDE_MAP[guideId])
   const guideSections = getGuideSections(guide)
+    .filter((section) => !shouldHideSourceSection(section.title))
+    .map((section) => ({
+      ...section,
+      title: stripSourceAttribution(section.title),
+      items: (section.items || [])
+        .map((item) => stripSourceAttribution(item))
+        .filter((item) => item && !shouldHideSourceItem(item))
+    }))
+    .filter((section) => section.items.length > 0)
   const portraitHtml = getGuideDetailPortrait(guide)
   detailSection.hidden = false
   document.getElementById("guideDetail").innerHTML = `
@@ -670,7 +625,7 @@ function renderRoute(){
         <section class="guide-detail-card">
           <h3>${escapeHtml(section.title)}</h3>
           <ul>
-            ${section.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+            ${section.items.map((item) => `<li>${linkifyText(item)}</li>`).join("")}
           </ul>
         </section>
       `).join("")}
@@ -679,12 +634,6 @@ function renderRoute(){
       <div class="guide-meta-card">
         <h3>${escapeHtml(textOr(T.guideRelated, "Related pages"))}</h3>
         <div class="guide-link-row">${formatGuideLinks(guide.related)}</div>
-      </div>
-      <div class="guide-meta-card">
-        <h3>${escapeHtml(textOr(T.guideSources, "Source base"))}</h3>
-        <ul>
-          ${guide.sources.map((source) => `<li>${escapeHtml(source)}</li>`).join("")}
-        </ul>
       </div>
     </div>
   `
@@ -717,9 +666,12 @@ function applyTranslations(){
   if(sourceLinksEl){
     const links = [
       { label: "Last Z Wiki", url: "https://lastzwiki.com" },
+      { label: "Last Z Wiki Buildings", url: "https://lastzwiki.com/en/buildings.html" },
       { label: "Last Z Fandom", url: "https://last-z-survival.fandom.com" },
       { label: "LastZ.GG", url: "https://lastz.gg" },
-      { label: "LastZData", url: "https://lastzdata.com" }
+      { label: "LastZData", url: "https://lastzdata.com" },
+      { label: "Sardinha Last Z", url: "https://sites.google.com/view/sardinhalastz" },
+      { label: textOr(T.guideTitles?.["resource-sources"], "All sources page"), url: getGuidePath("resource-sources") }
     ]
     sourceLinksEl.innerHTML = links
       .map((l) => `<a class="source-link-chip" href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(l.label)}</a>`)

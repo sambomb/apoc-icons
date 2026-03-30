@@ -374,29 +374,29 @@ const HERO_ENTRIES = [
 
 function buildHeroSections(hero){
   const aliasNote = hero.sourceAlias
-    ? `Source naming note: this hero is exposed as ${hero.sourceAlias} on one of the public source pages used here.`
+    ? `Naming note: this hero can also appear as ${hero.sourceAlias} in some community pages.`
     : null
 
   return [
     {
-      title: "Source-backed profile",
+      title: "Profile snapshot",
       items: [
         `Type in current guide set: ${hero.tier}.`,
-        `Faction from public sources: ${hero.faction}.`,
-        hero.role ? `Role callout from LastZ.GG: ${hero.role}.` : "Role callout: not explicitly exposed on the fetched public hero pages.",
+        `Faction: ${hero.faction}.`,
+        hero.role ? `Role: ${hero.role}.` : "Role: review in-game role details before spending skill books.",
         hero.priority,
         aliasNote
       ].filter(Boolean)
     },
     {
-      title: "Skill notes from sources",
+      title: "Skill notes",
       items: hero.skillBullets
     },
     {
-      title: "How to use this page",
+      title: "Upgrade checklist",
       items: [
-        "These notes are intentionally limited to what was actually exposed on the fetched public pages from Last Z Wiki, LastZ.GG and Fandom.",
-        "When a hero had no public detailed skill page available, the guide keeps faction, image and priority data source-backed instead of inventing hidden skill values.",
+        "Use this page to keep one main formation priority, then expand side formations after core breakpoints.",
+        "When detailed skill values are unclear, validate in-game before expensive fragment or book decisions.",
         "Recheck the live hero screen in-game before making expensive fragment or book decisions."
       ]
     }
@@ -780,6 +780,7 @@ export const GUIDE_SETS = {
           items: [
             "Spend saved Modification Blueprints and Golden Wrenches first because they are deterministic points.",
             "Use Laura-related radar missions and stored radar claims only after Day 1 turns live.",
+            "Use Mia gathering cycles before reset to sustain your blueprint stock for Day 1.",
             "Favor Boomer rallies you can clear consistently over low-return creep farming."
           ]
         },
@@ -795,15 +796,6 @@ export const GUIDE_SETS = {
           ]
         },
         {
-          title: "Useful base point references (Fandom)",
-          items: [
-            "Consume 1 Modification Blueprint: +4 base points.",
-            "Consume 1 Golden Wrench: +600 base points.",
-            "Group kill Boomer Lv.1-2: +1,600; Lv.3-4: +1,700; Lv.5-6: +1,800; Lv.7-8: +1,900; Lv.9-10: +2,000.",
-            "Creep kills (Lv.1-30 ranges) appear in the +840 to +1,000 base range, typically less efficient than Boomers for fuel."
-          ]
-        },
-        {
           title: "Radar mission handling",
           items: [
             "Before reset, complete radar tasks but leave them unclaimed so they can be released on Day 1 windows.",
@@ -811,7 +803,7 @@ export const GUIDE_SETS = {
           ]
         }
       ],
-      related: ["type-vehicle", "resource-wrenches"],
+      related: ["type-vehicle", "resource-wrenches", "resource-blueprints", "hero-laura", "hero-mia", "enemy-boomer"],
       sources: ["Sardinha guide: Day 1", "Fandom: Full Preparedness", "Fandom: Radar"]
     },
     {
@@ -983,6 +975,35 @@ export const GUIDE_SETS = {
       ],
       related: ["day-peace", "day-growth", "resource-shield"],
       sources: ["Last Z Wiki: Useful tips", "Last Z Wiki: Beginner tips", "Community practice notes"]
+    },
+    {
+      id: "resource-sources",
+      group: "resources",
+      badge: "Reference",
+      title: "All Sources",
+      summary: "Central list of references used in this project.",
+      sections: [
+        {
+          title: "Main websites",
+          items: [
+            "Last Z Wiki: https://lastzwiki.com",
+            "Last Z Wiki Buildings: https://lastzwiki.com/en/buildings.html",
+            "Last Z Fandom: https://last-z-survival.fandom.com",
+            "LastZ.GG: https://lastz.gg",
+            "LastZData: https://lastzdata.com",
+            "Sardinha Last Z: https://sites.google.com/view/sardinhalastz"
+          ]
+        },
+        {
+          title: "Community references mentioned in guides",
+          items: [
+            "Sardinha Day guides (Day 1 to Day 6): https://sites.google.com/view/sardinhalastz",
+            "Community play patterns and user screenshots: internal community references without a public URL in this repository."
+          ]
+        }
+      ],
+      related: ["resource-general-tips", "resource-buildings", "resource-heroes"],
+      sources: ["Consolidated from guide references"]
     },
     {
       id: "resource-buildings",

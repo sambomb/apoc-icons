@@ -1,7 +1,21 @@
 import { loadLang, buildLangSelect, T, detectLang } from "./translate.js"
 import { GUIDE_MAP } from "./guides.js"
 import { MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
-import { SCORE_TABLE, DISPLAY_TO_BASE_DIVISOR } from "./points.js"
+import { SCORE_TABLE } from "./points.js"
+import {
+  textOr,
+  escapeHtml,
+  withBasePath,
+  stripSourceAttribution,
+  shouldHideSourceSection,
+  shouldHideSourceItem,
+  linkifyText as sharedLinkifyText,
+  localizeGuideContent as sharedLocalizeGuideContent,
+  guideTitle as sharedGuideTitle,
+  guideSummary as sharedGuideSummary,
+  getHeroInitials,
+  getGuideSections as sharedGetGuideSections
+} from "./guide-helpers.js"
 
 const DONATE_URL = "https://www.paypal.com/donate/?hosted_button_id=EQ4XU8W5PWUBA"
 const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL)
@@ -9,46 +23,19 @@ const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && impor
   : "/"
 
 function safeText(value, fallback){
-  return value || fallback
-}
-
-function escapeHtml(value){
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;")
+  return textOr(value, fallback)
 }
 
 function guideTitle(guide){
-  return T.guideTitles?.[guide.id] || guide.title
+  return sharedGuideTitle(guide, T)
 }
 
 function guideSummary(guide){
-  if(guide.id.startsWith("hero-") && !guide.useGuideSections){
-    return formatTemplate(
-      safeText(T.heroSummaryTemplate, "{name} profile and planning notes for Hero Initiative and long-term roster growth."),
-      { name: guide.title }
-    )
-  }
-  return T.guideSummaries?.[guide.id] || guide.summary
+  return sharedGuideSummary(guide, T)
 }
 
-function formatTemplate(template, values){
-  return Object.entries(values).reduce(
-    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
-    String(template)
-  )
-}
-
-function getHeroInitials(name){
-  return String(name)
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() || "")
-    .join("")
+function linkifyText(text){
+  return sharedLinkifyText(text, GUIDE_MAP, getGuidePath)
 }
 
 function getPortraitHtml(guide){
@@ -72,47 +59,7 @@ function getPortraitHtml(guide){
 }
 
 function getGuideSections(guide){
-  if(guide.useGuideSections) return guide.sections
-  if(!guide.id.startsWith("hero-")) return guide.sections
-
-  const sections = [
-    {
-      title: safeText(T.heroSectionProfile, "Profile snapshot"),
-      items: [
-        formatTemplate(safeText(T.heroProfileType, "Type in source list: {tier}."), { tier: guide.tier }),
-        formatTemplate(safeText(T.heroProfileFaction, "Faction: {faction}."), { faction: guide.faction }),
-        safeText(T.heroProfileStars, "Use this page to track star level, equipment breakpoints and daily upgrade targets."),
-        safeText(T.heroProfileMainMarch, "Keep your main march heroes ahead of side rosters during Hero Initiative spending windows.")
-      ]
-    }
-  ]
-
-  if(guide.skillBullets && guide.skillBullets.length > 0){
-    sections.push({
-      title: safeText(T.heroSectionSkills, "Skill planning"),
-      items: guide.skillBullets
-    })
-  } else {
-    sections.push({
-      title: safeText(T.heroSectionSkills, "Skill planning"),
-      items: [
-        safeText(T.heroSkillsCore, "Prioritize the core combat skill used in your main lineup before spreading books across backup heroes."),
-        safeText(T.heroSkillsPassive, "Permanent passives and march-impact skills usually give better long-term value than niche utility upgrades."),
-        safeText(T.heroSkillsBooks, "Save books and fragments for Hero Initiative so skill upgrades contribute to both power growth and event score.")
-      ]
-    })
-  }
-
-  sections.push({
-    title: safeText(T.heroSectionPower, "Power model checklist"),
-    items: [
-      safeText(T.heroPowerLevel, "Hero strength comes from level, stars, skill levels and exclusive equipment."),
-      safeText(T.heroPowerBonuses, "Vehicle boosts, tech, buildings and lineup synergy also change total march performance."),
-      safeText(T.heroPowerBatch, "Batch upgrades during event windows so one resource push completes multiple objectives.")
-    ]
-  })
-
-  return sections
+  return sharedGetGuideSections(guide, T)
 }
 
 function roundBonusPoints(basePoints, bonusPercent){
@@ -121,9 +68,7 @@ function roundBonusPoints(basePoints, bonusPercent){
 }
 
 function withBase(path){
-  if(/^https?:\/\//i.test(String(path))) return String(path)
-  const normalizedBase = BASE_URL.endsWith("/") ? BASE_URL : `${BASE_URL}/`
-  return `${normalizedBase}${String(path).replace(/^\/+/, "")}`
+  return withBasePath(path, BASE_URL)
 }
 
 function renderMenu(activeGuideId){
@@ -201,25 +146,25 @@ function renderMenu(activeGuideId){
   })
 }
 
-function renderGuidePage(guideId){
+async function localizeGuideContent(guide){
+  const lang = localStorage.getItem("lang") || detectLang() || "en"
+  return sharedLocalizeGuideContent(guide, lang)
+}
+
+async function renderGuidePage(guideId){
   const content = document.getElementById("guidePageContent")
   if(!content) return
 
-  const guide = GUIDE_MAP[guideId]
+  const baseGuide = GUIDE_MAP[guideId]
+  const guide = baseGuide ? await localizeGuideContent(baseGuide) : null
   if(!guide){
     content.innerHTML = `<h1>${escapeHtml(safeText(T.pageNotFound, "Guide not found"))}</h1>`
     return
   }
 
   const scoreSection = SCORE_TABLE[guideId]
-  const showDisplayedEstimate = !scoreSection?.disableConversion
   const hasBonusInput = Boolean(scoreSection?.enableBonusInput)
-  const displayedHeader = showDisplayedEstimate
-    ? `<th>${escapeHtml(safeText(T.scoreDisplayed, "Displayed estimate"))}</th>`
-    : ""
-  const bonusHeader = hasBonusInput
-    ? `<th>${escapeHtml(safeText(T.scoreWithBonus, "With bonus (displayed)"))}</th>`
-    : ""
+
   const scoreHtml = scoreSection
     ? `
       <section class="guide-detail-card">
@@ -235,17 +180,15 @@ function renderGuidePage(guideId){
             <tr>
               <th>${escapeHtml(safeText(T.scoreAction, "Action"))}</th>
               <th>${escapeHtml(safeText(T.scoreBase, "Base points"))}</th>
-              ${displayedHeader}
-              ${bonusHeader}
+              <th>${escapeHtml(safeText(T.scoreDisplayed, "Estimate"))}</th>
             </tr>
           </thead>
           <tbody>
             ${scoreSection.entries.map((entry) => `
               <tr data-base-points="${entry.basePoints}">
-                <td>${escapeHtml(entry.action)}</td>
+                <td>${linkifyText(entry.action)}</td>
                 <td>${entry.basePoints}</td>
-                ${showDisplayedEstimate ? `<td>${Math.round(entry.basePoints * DISPLAY_TO_BASE_DIVISOR)}</td>` : ""}
-                ${hasBonusInput ? `<td class="score-bonus-value">${Math.round(entry.basePoints * DISPLAY_TO_BASE_DIVISOR)}</td>` : ""}
+                <td class="score-estimate-value">${entry.basePoints}</td>
               </tr>
             `).join("")}
           </tbody>
@@ -256,6 +199,15 @@ function renderGuidePage(guideId){
 
   const guideImageHtml = getPortraitHtml(guide)
   const guideSections = getGuideSections(guide)
+    .filter((section) => !shouldHideSourceSection(section.title))
+    .map((section) => ({
+      ...section,
+      title: stripSourceAttribution(section.title),
+      items: (section.items || [])
+        .map((item) => stripSourceAttribution(item))
+        .filter((item) => item && !shouldHideSourceItem(item))
+    }))
+    .filter((section) => section.items.length > 0)
 
   const relatedLinks = guide.related
     .map((id) => {
@@ -278,7 +230,7 @@ function renderGuidePage(guideId){
         ${guideSections.map((section) => `
           <section class="guide-detail-card">
             <h3>${escapeHtml(section.title)}</h3>
-            <ul>${section.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+            <ul>${section.items.map((item) => `<li>${linkifyText(item)}</li>`).join("")}</ul>
           </section>
         `).join("")}
       </section>
@@ -289,10 +241,6 @@ function renderGuidePage(guideId){
         <article class="guide-meta-card">
           <h3>${escapeHtml(safeText(T.guideRelated, "Related pages"))}</h3>
           <div class="guide-link-row">${relatedLinks}</div>
-        </article>
-        <article class="guide-meta-card">
-          <h3>${escapeHtml(safeText(T.guideSources, "Source base"))}</h3>
-          <ul>${guide.sources.map((source) => `<li>${escapeHtml(source)}</li>`).join("")}</ul>
         </article>
       </section>
     </article>
@@ -315,10 +263,9 @@ function hookBonusCalculator(){
 
     rows.forEach((row) => {
       const basePoints = Number(row.dataset.basePoints)
-      const output = row.querySelector(".score-bonus-value")
+      const output = row.querySelector(".score-estimate-value")
       if(!output || !Number.isFinite(basePoints)) return
-      const bonusBase = roundBonusPoints(basePoints, safeBonus)
-      output.textContent = String(Math.round(bonusBase * DISPLAY_TO_BASE_DIVISOR))
+      output.textContent = String(roundBonusPoints(basePoints, safeBonus))
     })
   }
 
@@ -377,7 +324,7 @@ async function init(){
 
   const guideId = document.body.dataset.guideId || ""
   renderMenu(guideId)
-  renderGuidePage(guideId)
+  await renderGuidePage(guideId)
   const bonusUpdater = hookBonusCalculator()
   renderPointConverter(guideId, bonusUpdater)
   renderDonationPanel()
