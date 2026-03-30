@@ -558,26 +558,23 @@ function highlightNow(){
   if(active) active.classList.add("active")
 }
 
-function getNextRadarCountdown(currentHour, currentMin){
+function getNextRadarCountdown(currentHour, currentMin, currentSec){
   const radarHours = [0, 8, 16]
-  const currentTotalMinutes = currentHour * 60 + currentMin
+  const currentTotalSeconds = currentHour * 3600 + currentMin * 60 + currentSec
 
-  let nextRadarHour = radarHours[0]
-  let minDiff = 24 * 60
+  let minDiffSeconds = 24 * 3600
 
   radarHours.forEach((hour) => {
-    let diff = hour * 60 - currentTotalMinutes
-    if(diff <= 0) diff += 24 * 60
-    if(diff < minDiff){
-      minDiff = diff
-      nextRadarHour = hour
+    let diffSeconds = hour * 3600 - currentTotalSeconds
+    if(diffSeconds <= 0) diffSeconds += 24 * 3600
+    if(diffSeconds < minDiffSeconds){
+      minDiffSeconds = diffSeconds
     }
   })
 
   return {
-    nextRadarHour,
-    hours: Math.floor(minDiff / 60),
-    minutes: minDiff % 60
+    hours: Math.floor(minDiffSeconds / 3600),
+    minutes: Math.floor((minDiffSeconds % 3600) / 60)
   }
 }
 
@@ -585,6 +582,7 @@ function updateNext(){
   const now = getApocNow()
   const currentHour = now.getUTCHours()
   const currentMin = now.getUTCMinutes()
+  const currentSec = now.getUTCSeconds()
 
   let nextHour = Math.ceil((currentHour + currentMin/60)/4)*4
   if(nextHour === 24) nextHour = 0
@@ -594,15 +592,12 @@ function updateNext(){
   if(diffMinutes !== 0) diffHours--
   if(diffHours < 0) diffHours = 23
 
-  const radarCountdown = getNextRadarCountdown(currentHour, currentMin)
+  const radarCountdown = getNextRadarCountdown(currentHour, currentMin, currentSec)
 
   const local = getLocal()
   const localStr = formatTime(local, CURRENT_LANG)
   const apocStr = formatClockParts(currentHour, currentMin)
-  const nextRadarLabel = textOr(T.nextRadarInfo, "Next Radar")
-  const nextRadarTime = `${String(radarCountdown.nextRadarHour).padStart(2,"0")}:00`
-  const nextRadarDiff = `${String(radarCountdown.hours).padStart(2,"0")}:${String(radarCountdown.minutes).padStart(2,"0")}`
-  const nextRadarText = `${nextRadarLabel} ${nextRadarTime} (${nextRadarDiff})`
+  const nextRadarText = `Next Radar: ${String(radarCountdown.hours).padStart(2,"0")}:${String(radarCountdown.minutes).padStart(2,"0")}`
 
   document.getElementById("timeInfo").innerText =
     `${T.localLabel}: ${localStr} | ${T.apocLabel}: ${apocStr} | ${T.nextLabel}: ${String(diffHours).padStart(2,"0")}:${String(diffMinutes).padStart(2,"0")} | ${nextRadarText}`
