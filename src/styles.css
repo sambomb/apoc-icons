@@ -331,6 +331,126 @@ a{color:inherit;text-decoration:none}
 	cursor:pointer;
 }
 
+.lang-native-hidden{
+	position:absolute;
+	width:1px;
+	height:1px;
+	op:0;
+	left:0;
+	opacity:0;
+	pointer-events:none;
+}
+
+.lang-combobox{
+	position:relative;
+	min-width:230px;
+	z-index:95;
+}
+
+.lang-combobox-trigger{
+	width:100%;
+	display:flex;
+	align-items:center;
+	justify-content:space-between;
+	gap:10px;
+	border:1px solid var(--line);
+	border-radius:999px;
+	padding:10px 16px;
+	background:var(--panel-strong);
+	color:var(--ink);
+	font:inherit;
+	cursor:pointer;
+	transition:.18s ease;
+}
+
+.lang-combobox-trigger:hover{
+	transform:translateY(-1px);
+	border-color:rgba(212,91,44,.35);
+	box-shadow:0 10px 20px rgba(23,32,51,.08);
+}
+
+.lang-combobox.open .lang-combobox-trigger{
+	border-color:var(--gold);
+	box-shadow:0 0 0 2px rgba(208,173,69,.2);
+}
+
+.lang-combobox-trigger-content,
+.lang-combobox-option{
+	display:flex;
+	align-items:center;
+	gap:10px;
+}
+
+.lang-option-flag{
+	font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji","Segoe UI Symbol",sans-serif;
+	font-size:1.05rem;
+	line-height:1;
+	min-width:1.35em;
+	text-align:center;
+}
+
+.lang-option-name{
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+.lang-combobox-caret{
+	font-size:.8rem;
+	color:var(--muted);
+	transition:transform .18s ease;
+}
+
+.lang-combobox.open .lang-combobox-caret{
+	transform:rotate(180deg);
+}
+
+.lang-combobox-list{
+	position:absolute;
+	top:calc(100% + 8px);
+	right:0;
+	width:100%;
+	max-height:320px;
+	overflow:auto;
+	display:none;
+	padding:8px;
+	border:1px solid var(--line);
+	border-radius:16px;
+	background:var(--panel-strong);
+	box-shadow:0 20px 36px rgba(23,32,51,.35);
+	z-index:210;
+}
+
+.lang-combobox.open .lang-combobox-list{
+	display:grid;
+	gap:6px;
+}
+
+.lang-combobox-option{
+	width:100%;
+	padding:9px 12px;
+	border:1px solid transparent;
+	border-radius:10px;
+	background:transparent;
+	color:var(--ink);
+	font:inherit;
+	text-align:left;
+	cursor:pointer;
+	transition:.15s ease;
+}
+
+.lang-combobox-option:hover,
+.lang-combobox-option.active{
+	background:var(--accent-soft);
+	color:#ffe8e5;
+	border-color:rgba(216,71,59,.2);
+}
+
+[dir="rtl"] .lang-combobox-list{
+	left:0;
+	right:auto;
+}
+
 #langSelect,
 #langSelect option{
 	font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji","Segoe UI Symbol",Bahnschrift,"Trebuchet MS","Segoe UI",sans-serif;
@@ -1048,6 +1168,8 @@ th{
 	.menu-link,
 	.controls button,
 	.controls select,
+	.lang-combobox,
+	.lang-combobox-trigger,
 	#eventFilters button,
 	.guide-back-link,
 	.guide-link-chip{

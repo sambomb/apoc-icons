@@ -43,6 +43,31 @@ const modules = {
   './translations/sw.js': () => Promise.resolve(swMod)
 }
 
+function isPlainObject(value){
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value)
+}
+
+function deepMerge(base, overrides){
+  if(!isPlainObject(base)) return overrides
+  const result = { ...base }
+
+  if(!isPlainObject(overrides)) return result
+
+  Object.keys(overrides).forEach((key) => {
+    const baseValue = result[key]
+    const overrideValue = overrides[key]
+
+    if(isPlainObject(baseValue) && isPlainObject(overrideValue)){
+      result[key] = deepMerge(baseValue, overrideValue)
+      return
+    }
+
+    result[key] = overrideValue
+  })
+
+  return result
+}
+
 export let T = {
   time: "Time",
   current: "Current",
@@ -145,11 +170,7 @@ export async function loadLang(lang){
   const baseMod = await modules['./translations/en.js']()
   const base = baseMod.default || baseMod
   
-  // Sempre fazer spread completo de langData primeiro, depois adicionar fallbacks
-  T = {...base}
-  if(langData && typeof langData === "object") {
-    Object.assign(T, langData)
-  }
+  T = deepMerge(base, langData)
   
   CURRENT_LANG = validLang
   localStorage.setItem("lang", validLang)
@@ -174,8 +195,17 @@ export function detectLang(){
   return found || "en"
 }
 
-export function buildLangSelect(){
+function updateDocumentDirection(langCode){
+  document.documentElement.setAttribute("dir", ["ar","ur"].includes(langCode) ? "rtl" : "ltr")
+}
 
+function getValidLangCode(code){
+  return LANGS.find((lang) => lang.code === code)?.code || "en"
+}
+
+let langComboCleanup = null
+
+export function buildLangSelect(){
   const select = document.getElementById("langSelect")
   if(!select) return
 
@@ -183,16 +213,131 @@ export function buildLangSelect(){
     `<option value="${l.code}">${l.label}</option>`
   ).join("")
 
-  const current = localStorage.getItem("lang") || detectLang()
+  const current = getValidLangCode(localStorage.getItem("lang") || detectLang())
   select.value = current
+  updateDocumentDirection(current)
 
   select.onchange = async () => {
-    await loadLang(select.value)
+    const nextCode = getValidLangCode(select.value)
+    updateDocumentDirection(nextCode)
+    await loadLang(nextCode)
     location.reload()
   }
 
-  // UI direction support for RTL languages
-  document.documentElement.setAttribute("dir", ["ar","ur"].includes(select.value) ? "rtl" : "ltr")
+  if(langComboCleanup){
+    langComboCleanup()
+    langComboCleanup = null
+  }
+
+  const parent = select.parentElement
+  if(!parent) return
+
+  const oldCombo = parent.querySelector(".lang-combobox")
+  if(oldCombo) oldCombo.remove()
+
+  select.classList.add("lang-native-hidden")
+
+  const combo = document.createElement("div")
+  combo.className = "lang-combobox"
+  combo.setAttribute("data-current-lang", current)
+
+  combo.innerHTML = `
+    <button type="button" class="lang-combobox-trigger" aria-haspopup="listbox" aria-expanded="false">
+      <span class="lang-combobox-trigger-content"></span>
+      <span class="lang-combobox-caret" aria-hidden="true">▾</span>
+    </button>
+    <div class="lang-combobox-list" role="listbox" tabindex="-1"></div>
+  `
+
+  parent.appendChild(combo)
+
+  const trigger = combo.querySelector(".lang-combobox-trigger")
+  const triggerContent = combo.querySelector(".lang-combobox-trigger-content")
+  const list = combo.querySelector(".lang-combobox-list")
+
+  if(!trigger || !triggerContent || !list) return
+
+  const renderTrigger = () => {
+    const selectedCode = combo.getAttribute("data-current-lang") || "en"
+    const selectedLang = LANGS.find((lang) => lang.code === selectedCode) || LANGS[0]
+    triggerContent.innerHTML = `
+      <span class="lang-option-flag" aria-hidden="true">${selectedLang.flag}</span>
+      <span class="lang-option-name">${selectedLang.name}</span>
+    `
+  }
+
+  const closeList = () => {
+    combo.classList.remove("open")
+    trigger.setAttribute("aria-expanded", "false")
+  }
+
+  const openList = () => {
+    combo.classList.add("open")
+    trigger.setAttribute("aria-expanded", "true")
+  }
+
+  const toggleList = () => {
+    if(combo.classList.contains("open")){
+      closeList()
+      return
+    }
+    openList()
+  }
+
+  const buildOptions = () => {
+    const selectedCode = combo.getAttribute("data-current-lang") || "en"
+    list.innerHTML = LANGS.map((lang) => {
+      const activeClass = lang.code === selectedCode ? " active" : ""
+      return `
+        <button type="button" class="lang-combobox-option${activeClass}" role="option" data-lang="${lang.code}" aria-selected="${lang.code === selectedCode}">
+          <span class="lang-option-flag" aria-hidden="true">${lang.flag}</span>
+          <span class="lang-option-name">${lang.name}</span>
+        </button>
+      `
+    }).join("")
+  }
+
+  const onOptionClick = async (event) => {
+    const option = event.target.closest(".lang-combobox-option")
+    if(!option) return
+
+    const code = getValidLangCode(option.getAttribute("data-lang") || "en")
+    select.value = code
+    combo.setAttribute("data-current-lang", code)
+    updateDocumentDirection(code)
+    renderTrigger()
+    closeList()
+
+    await loadLang(code)
+    location.reload()
+  }
+
+  const onDocumentClick = (event) => {
+    if(!combo.contains(event.target)) closeList()
+  }
+
+  const onDocumentKeydown = (event) => {
+    if(event.key === "Escape") closeList()
+  }
+
+  trigger.addEventListener("click", toggleList)
+  trigger.addEventListener("keydown", (event) => {
+    if(event.key === "ArrowDown" || event.key === "Enter" || event.key === " "){
+      event.preventDefault()
+      openList()
+    }
+  })
+  list.addEventListener("click", onOptionClick)
+  document.addEventListener("click", onDocumentClick)
+  document.addEventListener("keydown", onDocumentKeydown)
+
+  langComboCleanup = () => {
+    document.removeEventListener("click", onDocumentClick)
+    document.removeEventListener("keydown", onDocumentKeydown)
+  }
+
+  renderTrigger()
+  buildOptions()
 }
 
 export function isRtl(){
