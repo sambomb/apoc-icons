@@ -517,6 +517,13 @@ th{
 	color:var(--muted);
 }
 
+.donate-actions{
+	display:flex;
+	align-items:center;
+	gap:10px;
+	flex-wrap:wrap;
+}
+
 .donate-link{
 	display:inline-block;
 	padding:10px 16px;
@@ -526,6 +533,11 @@ th{
 	color:#fff;
 	font-weight:700;
 	letter-spacing:.02em;
+}
+
+.bug-report-link{
+	border:1px solid rgba(78,129,255,.45);
+	background:linear-gradient(135deg, #2563eb, #1d4ed8);
 }
 
 .donate-link:hover{

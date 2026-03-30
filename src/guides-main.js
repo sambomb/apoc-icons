@@ -5,6 +5,7 @@ import { createRenderManager } from "./render-manager.js"
 import { textOr, escapeHtml, withBasePath, guideTitle as sharedGuideTitle, guideSummary as sharedGuideSummary, localizeGuideContent as sharedLocalizeGuideContent, getHeroInitials } from "./guide-helpers.js"
 
 const DONATE_URL = "https://www.paypal.com/donate/?hosted_button_id=EQ4XU8W5PWUBA"
+const ISSUES_URL = "https://github.com/sambomb/zcalendar/issues"
 const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL)
   ? import.meta.env.BASE_URL
   : "/"
@@ -145,7 +146,10 @@ function renderDonatePanel(){
       <p class="section-kicker">${escapeHtml(textOr(T.donateKicker, "Support"))}</p>
       <h2>${escapeHtml(textOr(T.donateTitle, "Support this project"))}</h2>
       <p>${escapeHtml(textOr(T.donateBodyHome, "If this guide helps your gameplay, consider supporting maintenance through PayPal."))}</p>
-      <a class="donate-link" href="${DONATE_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(textOr(T.donateCta, "Donate with PayPal"))}</a>
+      <div class="donate-actions">
+        <a class="donate-link" href="${DONATE_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(textOr(T.donateCta, "Donate with PayPal"))}</a>
+        <a class="donate-link bug-report-link" href="${ISSUES_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(textOr(T.bugReportCta, "Report a bug"))}</a>
+      </div>
     </div>
     <a class="donate-qr-link" href="${DONATE_URL}" target="_blank" rel="noopener noreferrer" aria-label="Donate via PayPal QR code">
       <img class="donate-qr" src="${withBase("donate.png")}" alt="PayPal donation QR code">
