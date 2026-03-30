@@ -558,6 +558,29 @@ function highlightNow(){
   if(active) active.classList.add("active")
 }
 
+function getNextRadarCountdown(currentHour, currentMin){
+  const radarHours = [0, 8, 16]
+  const currentTotalMinutes = currentHour * 60 + currentMin
+
+  let nextRadarHour = radarHours[0]
+  let minDiff = 24 * 60
+
+  radarHours.forEach((hour) => {
+    let diff = hour * 60 - currentTotalMinutes
+    if(diff <= 0) diff += 24 * 60
+    if(diff < minDiff){
+      minDiff = diff
+      nextRadarHour = hour
+    }
+  })
+
+  return {
+    nextRadarHour,
+    hours: Math.floor(minDiff / 60),
+    minutes: minDiff % 60
+  }
+}
+
 function updateNext(){
   const now = getApocNow()
   const currentHour = now.getUTCHours()
@@ -571,10 +594,15 @@ function updateNext(){
   if(diffMinutes !== 0) diffHours--
   if(diffHours < 0) diffHours = 23
 
+  const radarCountdown = getNextRadarCountdown(currentHour, currentMin)
+
   const local = getLocal()
   const localStr = formatTime(local, CURRENT_LANG)
   const apocStr = formatClockParts(currentHour, currentMin)
-  const nextRadarText = textOr(T.nextRadarInfo, "Next Radar: They happen at 00, 08 and 16 Apocalypse Time")
+  const nextRadarLabel = textOr(T.nextRadarInfo, "Next Radar")
+  const nextRadarTime = `${String(radarCountdown.nextRadarHour).padStart(2,"0")}:00`
+  const nextRadarDiff = `${String(radarCountdown.hours).padStart(2,"0")}:${String(radarCountdown.minutes).padStart(2,"0")}`
+  const nextRadarText = `${nextRadarLabel} ${nextRadarTime} (${nextRadarDiff})`
 
   document.getElementById("timeInfo").innerText =
     `${T.localLabel}: ${localStr} | ${T.apocLabel}: ${apocStr} | ${T.nextLabel}: ${String(diffHours).padStart(2,"0")}:${String(diffMinutes).padStart(2,"0")} | ${nextRadarText}`

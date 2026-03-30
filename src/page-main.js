@@ -115,6 +115,29 @@ function bindTimeButton(){
   }
 }
 
+function getNextRadarCountdown(currentHour, currentMin){
+  const radarHours = [0, 8, 16]
+  const currentTotalMinutes = currentHour * 60 + currentMin
+
+  let nextRadarHour = radarHours[0]
+  let minDiff = 24 * 60
+
+  radarHours.forEach((hour) => {
+    let diff = hour * 60 - currentTotalMinutes
+    if(diff <= 0) diff += 24 * 60
+    if(diff < minDiff){
+      minDiff = diff
+      nextRadarHour = hour
+    }
+  })
+
+  return {
+    nextRadarHour,
+    hours: Math.floor(minDiff / 60),
+    minutes: minDiff % 60
+  }
+}
+
 function updateDayPageStatus(guideId){
   if(!renderManager) return
 
@@ -144,7 +167,11 @@ function updateDayPageStatus(guideId){
     const local = getLocal()
     const localStr = formatTime(local, renderManager.text.currentLang)
     const apocStr = formatClockParts(currentHour, currentMinute)
-    const nextRadarText = safeText(T.nextRadarInfo, "Next Radar: They happen at 00, 08 and 16 Apocalypse Time")
+    const radarCountdown = getNextRadarCountdown(currentHour, currentMinute)
+    const nextRadarLabel = safeText(T.nextRadarInfo, "Next Radar")
+    const nextRadarTime = `${String(radarCountdown.nextRadarHour).padStart(2, "0")}:00`
+    const nextRadarDiff = `${String(radarCountdown.hours).padStart(2, "0")}:${String(radarCountdown.minutes).padStart(2, "0")}`
+    const nextRadarText = `${nextRadarLabel} ${nextRadarTime} (${nextRadarDiff})`
     timeInfo.textContent = `${safeText(T.localLabel, "Local Time")}: ${localStr} | ${safeText(T.apocLabel, "Apocalypse Time")}: ${apocStr} | ${nextRadarText}`
   }
 
