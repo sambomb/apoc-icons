@@ -116,6 +116,64 @@ a{color:inherit;text-decoration:none}
 	overflow:hidden;
 }
 
+.error-shell{
+	max-width:1080px;
+	min-height:100vh;
+	align-content:center;
+}
+
+.error-hero{
+	grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);
+	align-items:center;
+}
+
+.error-code{
+	margin:0 0 14px;
+	font-size:clamp(4rem, 14vw, 8rem);
+	line-height:.9;
+	font-family:Georgia,"Times New Roman",serif;
+	color:rgba(255,255,255,.92);
+	text-shadow:0 12px 28px rgba(0,0,0,.28);
+}
+
+.error-actions{
+	display:flex;
+	flex-wrap:wrap;
+	gap:12px;
+	margin-top:22px;
+}
+
+.error-primary-link{
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	padding:10px 16px;
+	border-radius:999px;
+	border:1px solid var(--line);
+	background:var(--panel-strong);
+	color:var(--ink);
+	font-weight:700;
+	transition:.18s ease;
+}
+
+.error-primary-link:hover{
+	transform:translateY(-1px);
+	border-color:rgba(212,91,44,.35);
+	box-shadow:0 10px 20px rgba(23,32,51,.08);
+}
+
+.error-note{
+	padding:22px;
+	display:grid;
+	gap:12px;
+}
+
+.error-note p{
+	margin:0;
+	color:var(--muted);
+	line-height:1.7;
+}
+
 .hero-tools{
 	display:grid;
 	gap:18px;
@@ -891,7 +949,8 @@ th{
 	.section-head,
 	.collection-heading,
 	.points-banner,
-	.guide-detail-head{
+	.guide-detail-head,
+	.error-hero{
 		grid-template-columns:1fr;
 		flex-direction:column;
 		align-items:flex-start;
@@ -950,6 +1009,17 @@ th{
 	th,td{padding:10px 8px}
 
 	.cell{min-width:124px}
+
+	.error-actions{
+		width:100%;
+	}
+
+	.error-primary-link,
+	.error-actions .donate-link{
+		width:100%;
+		justify-content:center;
+		text-align:center;
+	}
 }
 
 .source-links{
