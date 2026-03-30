@@ -3,8 +3,9 @@ import { GUIDE_MAP } from "./guides.js"
 import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
 import { SCORE_TABLE } from "./points.js"
 import { EVENTS, DAY_KEYS } from "./events.js"
-import { getEventType, getIcon } from "./calendar-utils.js"
+import { getEventType, getIcon, getApocNow, formatClockParts } from "./calendar-utils.js"
 import { createRenderManager } from "./render-manager.js"
+import { getLocal, formatTime, toggleFormat, is24h } from "./calctime.js"
 import {
   textOr,
   escapeHtml,
@@ -24,8 +25,10 @@ const DONATE_URL = "https://www.paypal.com/donate/?hosted_button_id=EQ4XU8W5PWUB
 const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL)
   ? import.meta.env.BASE_URL
   : "/"
+const SERVER_OFFSET = "UTC-2"
 
 let renderManager = null
+let pageTimer = null
 
 function getDayTitlesArray(){
   return DAY_KEYS.map((key) => T.dayTitles?.[key] || "")
@@ -66,6 +69,88 @@ function attachMenuToggleHandlers(menuRoot){
       if(group) group.classList.toggle("open")
     })
   })
+}
+
+function ensureTimeButton(){
+  const controls = document.querySelector(".guide-page-top .controls")
+  if(!controls) return null
+
+  let button = document.getElementById("timeBtn")
+  if(!button){
+    button = document.createElement("button")
+    button.id = "timeBtn"
+    button.type = "button"
+    controls.insertBefore(button, controls.firstChild)
+  }
+
+  return button
+}
+
+function setTimeButton(){
+  const button = ensureTimeButton()
+  if(!button) return
+  button.textContent = is24h()
+    ? safeText(T.timeFormat24, "24H")
+    : safeText(T.timeFormat12, "12H")
+}
+
+async function rerenderCurrentGuide(){
+  const guideId = document.body.dataset.guideId || ""
+  await renderGuidePage(guideId)
+  hookBonusCalculator()
+  updateDayPageStatus(guideId)
+}
+
+function bindTimeButton(){
+  const button = ensureTimeButton()
+  if(!button) return
+
+  button.onclick = async () => {
+    toggleFormat()
+    setTimeButton()
+    await rerenderCurrentGuide()
+  }
+}
+
+function updateDayPageStatus(guideId){
+  if(!renderManager) return
+
+  const dayIndex = DAY_IDS_BY_INDEX.indexOf(guideId)
+  const currentBar = document.getElementById("currentEventBar")
+  const timeInfo = document.getElementById("timeInfo")
+  if(dayIndex < 0 && !currentBar && !timeInfo) return
+
+  const now = getApocNow(SERVER_OFFSET)
+  const currentDay = now.getUTCDay()
+  const currentHour = now.getUTCHours()
+  const currentMinute = now.getUTCMinutes()
+  const row = Math.floor(currentHour / 4)
+  const liveEvent = EVENTS[row]?.[currentDay]
+
+  if(currentBar && liveEvent){
+    const viewedDayLabel = DAY_IDS_BY_INDEX[dayIndex] === guideId
+      ? `${safeText(T.dayLabel, "Day")} ${dayIndex}`
+      : ""
+    const livePrefix = currentDay === dayIndex
+      ? safeText(T.current, "Current Event")
+      : `${safeText(T.current, "Current Event")} (${safeText(T.dayLabel, "Day")} ${currentDay})`
+    currentBar.textContent = `${livePrefix}: ${T.events?.[liveEvent] || liveEvent}${viewedDayLabel && currentDay === dayIndex ? "" : ""}`
+  }
+
+  if(timeInfo){
+    const local = getLocal()
+    const localStr = formatTime(local, renderManager.text.currentLang)
+    const apocStr = formatClockParts(currentHour, currentMinute)
+    timeInfo.textContent = `${safeText(T.localLabel, "Local Time")}: ${localStr} | ${safeText(T.apocLabel, "Apocalypse Time")}: ${apocStr}`
+  }
+
+  renderManager.calendar.highlightCurrentDayAndHour(currentDay, currentHour)
+}
+
+function startDayPageStatusUpdates(guideId){
+  if(pageTimer) window.clearInterval(pageTimer)
+  updateDayPageStatus(guideId)
+  pageTimer = window.setInterval(() => updateDayPageStatus(guideId), 1000)
 }
 
 function safeText(value, fallback){
@@ -243,10 +328,16 @@ async function renderGuidePage(guideId){
       return `
         <section class="guide-detail-card">
           <h3>${title}</h3>
-          <table>
-            <thead>${calendar.head}</thead>
-            <tbody>${calendar.body}</tbody>
-          </table>
+          <div id="topBar">
+            <div id="currentEventBar"></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>${calendar.head}</thead>
+              <tbody>${calendar.body}</tbody>
+            </table>
+          </div>
+          <div id="timeInfo"></div>
         </section>
       `
     })()
@@ -356,6 +447,8 @@ async function init(){
 
   buildLangSelect()
   initRenderManager()
+  setTimeButton()
+  bindTimeButton()
 
   const pageBrand = document.getElementById("pageBrand")
   if(pageBrand) pageBrand.textContent = safeText(T.appTitle, "ZCalendar")
@@ -366,6 +459,7 @@ async function init(){
   const bonusUpdater = hookBonusCalculator()
   renderPointConverter(guideId, bonusUpdater)
   renderDonationPanel()
+  startDayPageStatusUpdates(guideId)
 }
 
 init().catch((error) => {
