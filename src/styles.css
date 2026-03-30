@@ -963,10 +963,15 @@ th{
 
 @media (max-width: 720px){
 	.app-shell{padding:16px}
+	.guide-page-shell{padding:16px}
 
 	.panel,
 	.hero-panel,
 	.points-banner{padding:18px}
+
+	.guide-page-top{
+		grid-template-columns:1fr;
+	}
 
 	.hero-copy h1,
 	.section-head h2,
@@ -977,7 +982,8 @@ th{
 	.top-nav,
 	.main-menu,
 	.controls,
-	#eventFilters{width:100%}
+	#eventFilters,
+	.guide-page-top .controls{width:100%}
 
 	.top-nav a,
 	.menu-link,

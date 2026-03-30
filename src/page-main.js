@@ -1,6 +1,6 @@
 import { loadLang, buildLangSelect, T, detectLang } from "./translate.js"
 import { GUIDE_MAP } from "./guides.js"
-import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
+import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath, getGuidesHubPath } from "./routes.js"
 import { SCORE_TABLE } from "./points.js"
 import { EVENTS, DAY_KEYS } from "./events.js"
 import { getEventType, getIcon, getApocNow, formatClockParts } from "./calendar-utils.js"
@@ -39,6 +39,8 @@ function initRenderManager(){
     translations: T,
     linkifyFn: (text) => sharedLinkifyText(text, GUIDE_MAP, getGuidePath),
     getGuidePath,
+    getHomePath,
+    getGuidesHubPath,
     currentLang: localStorage.getItem("lang") || detectLang() || "en",
     baseUrl: BASE_URL,
     events: EVENTS,
@@ -260,6 +262,9 @@ function renderMenu(activeGuideId){
       return `
         <li class="menu-group single">
           <a class="menu-link" href="${getHomePath()}">${escapeHtml(safeText(T.navCalendar, "Calendar"))}</a>
+        </li>
+        <li class="menu-group single">
+          <a class="menu-link" href="${getGuidesHubPath()}">${escapeHtml(safeText(T.navGuides, "Guides"))}</a>
         </li>
       `
     }

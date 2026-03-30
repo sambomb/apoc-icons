@@ -63,7 +63,9 @@ export class RenderManager {
       guideMap: config.guideMap || {},
       menuGroups: config.menuGroups || [],
       heroFactionMenu: config.heroFactionMenu || [],
-      getGuidePath: config.getGuidePath
+      getGuidePath: config.getGuidePath,
+      getHomePath: config.getHomePath,
+      getGuidesHubPath: config.getGuidesHubPath
     })
 
     this.scoreTableRenderer = new ScoreTableRenderer({

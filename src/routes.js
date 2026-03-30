@@ -188,6 +188,10 @@ export function getHomePath(){
   return withBase("index.html")
 }
 
+export function getGuidesHubPath(){
+  return withBase("guides.html")
+}
+
 export function getGuidePath(guideId){
   return withBase(ROUTE_MAP[guideId] || "index.html")
 }

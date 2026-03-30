@@ -21,6 +21,8 @@ export class MenuRenderer {
     this.menuGroups = config.menuGroups || []
     this.heroFactionMenu = config.heroFactionMenu || []
     this.getGuidePath = config.getGuidePath || ((id) => `/guide/${id}`)
+    this.getHomePath = config.getHomePath || (() => "/")
+    this.getGuidesHubPath = config.getGuidesHubPath || (() => "/guides.html")
     this.translations = config.textRenderer?.translations || {}
   }
 
@@ -103,9 +105,13 @@ export class MenuRenderer {
   renderMenuGroup(group, activeGuideId = "") {
     if (group.id === "calendar") {
       const calendarLabel = this.translations.navCalendar || "Calendar"
+      const guidesLabel = this.translations.navGuides || "Guides"
       return `
         <li class="menu-group single">
-          <a class="menu-link" href="/">${escapeHtml(calendarLabel)}</a>
+          <a class="menu-link" href="${escapeHtml(this.getHomePath())}">${escapeHtml(calendarLabel)}</a>
+        </li>
+        <li class="menu-group single">
+          <a class="menu-link" href="${escapeHtml(this.getGuidesHubPath())}">${escapeHtml(guidesLabel)}</a>
         </li>
       `
     }
@@ -154,7 +160,9 @@ export class MenuRenderer {
       guideMap: this.guideMap,
       menuGroups: this.menuGroups,
       heroFactionMenu: this.heroFactionMenu,
-      getGuidePath: this.getGuidePath
+      getGuidePath: this.getGuidePath,
+      getHomePath: this.getHomePath,
+      getGuidesHubPath: this.getGuidesHubPath
     })
   }
 }

@@ -1,8 +1,8 @@
 import { EVENTS, ICONS, DAY_KEYS } from "./events.js"
 import { getLocal, formatTime, toggleFormat, is24h } from "./calctime.js"
 import { T, CURRENT_LANG } from "./translate.js"
-import { GUIDE_GROUPS, GUIDE_SETS, GUIDE_MAP, GUIDE_STATS } from "./guides.js"
-import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
+import { GUIDE_MAP } from "./guides.js"
+import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath, getGuidesHubPath } from "./routes.js"
 import { displayedToBasePoints, POINT_EXAMPLES } from "./points.js"
 import { createRenderManager } from "./render-manager.js"
 import {
@@ -38,6 +38,8 @@ function setupRenderManager(){
     translations: T,
     linkifyFn: (text) => sharedLinkifyText(text, GUIDE_MAP, getGuidePath),
     getGuidePath,
+    getHomePath,
+    getGuidesHubPath,
     currentLang: CURRENT_LANG || localStorage.getItem("lang") || "en",
     baseUrl: BASE_URL,
     events: EVENTS,
@@ -86,7 +88,6 @@ export function initUI(){
   applyTranslations()
   hookFilters()
   hookMenu()
-  hookGuideRouting()
   showAutoTranslationNotice()
   updateAll()
 
@@ -209,14 +210,6 @@ function renderGuideCollection(group){
 function buildStaticShell(){
   renderTopMenu()
 
-  document.getElementById("statEventsCount").textContent = String(GUIDE_STATS.eventTypes)
-  document.getElementById("statDaysCount").textContent = String(GUIDE_STATS.days)
-  document.getElementById("statResourcesCount").textContent = String(GUIDE_STATS.resources)
-
-  document.getElementById("guideCollections").innerHTML = GUIDE_GROUPS
-    .map(renderGuideCollection)
-    .join("")
-
   const pointsNotice = document.getElementById("pointsNotice")
   if(pointsNotice) pointsNotice.hidden = true
   renderDonatePanel()
@@ -298,6 +291,9 @@ function renderTopMenu(){
       return `
         <li class="menu-group single">
           <a class="menu-link" href="${getHomePath()}">${escapeHtml(textOr(T.navCalendar, "Calendar"))}</a>
+        </li>
+        <li class="menu-group single">
+          <a class="menu-link" href="${getGuidesHubPath()}">${escapeHtml(textOr(T.navGuides, "Guides"))}</a>
         </li>
       `
     }
@@ -709,17 +705,19 @@ function applyTranslations(){
   document.getElementById("heroTitle").textContent = textOr(T.appTitle, "ZCalendar")
   document.getElementById("heroIntro").textContent = textOr(T.heroIntro, "Track Apocalypse Time rotations and open guide pages for each event type, each day and the systems around them.")
   renderTopMenu()
-  document.getElementById("statEventsLabel").textContent = textOr(T.statEvents, "Event types")
-  document.getElementById("statDaysLabel").textContent = textOr(T.statDays, "Day pages")
-  document.getElementById("statResourcesLabel").textContent = textOr(T.statResources, "Support pages")
   document.getElementById("calendarHeading").textContent = textOr(T.calendarHeading, "Alliance Duel schedule")
   document.getElementById("calendarIntro").textContent = textOr(T.calendarIntro, "Use the live table to see the current slot, the next slot and the local date for every 4-hour cycle.")
   const calendarKicker = document.querySelector("#calendar .section-kicker")
   if(calendarKicker) calendarKicker.textContent = textOr(T.calendarKicker, "Live Schedule")
   document.getElementById("guidesHeading").textContent = textOr(T.guidesHeading, "Guide pages")
   document.getElementById("guidesIntro").textContent = textOr(T.guidesIntro, "Open the pages below for event-type strategy, day planning and system references built from community sources.")
-  const guidesKicker = document.querySelector("#guides .section-kicker")
+  const guidesKicker = document.querySelector("#guideHubCta .section-kicker")
   if(guidesKicker) guidesKicker.textContent = textOr(T.guidesKicker, "Guide Hub")
+  const openHubLink = document.getElementById("openGuideHubLink")
+  if(openHubLink){
+    openHubLink.href = getGuidesHubPath()
+    openHubLink.textContent = textOr(T.guideOpen, "Open page")
+  }
   document.getElementById("sourcesHeading").textContent = textOr(T.sourcesHeading, "Source base")
   document.getElementById("sourcesBody").textContent = textOr(T.sourcesBody, "This guide hub is written as original summaries based on community references from Last Z Wiki, Fandom, LastZData and Sardinha's notes. Reconfirm live values in-game because server rules and seasonal content can change.")
   const sourceLinksEl = document.getElementById("sourceLinks")
@@ -747,5 +745,4 @@ function applyTranslations(){
   document.querySelector('[data-filter="vehicle"]').textContent = f.vehicle
   document.querySelector('[data-filter="science"]').textContent = f.science
 
-  renderRoute()
 }
