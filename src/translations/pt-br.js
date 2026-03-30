@@ -85,6 +85,7 @@ guideTitles:{
 "resource-point-rules":"Regras de Pontuação e Conversão Base",
 "resource-general-tips":"Dicas Gerais",
 "resource-buildings":"Visão Geral de Prédios",
+"resource-sources":"Todas as Fontes",
 "enemy-units":"Inimigos e Prioridade de Alvos"
 },
 guideSummaries:{

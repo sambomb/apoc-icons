@@ -108,6 +108,7 @@ export const GUIDE_ROUTES = [
   { id: "resource-point-rules", path: "systems/point-rules.html", group: "systems" },
   { id: "resource-general-tips", path: "systems/general-tips.html", group: "systems" },
   { id: "resource-buildings", path: "systems/buildings.html", group: "systems" },
+  { id: "resource-sources", path: "systems/sources.html", group: "systems" },
 
   { id: "enemy-units", path: "enemies/units.html", group: "enemies" },
   { id: "enemy-boomer", path: "enemies/boomer.html", group: "enemies" },
