@@ -1,5 +1,5 @@
 import { escapeHtml, withBasePath } from "./guide-helpers.js"
-import { formatTime } from "./calctime.js"
+import { formatTime, is24h } from "./calctime.js"
 import { TextRenderer } from "./text-renderer.js"
 
 /**
@@ -150,8 +150,7 @@ export class DayColumnRenderer {
    * @returns {string} HTML da linha
    */
   renderDayRow(hour, dayGuideIds, daysToRender = [0, 1, 2, 3, 4, 5, 6]) {
-    const slotTime = new Date(Date.UTC(2000, 0, 1, hour, 0, 0, 0))
-    const timeStr = formatTime(slotTime, this.currentLang)
+    const timeStr = this.formatApocSlotHour(hour)
     let row = `<tr><td>${escapeHtml(timeStr)}</td>`
 
     for (const dayIndex of daysToRender) {
@@ -214,6 +213,17 @@ export class DayColumnRenderer {
    */
   withBase(path) {
     return withBasePath(path, this.baseUrl)
+  }
+
+  formatApocSlotHour(hour){
+    const safeHour = Number(hour)
+    const hh = String(safeHour).padStart(2, "0")
+
+    if(is24h()) return `${hh}:00`
+
+    const h12 = safeHour % 12 === 0 ? 12 : safeHour % 12
+    const suffix = safeHour >= 12 ? "PM" : "AM"
+    return `${String(h12).padStart(2, "0")}:00 ${suffix}`
   }
 
   /**
