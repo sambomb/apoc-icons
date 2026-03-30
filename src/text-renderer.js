@@ -53,7 +53,16 @@ export class TextRenderer {
    * Obter texto traduzido com fallback
    */
   getText(key, fallback = "") {
-    return this.translations[key] || fallback
+    if(!key) return fallback
+    if(Object.prototype.hasOwnProperty.call(this.translations, key)) {
+      return this.translations[key] || fallback
+    }
+
+    const nested = String(key)
+      .split(".")
+      .reduce((acc, part) => (acc && Object.prototype.hasOwnProperty.call(acc, part) ? acc[part] : undefined), this.translations)
+
+    return nested || fallback
   }
 
   /**

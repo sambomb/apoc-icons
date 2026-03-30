@@ -83,17 +83,20 @@ export class RenderManager {
    * Atualizar linguagem de todos os renderers
    */
   updateLanguage(lang) {
+    this.config.currentLang = lang
     this.textRenderer = this.textRenderer.withLanguage(lang)
 
     this.dayColumnRenderer = this.dayColumnRenderer.withLanguage?.(lang)
       ? this.dayColumnRenderer.withLanguage(lang)
       : new DayColumnRenderer({ ...this.config, textRenderer: this.textRenderer })
 
+    this.calendarRenderer = this.calendarRenderer.withDayColumnRenderer(this.dayColumnRenderer)
+
     this.menuRenderer = this.menuRenderer.withTextRenderer(this.textRenderer)
 
-    this.scoreTableRenderer = this.scoreTableRenderer.withTranslations(
-      this.config.translations || {}
-    )
+    this.scoreTableRenderer = this.scoreTableRenderer
+      .withTextRenderer(this.textRenderer)
+      .withTranslations(this.config.translations || {})
 
     this.guideCardRenderer = this.guideCardRenderer.withTextRenderer(this.textRenderer)
 

@@ -1,4 +1,5 @@
-import { escapeHtml, withBasePath, formatTime as helperFormatTime } from "./guide-helpers.js"
+import { escapeHtml, withBasePath } from "./guide-helpers.js"
+import { formatTime } from "./calctime.js"
 import { TextRenderer } from "./text-renderer.js"
 
 /**
@@ -40,8 +41,8 @@ export class DayColumnRenderer {
     this.getIcon = config.getIcon || ((day, hour) => "")
     this.getGuidePath = config.getGuidePath || ((id) => `/guide/${id}`)
     this.textRenderer =
-      config.textRenderer || new TextRenderer({ currentLang: config.currentLang })
-    this.currentLang = config.currentLang || "en"
+      config.textRenderer || new TextRenderer({ currentLang: config.currentLang || "en" })
+    this.currentLang = config.currentLang || this.textRenderer.currentLang || "en"
     this.serverOffset = config.serverOffset || "UTC-2"
     this.baseUrl = config.baseUrl || "/"
     this.dayLabel = config.dayLabel || "Day"
@@ -120,10 +121,8 @@ export class DayColumnRenderer {
       year: "numeric"
     })
 
-    // Format time using the language
-    const hours = String(occurrenceLocal.getHours()).padStart(2, "0")
-    const minutes = String(occurrenceLocal.getMinutes()).padStart(2, "0")
-    const localTimeStr = `${hours}:${minutes}`
+    // Keep hour formatting consistent with global 24h/12h toggle.
+    const localTimeStr = formatTime(occurrenceLocal, this.currentLang)
 
     return `
       <td class="cell" data-day="${dayIndex}" data-hour="${hour}" data-event="${eventType}">
@@ -151,7 +150,8 @@ export class DayColumnRenderer {
    * @returns {string} HTML da linha
    */
   renderDayRow(hour, dayGuideIds, daysToRender = [0, 1, 2, 3, 4, 5, 6]) {
-    const timeStr = String(hour).padStart(2, "0") + ":00"
+    const slotTime = new Date(Date.UTC(2000, 0, 1, hour, 0, 0, 0))
+    const timeStr = formatTime(slotTime, this.currentLang)
     let row = `<tr><td>${escapeHtml(timeStr)}</td>`
 
     for (const dayIndex of daysToRender) {
@@ -171,11 +171,12 @@ export class DayColumnRenderer {
    */
   renderSingleDayCalendar(dayIndex, dayGuideLinkId) {
     const head = this.renderDayHeader(dayIndex, dayGuideLinkId)
+    const dayGuideIds = Array.from({ length: 7 }, () => dayGuideLinkId)
 
     let body = ""
     for (let r = 0; r < 6; r++) {
       const hour = r * 4
-      body += this.renderDayRow(hour, [dayGuideLinkId], [0])
+      body += this.renderDayRow(hour, dayGuideIds, [dayIndex])
     }
 
     return {

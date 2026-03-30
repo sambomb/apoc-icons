@@ -154,4 +154,14 @@ export class ScoreTableRenderer {
       translations
     })
   }
+
+  /**
+   * Retornar novo renderer com TextRenderer atualizado
+   */
+  withTextRenderer(textRenderer) {
+    return new ScoreTableRenderer({
+      textRenderer,
+      translations: this.translations
+    })
+  }
 }

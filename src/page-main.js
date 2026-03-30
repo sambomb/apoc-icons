@@ -1,7 +1,10 @@
 import { loadLang, buildLangSelect, T, detectLang } from "./translate.js"
 import { GUIDE_MAP } from "./guides.js"
-import { MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
+import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
 import { SCORE_TABLE } from "./points.js"
+import { EVENTS, DAY_KEYS } from "./events.js"
+import { getEventType, getIcon } from "./calendar-utils.js"
+import { createRenderManager } from "./render-manager.js"
 import {
   textOr,
   escapeHtml,
@@ -21,6 +24,49 @@ const DONATE_URL = "https://www.paypal.com/donate/?hosted_button_id=EQ4XU8W5PWUB
 const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.BASE_URL)
   ? import.meta.env.BASE_URL
   : "/"
+
+let renderManager = null
+
+function getDayTitlesArray(){
+  return DAY_KEYS.map((key) => T.dayTitles?.[key] || "")
+}
+
+function initRenderManager(){
+  const config = {
+    translations: T,
+    linkifyFn: (text) => sharedLinkifyText(text, GUIDE_MAP, getGuidePath),
+    getGuidePath,
+    currentLang: localStorage.getItem("lang") || detectLang() || "en",
+    baseUrl: BASE_URL,
+    events: EVENTS,
+    getEventType,
+    getIcon,
+    serverOffset: "UTC-2",
+    dayLabel: safeText(T.dayLabel, "Day"),
+    dayNames: T.days || [],
+    dayTitles: getDayTitlesArray(),
+    guideMap: GUIDE_MAP,
+    menuGroups: MENU_GROUPS,
+    heroFactionMenu: HERO_FACTION_MENU
+  }
+
+  if(!renderManager){
+    renderManager = createRenderManager(config)
+    return
+  }
+
+  renderManager.updateConfig(config)
+}
+
+function attachMenuToggleHandlers(menuRoot){
+  if(!menuRoot) return
+  menuRoot.querySelectorAll(".menu-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const group = btn.closest(".menu-group")
+      if(group) group.classList.toggle("open")
+    })
+  })
+}
 
 function safeText(value, fallback){
   return textOr(value, fallback)
@@ -74,6 +120,12 @@ function withBase(path){
 function renderMenu(activeGuideId){
   const menuRoot = document.getElementById("siteMenu")
   if(!menuRoot) return
+
+  if(renderManager){
+    renderManager.menu.updateMenuDOM(menuRoot, activeGuideId)
+    attachMenuToggleHandlers(menuRoot)
+    return
+  }
 
   const renderGroupItems = (group) => {
     if(group.id !== "heroes"){
@@ -138,12 +190,7 @@ function renderMenu(activeGuideId){
   }).join("")
 
   menuRoot.innerHTML = html
-  menuRoot.querySelectorAll(".menu-toggle").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const group = btn.closest(".menu-group")
-      if(group) group.classList.toggle("open")
-    })
-  })
+  attachMenuToggleHandlers(menuRoot)
 }
 
 async function localizeGuideContent(guide){
@@ -163,38 +210,13 @@ async function renderGuidePage(guideId){
   }
 
   const scoreSection = SCORE_TABLE[guideId]
-  const hasBonusInput = Boolean(scoreSection?.enableBonusInput)
-
-  const scoreHtml = scoreSection
-    ? `
-      <section class="guide-detail-card">
-        <h3>${escapeHtml(safeText(T.scoreSectionTitle, "Score table (base points)"))}</h3>
-        ${hasBonusInput ? `
-          <div class="bonus-control">
-            <label for="bonusPercentInputMain">${escapeHtml(safeText(T.bonusPercentLabel, "Bonus points (%)"))}</label>
-            <input id="bonusPercentInputMain" class="bonus-percent-input" type="number" min="0" step="0.1" value="0">
-          </div>
-        ` : ""}
-        <table class="score-table">
-          <thead>
-            <tr>
-              <th>${escapeHtml(safeText(T.scoreAction, "Action"))}</th>
-              <th>${escapeHtml(safeText(T.scoreBase, "Base points"))}</th>
-              <th>${escapeHtml(safeText(T.scoreDisplayed, "Estimate"))}</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${scoreSection.entries.map((entry) => `
-              <tr data-base-points="${entry.basePoints}">
-                <td>${linkifyText(entry.action)}</td>
-                <td>${entry.basePoints}</td>
-                <td class="score-estimate-value">${entry.basePoints}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </section>
-    `
+  const scoreHtml = scoreSection && renderManager
+    ? renderManager.scoreTable.renderFullTable({
+      title: safeText(T.scoreSectionTitle, "Score table (base points)"),
+      entries: scoreSection.entries,
+      enableBonusInput: Boolean(scoreSection.enableBonusInput),
+      bonusInputId: "bonusPercentInputMain"
+    })
     : ""
 
   const guideImageHtml = getPortraitHtml(guide)
@@ -209,13 +231,26 @@ async function renderGuidePage(guideId){
     }))
     .filter((section) => section.items.length > 0)
 
-  const relatedLinks = guide.related
-    .map((id) => {
-      const related = GUIDE_MAP[id]
-      if(!related) return ""
-      return `<a class="guide-link-chip" href="${getGuidePath(id)}">${escapeHtml(guideTitle(related))}</a>`
-    })
-    .join("")
+  const relatedSection = renderManager
+    ? renderManager.guideCard.renderRelatedSection(guide.related)
+    : ""
+
+  const dayIndex = DAY_IDS_BY_INDEX.indexOf(guideId)
+  const dayCalendarHtml = renderManager && dayIndex >= 0
+    ? (() => {
+      const calendar = renderManager.calendar.renderSingleDayCalendar(dayIndex, guideId)
+      const title = escapeHtml(safeText(T.calendarHeading, "Alliance Duel schedule"))
+      return `
+        <section class="guide-detail-card">
+          <h3>${title}</h3>
+          <table>
+            <thead>${calendar.head}</thead>
+            <tbody>${calendar.body}</tbody>
+          </table>
+        </section>
+      `
+    })()
+    : ""
 
   content.innerHTML = `
     <article class="guide-page-article">
@@ -227,21 +262,23 @@ async function renderGuidePage(guideId){
       </header>
 
       <section class="guide-section-grid">
-        ${guideSections.map((section) => `
-          <section class="guide-detail-card">
-            <h3>${escapeHtml(section.title)}</h3>
-            <ul>${section.items.map((item) => `<li>${linkifyText(item)}</li>`).join("")}</ul>
-          </section>
-        `).join("")}
+        ${guideSections.map((section) => renderManager
+          ? renderManager.text.renderGuideSectionCard(section, { useLinks: true })
+          : `
+            <section class="guide-detail-card">
+              <h3>${escapeHtml(section.title)}</h3>
+              <ul>${section.items.map((item) => `<li>${linkifyText(item)}</li>`).join("")}</ul>
+            </section>
+          `
+        ).join("")}
       </section>
+
+      ${dayCalendarHtml}
 
       ${scoreHtml}
 
       <section class="guide-footer-blocks">
-        <article class="guide-meta-card">
-          <h3>${escapeHtml(safeText(T.guideRelated, "Related pages"))}</h3>
-          <div class="guide-link-row">${relatedLinks}</div>
-        </article>
+        ${relatedSection}
       </section>
     </article>
   `
@@ -318,6 +355,7 @@ async function init(){
   await loadLang(localStorage.getItem("lang") || detectLang() || "en")
 
   buildLangSelect()
+  initRenderManager()
 
   const pageBrand = document.getElementById("pageBrand")
   if(pageBrand) pageBrand.textContent = safeText(T.appTitle, "ZCalendar")

@@ -4,6 +4,7 @@ import { T, CURRENT_LANG } from "./translate.js"
 import { GUIDE_GROUPS, GUIDE_SETS, GUIDE_MAP, GUIDE_STATS } from "./guides.js"
 import { DAY_IDS_BY_INDEX, MENU_GROUPS, HERO_FACTION_MENU, getGuidePath, getHomePath } from "./routes.js"
 import { displayedToBasePoints, POINT_EXAMPLES } from "./points.js"
+import { createRenderManager } from "./render-manager.js"
 import {
   textOr,
   escapeHtml,
@@ -26,6 +27,47 @@ const BASE_URL = (typeof import.meta !== "undefined" && import.meta.env && impor
   : "/"
 
 let currentFilter = "all"
+let renderManager = null
+
+function getDayTitlesArray(){
+  return DAY_KEYS.map((key) => T.dayTitles?.[key] || "")
+}
+
+function setupRenderManager(){
+  const config = {
+    translations: T,
+    linkifyFn: (text) => sharedLinkifyText(text, GUIDE_MAP, getGuidePath),
+    getGuidePath,
+    currentLang: CURRENT_LANG || localStorage.getItem("lang") || "en",
+    baseUrl: BASE_URL,
+    events: EVENTS,
+    getEventType,
+    getIcon,
+    serverOffset: SERVER_OFFSET,
+    dayLabel: textOr(T.dayLabel, "Day"),
+    dayNames: T.days || [],
+    dayTitles: getDayTitlesArray(),
+    guideMap: GUIDE_MAP,
+    menuGroups: MENU_GROUPS,
+    heroFactionMenu: HERO_FACTION_MENU
+  }
+
+  if(!renderManager){
+    renderManager = createRenderManager(config)
+    return
+  }
+
+  renderManager.updateConfig(config)
+}
+
+function attachMenuToggleHandlers(){
+  document.querySelectorAll(".menu-toggle").forEach((button) => {
+    button.addEventListener("click", () => {
+      const group = button.closest(".menu-group")
+      if(group) group.classList.toggle("open")
+    })
+  })
+}
 
 export function initUI(){
   const timeBtn = document.getElementById("timeBtn")
@@ -36,6 +78,7 @@ export function initUI(){
     updateAll()
   }
 
+  setupRenderManager()
   buildStaticShell()
   setTimeButton()
   buildTable()
@@ -203,6 +246,12 @@ function renderDonatePanel(){
 function renderTopMenu(){
   const menuRoot = document.getElementById("siteMenu")
   if(!menuRoot) return
+
+  if(renderManager){
+    renderManager.menu.updateMenuDOM(menuRoot, "")
+    attachMenuToggleHandlers()
+    return
+  }
 
   const renderGroupItems = (group) => {
     if(group.id !== "heroes"){
@@ -380,6 +429,14 @@ function buildTable(){
   const head = document.getElementById("tableHead")
   const body = document.getElementById("tableBody")
 
+  if(renderManager){
+    const calendar = renderManager.calendar.renderFullCalendarTable(DAY_IDS_BY_INDEX)
+    renderManager.calendar.updateCalendarDOM(head, body, calendar)
+    const firstHeader = head.querySelector("th")
+    if(firstHeader) firstHeader.textContent = textOr(T.time, "Time")
+    return
+  }
+
   head.innerHTML = `
     <th>${T.time}</th>
     ${T.days.map((d,i)=>`
@@ -407,6 +464,11 @@ function buildTable(){
 }
 
 function fillCells(){
+  if(renderManager){
+    buildTable()
+    return
+  }
+
   const nowApoc = getApocNow()
   const offsetMs = parseServerOffset(SERVER_OFFSET)
   const nowApocDay = nowApoc.getUTCDay()
@@ -569,12 +631,7 @@ function applyFilter(){
 }
 
 function hookMenu(){
-  document.querySelectorAll(".menu-toggle").forEach((button) => {
-    button.addEventListener("click", () => {
-      const group = button.closest(".menu-group")
-      if(group) group.classList.toggle("open")
-    })
-  })
+  attachMenuToggleHandlers()
 }
 
 function hookGuideRouting(){
@@ -643,6 +700,8 @@ async function renderRoute(){
 
 function applyTranslations(){
   const f = T.filters
+
+  setupRenderManager()
 
   document.title = textOr(T.appTitle, "ZCalendar")
   document.getElementById("heroEyebrow").textContent = textOr(T.heroEyebrow, "Last Z planning board")
