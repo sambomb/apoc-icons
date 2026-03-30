@@ -26,8 +26,19 @@ export function withBasePath(path, baseUrl){
 
 export function stripSourceAttribution(text){
   return String(text)
+    .replace(/\(\s*validated from[^)]*\)/gi, "")
     .replace(/\bSource-backed\b\s*/gi, "")
     .replace(/\bfrom (Last ?Z\.GG|Last ?Z Wiki|Fandom|public sources?)\b/gi, "")
+    .replace(/\busing\s+(Last ?Z\.GG|Last ?Z(?:\.Wiki| Wiki)|Fandom|LastZData|Sardinha)[^.,;)]*/gi, "")
+    .replace(/\b(Currently\s+)?(?:Fandom|Last ?Z\.GG|Last ?Z(?:\.Wiki| Wiki)|LastZData|Sardinha(?: guide| index)?(?: Day \d+)?)\s+(raw category data\s+)?(lists?|describes?|documents?|recommends?|highlights?|identifies?|includes?|groups?|notes?|calls?|shows?|summarizes?|places?|confirms?)\b/gi, "Current references $3")
+    .replace(/\bPublic sources\b/gi, "Current references")
+    .replace(/\bpublic hero pages\b/gi, "available hero pages")
+    .replace(/\bpublic detailed skill page\b/gi, "detailed skill page")
+    .replace(/\bfetched public\b/gi, "available")
+    .replace(/\bsource-backed\b/gi, "")
+    .replace(/\bCurrent references\s+is\b/gi, "Current reference is")
+    .replace(/\s+\./g, ".")
+    .replace(/\s+,/g, ",")
     .replace(/\s{2,}/g, " ")
     .trim()
 }

@@ -305,14 +305,15 @@ async function renderGuidePage(guideId){
     : ""
 
   const guideImageHtml = getPortraitHtml(guide)
+  const shouldSanitizeSources = guide.id !== "resource-sources"
   const guideSections = getGuideSections(guide)
-    .filter((section) => !shouldHideSourceSection(section.title))
+    .filter((section) => !shouldSanitizeSources || !shouldHideSourceSection(section.title))
     .map((section) => ({
       ...section,
-      title: stripSourceAttribution(section.title),
+      title: shouldSanitizeSources ? stripSourceAttribution(section.title) : section.title,
       items: (section.items || [])
-        .map((item) => stripSourceAttribution(item))
-        .filter((item) => item && !shouldHideSourceItem(item))
+        .map((item) => shouldSanitizeSources ? stripSourceAttribution(item) : item)
+        .filter((item) => item && (!shouldSanitizeSources || !shouldHideSourceItem(item)))
     }))
     .filter((section) => section.items.length > 0)
 
