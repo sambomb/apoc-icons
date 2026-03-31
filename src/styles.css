@@ -239,6 +239,7 @@ a{color:inherit;text-decoration:none}
 	justify-content:flex-start;
 	position:relative;
 	z-index:141;
+	isolation:isolate;
 }
 
 .menu-link{
@@ -271,6 +272,11 @@ a{color:inherit;text-decoration:none}
 	position:relative;
 	z-index:142;
 	padding-bottom:8px;
+}
+
+.menu-group:hover,
+.menu-group.open{
+	z-index:220;
 }
 
 .submenu{
@@ -723,8 +729,8 @@ th{
 	display:none;
 	margin:0 0 12px;
 	gap:8px;
-	overflow:auto;
-	padding-bottom:4px;
+	width:100%;
+	grid-template-columns:repeat(7, minmax(0, 1fr));
 }
 
 .mobile-day-chip{
@@ -735,6 +741,7 @@ th{
 	color:var(--ink);
 	font:inherit;
 	font-size:.84rem;
+	width:100%;
 	white-space:nowrap;
 	cursor:pointer;
 }
@@ -1340,7 +1347,7 @@ th{
 
 	.table-wrap.mobile-single-day ~ .mobile-day-picker,
 	.mobile-day-picker{
-		display:flex;
+		display:grid;
 	}
 }
 
