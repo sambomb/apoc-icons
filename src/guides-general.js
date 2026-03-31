@@ -1829,6 +1829,40 @@ export const GUIDE_SETS = {
       related: ["enemy-boomer", "enemy-zombie", "enemy-berserk-zombie", "enemy-bloods-goons", "enemy-fury-lord", "day-vehicle", "type-vehicle", "day-enemy"],
       sources: ["Fandom: Full Preparedness (Boomer/Creep points)", "LastZ.GG: Tyrant & Furylord guide", "LastZ.Wiki: Eventos e Temporada 3"]
     },
+    {
+      id: "systems-change-server",
+      group: "resources",
+      badge: "Tutorial",
+      title: "Change Server",
+      summary: "Step-by-step guide to change your server in Last Z using the map search function.",
+      sections: [
+        {
+          title: "How to Change Server?",
+          items: [
+            "Click in the magnifying glass, same place that you click to find farming resources, Zombies and Boomers.",
+            "There is 3 options to fill: #, X and Y",
+            "# is the server number",
+            "X and Y are coordinates"
+          ]
+        },
+        {
+          title: "Change the server",
+          items: [
+            "Change the value in the # to change the server destination",
+            "After you change it, click in the blue magnifying glass."
+          ]
+        },
+        {
+          title: "Important Notes",
+          items: [
+            "X = 500 and Y = 500 is the capital",
+            "If you are in another server a message will be displayed in the screen."
+          ]
+        }
+      ],
+      related: ["resource-general-tips"],
+      sources: ["In-game tutorial"]
+    },
     ...STRUCTURE_GUIDES,
     ...ENEMY_GUIDES,
     ...HERO_GUIDES
