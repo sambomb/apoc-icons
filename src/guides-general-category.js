@@ -3,7 +3,8 @@ import { GUIDE_GROUPS, GUIDE_SETS } from "./guides-general.js"
 const GENERAL_RESOURCE_IDS = new Set([
   "resource-general-tips",
   "resource-sources",
-  "resource-buildings"
+  "resource-buildings",
+  "resource-change-server"
 ])
 
 export { GUIDE_GROUPS }

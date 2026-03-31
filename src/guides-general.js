@@ -1830,8 +1830,8 @@ export const GUIDE_SETS = {
       sources: ["Fandom: Full Preparedness (Boomer/Creep points)", "LastZ.GG: Tyrant & Furylord guide", "LastZ.Wiki: Eventos e Temporada 3"]
     },
     {
-      id: "systems-change-server",
-      group: "systems",
+      id: "resource-change-server",
+      group: "resources",
       badge: "Tutorial",
       title: "Change Server",
       summary: "Step-by-step guide to change your server in Last Z using the map search function.",
