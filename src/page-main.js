@@ -205,7 +205,8 @@ function linkifyText(text){
 function getPortraitHtml(guide){
   if(guide.image){
     const heroImageClass = guide.id.startsWith("hero-") ? " hero-portrait-zoom" : ""
-    return `<div class="guide-portrait-wrap"><img class="guide-portrait${heroImageClass}" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
+    const naturalSizeClass = guide.id === "resource-change-server" ? " guide-portrait-wrap-natural" : ""
+    return `<div class="guide-portrait-wrap${naturalSizeClass}"><img class="guide-portrait${heroImageClass}" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
   }
 
   if(!guide.id.startsWith("hero-")) return ""
