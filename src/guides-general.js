@@ -1831,7 +1831,7 @@ export const GUIDE_SETS = {
     },
     {
       id: "systems-change-server",
-      group: "resources",
+      group: "systems",
       badge: "Tutorial",
       title: "Change Server",
       summary: "Step-by-step guide to change your server in Last Z using the map search function.",
