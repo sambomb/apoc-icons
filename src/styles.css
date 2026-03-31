@@ -666,6 +666,7 @@ th{
 	min-width:86px;
 	font-weight:700;
 	color:#eaf0ff;
+	background:rgba(17,24,36,.98);
 }
 
 .slot-time-cell-bonus{
@@ -673,8 +674,8 @@ th{
 	flex-direction:column;
 	align-items:center;
 	justify-content:flex-start;
-	gap:4px;
-	background:rgba(17,24,36,.98);
+	gap:3px;
+	background:inherit;
 }
 
 .slot-time-cell-bonus .slot-time-text,
