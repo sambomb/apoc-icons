@@ -205,7 +205,8 @@ function linkifyText(text){
 function getPortraitHtml(guide){
   if(guide.image){
     const heroImageClass = guide.id.startsWith("hero-") ? " hero-portrait-zoom" : ""
-    const naturalSizeClass = guide.id === "resource-change-server" ? " guide-portrait-wrap-natural" : ""
+    const naturalImageGuides = new Set(["resource-change-server", "resource-hide-trucks"])
+    const naturalSizeClass = naturalImageGuides.has(guide.id) ? " guide-portrait-wrap-natural" : ""
     return `<div class="guide-portrait-wrap${naturalSizeClass}"><img class="guide-portrait${heroImageClass}" src="${withBase(guide.image)}" alt="${escapeHtml(guideTitle(guide))}"></div>`
   }
 

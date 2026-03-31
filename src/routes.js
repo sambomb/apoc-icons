@@ -124,6 +124,7 @@ export const GUIDE_ROUTES = [
   { id: "resource-buildings", path: "systems/buildings.html", group: "systems" },
   { id: "resource-constructions", path: "systems/constructions.html", group: "systems" },
   { id: "resource-change-server", path: "systems/change-server.html", group: "systems" },
+  { id: "resource-hide-trucks", path: "systems/hide-trucks.html", group: "systems" },
   { id: "resource-structure-headquarters", path: "systems/structures/headquarters.html", group: "structures" },
   { id: "resource-structure-lumber-mill", path: "systems/structures/lumber-mill.html", group: "structures" },
   { id: "resource-structure-farm", path: "systems/structures/farm.html", group: "structures" },

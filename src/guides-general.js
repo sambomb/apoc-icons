@@ -1864,6 +1864,30 @@ export const GUIDE_SETS = {
       related: ["resource-general-tips"],
       sources: ["In-game tutorial"]
     },
+    {
+      id: "resource-hide-trucks",
+      group: "resources",
+      badge: "Tutorial",
+      title: "Hide Trucks",
+      summary: "Learn how to hide trucks from your own server and refresh visible trucks quickly.",
+      image: "/HideTrucks.png",
+      sections: [
+        {
+          title: "Hide Trucks from your own server",
+          items: [
+            "To Hide Trucks from your own server, just ensure you clicked the highlighted option in the top screen \"Hide trucks of this State\", this will hide trucks from your own server."
+          ]
+        },
+        {
+          title: "Note",
+          items: [
+            "You can click in the dice in the top right corner to \"Refresh\" the trucks as many times as you want."
+          ]
+        }
+      ],
+      related: ["resource-general-tips", "resource-change-server"],
+      sources: ["In-game tutorial"]
+    },
     ...STRUCTURE_GUIDES,
     ...ENEMY_GUIDES,
     ...HERO_GUIDES

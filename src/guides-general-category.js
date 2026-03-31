@@ -4,7 +4,8 @@ const GENERAL_RESOURCE_IDS = new Set([
   "resource-general-tips",
   "resource-sources",
   "resource-buildings",
-  "resource-change-server"
+  "resource-change-server",
+  "resource-hide-trucks"
 ])
 
 export { GUIDE_GROUPS }
