@@ -891,23 +891,20 @@ th{
 #timeInfo{
 	margin-top:16px;
 	padding:14px 16px;
-	text-align:center;
 	display:flex;
-	flex-direction:column;
+	flex-wrap:wrap;
+	justify-content:center;
 	align-items:center;
-	gap:4px;
+	gap:0;
 	background:rgba(9,13,20,.75);
 	border-radius:16px;
 	font-weight:600;
 	color:var(--muted);
+	line-height:1.9;
 }
 
-.time-info-line{
-	display:block;
-	max-width:100%;
-	line-height:1.45;
-	white-space:normal;
-	text-wrap:balance;
+.time-info-seg{
+	white-space:nowrap;
 }
 
 .points-banner{

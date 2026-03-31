@@ -606,10 +606,15 @@ function updateNext(){
   const timeInfo = document.getElementById("timeInfo")
 
   if(timeInfo){
-    timeInfo.innerHTML = [
-      `${escapeHtml(T.localLabel)}: ${escapeHtml(localStr)} | ${escapeHtml(T.apocLabel)}: ${escapeHtml(apocStr)}`,
-      `${escapeHtml(nextEventText)} | ${escapeHtml(nextRadarText)}`
-    ].map((line) => `<span class="time-info-line">${line}</span>`).join("")
+    const segs = [
+      `${escapeHtml(T.localLabel)}: ${escapeHtml(localStr)}`,
+      `${escapeHtml(T.apocLabel)}: ${escapeHtml(apocStr)}`,
+      `${escapeHtml(nextEventText)}`,
+      `${escapeHtml(nextRadarText)}`
+    ]
+    timeInfo.innerHTML = segs
+      .map((s, i) => `<span class="time-info-seg">${s}${i < segs.length - 1 ? " | " : ""}</span>`)
+      .join("")
   }
 }
 
