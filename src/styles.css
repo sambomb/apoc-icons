@@ -682,12 +682,15 @@ th{
 }
 
 .slot-time-cell-bonus{
+	/* td se comporta igual a .slot-time-cell — sem display:flex */
+}
+
+.slot-time-bonus-inner{
 	display:flex;
 	flex-direction:column;
 	align-items:center;
 	justify-content:flex-start;
 	gap:3px;
-	background:rgba(17,24,36,.98);
 }
 
 .slot-time-cell-bonus .radar-icon-blue-halo{

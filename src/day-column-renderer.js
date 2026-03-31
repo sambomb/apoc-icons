@@ -227,9 +227,11 @@ export class DayColumnRenderer {
 
     return `
       <td class="slot-time-cell slot-time-cell-bonus">
-        <span class="slot-time-text">${escapeHtml(timeStr)}</span>
-        <img src="${escapeHtml(whiteRadarIcon)}" class="radar-icon radar-icon-blue-halo slot-radar-icon" alt="Radar refresh icon">
-        <span class="slot-radar-bonus">+8</span>
+        <div class="slot-time-bonus-inner">
+          <span class="slot-time-text">${escapeHtml(timeStr)}</span>
+          <img src="${escapeHtml(whiteRadarIcon)}" class="radar-icon radar-icon-blue-halo slot-radar-icon" alt="Radar refresh icon">
+          <span class="slot-radar-bonus">+8</span>
+        </div>
       </td>
     `
   }
