@@ -1835,6 +1835,7 @@ export const GUIDE_SETS = {
       badge: "Tutorial",
       title: "Change Server",
       summary: "Step-by-step guide to change your server in Last Z using the map search function.",
+      image: "/ChangeServer.gif",
       sections: [
         {
           title: "How to Change Server?",
