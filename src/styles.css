@@ -688,7 +688,12 @@ th{
 	justify-content:flex-start;
 	gap:3px;
 	background:rgba(17,24,36,.98);
-	overflow:hidden;
+}
+
+.slot-time-cell-bonus .radar-icon-blue-halo{
+	box-shadow:
+		0 0 0 2px rgba(56, 128, 255, .15),
+		0 0 7px rgba(56, 128, 255, .45);
 }
 
 .slot-time-text{
