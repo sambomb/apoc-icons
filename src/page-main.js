@@ -101,6 +101,7 @@ async function rerenderCurrentGuide(){
   const guideId = document.body.dataset.guideId || ""
   await renderGuidePage(guideId)
   hookBonusCalculator()
+  hookLauraRadarCalculator(guideId)
   updateDayPageStatus(guideId)
 }
 
@@ -398,6 +399,7 @@ async function renderGuidePage(guideId){
       `
     })()
     : ""
+  const radarCalculatorHtml = renderLauraRadarCalculator(guideId)
 
   content.innerHTML = `
     <article class="guide-page-article">
@@ -423,6 +425,8 @@ async function renderGuidePage(guideId){
       ${dayCalendarHtml}
 
       ${scoreHtml}
+
+      ${radarCalculatorHtml}
 
       <section class="guide-footer-blocks">
         ${relatedSection}
@@ -459,6 +463,73 @@ function hookBonusCalculator(){
 
   update(inputs[0].value, inputs[0])
   return update
+}
+
+function renderLauraRadarCalculator(guideId){
+  if(guideId !== "resource-radar") return ""
+
+  return `
+    <section class="guide-detail-card">
+      <h3>Laura Radar Calculator</h3>
+      <form id="radarLauraForm">
+        <fieldset>
+          <legend>Laura</legend>
+          <label>
+            <input type="radio" name="lauraLevel" value="1" checked>
+            1 Laura ⭐️⭐️⭐️⭐️+
+          </label>
+          <label>
+            <input type="radio" name="lauraLevel" value="2">
+            2 Laura ⭐️-⭐️⭐️⭐️
+          </label>
+          <label>
+            <input type="radio" name="lauraLevel" value="3">
+            3 Laura ⛔️
+          </label>
+        </fieldset>
+        <label for="maxRadarInput">Max Radar:</label>
+        <input id="maxRadarInput" type="number" min="30" max="50" value="40" step="1">
+        <button type="submit">Calculate</button>
+      </form>
+      <p id="radarLauraOutput"></p>
+    </section>
+  `
+}
+
+function hookLauraRadarCalculator(guideId){
+  if(guideId !== "resource-radar") return
+
+  const form = document.getElementById("radarLauraForm")
+  const output = document.getElementById("radarLauraOutput")
+  const maxRadarInput = document.getElementById("maxRadarInput")
+  if(!form || !output || !maxRadarInput) return
+
+  const LAURA_RADAR_PENALTIES = {
+    1: 25,
+    2: 15,
+    3: 8
+  }
+
+  const getLauraRadarPenalty = (level) => LAURA_RADAR_PENALTIES[level] || LAURA_RADAR_PENALTIES[1]
+
+  const updateOutput = () => {
+    const selectedLevel = Number(form.querySelector("input[name='lauraLevel']:checked")?.value || 1)
+    const penalty = getLauraRadarPenalty(selectedLevel)
+    const parsedMaxRadar = Number(maxRadarInput.value)
+    const maxRadar = Number.isFinite(parsedMaxRadar)
+      ? Math.min(50, Math.max(30, Math.round(parsedMaxRadar)))
+      : 40
+
+    maxRadarInput.value = String(maxRadar)
+    output.textContent = `Radar ${maxRadar - penalty}/${maxRadar}`
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault()
+    updateOutput()
+  })
+
+  updateOutput()
 }
 
 function renderPointConverter(guideId, updateBonus){
@@ -516,6 +587,7 @@ async function init(){
   renderMenu(guideId)
   await renderGuidePage(guideId)
   const bonusUpdater = hookBonusCalculator()
+  hookLauraRadarCalculator(guideId)
   renderPointConverter(guideId, bonusUpdater)
   renderDonationPanel()
   startDayPageStatusUpdates(guideId)
